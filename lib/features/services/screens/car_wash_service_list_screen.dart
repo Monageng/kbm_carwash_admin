@@ -5,6 +5,7 @@ import '../../../common/functions/common_functions.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../models/car_wash_service_model.dart';
 import 'car_wash_service_form.dart';
+import '../../../common/widgets/navigation_bar.dart';
 
 class ServiceListScreen extends StatefulWidget {
   const ServiceListScreen({super.key});

@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
-import 'package:kbm_carwash_admin/common/widgets/custom_time.dart';
-import 'package:kbm_carwash_admin/features/booking/models/appointment_model.dart';
-import 'package:kbm_carwash_admin/features/services/service/car_wash_api_service.dart';
+import 'package:kbm_carwash_admin/common/widgets/custom_dropdown.dart';
+import 'package:kbm_carwash_admin/common/widgets/custom_future_dropbox.dart';
+import 'package:kbm_carwash_admin/features/booking/screens/client_suggestion_widget.dart';
+import 'package:kbm_carwash_admin/features/booking/screens/search_client.dart';
 
 import '../../../common/functions/common_functions.dart';
+import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_calendar.dart';
 import '../../../common/widgets/custom_text_field.dart';
-import '../../../common/widgets/email_text_field.dart';
+import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
 import '../../services/models/car_wash_service_model.dart';
+import '../../services/service/car_wash_api_service.dart';
+import '../models/appointment_model.dart';
+import 'user_suggestion_box.dart';
 
 class AppointmentScreen extends StatefulWidget {
   late CarWashAppointment appointment;
@@ -38,6 +42,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   String selectedValue = "Select a car wash service";
 
+  String selectedStatus = "Select status";
+  List<String> statusList = [
+    "Select status",
+    "Awaiting confirmation",
+    "Confirmed",
+    "Completed",
+    "Cancelled",
+    "Recieved",
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +64,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       _clientIdController.text = "${appointment.clientId!}";
       _dateController.text = formatDateTime(appointment.date);
       _statusController.text = appointment.status!;
+      selectedStatus = appointment.status!;
       _timeController.text = appointment.time!;
     }
   }
@@ -113,6 +128,40 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     return lis;
   }
 
+  final List<String> searchTerms = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Date',
+    'Elderberry',
+    'Fig',
+    'Grape',
+    'Honeydew',
+  ];
+  List<String> filteredTerms = [];
+
+  void _filterSearchResults(String query) {
+    List<String> dummySearchList = [];
+    dummySearchList.addAll(searchTerms);
+    if (query.isNotEmpty) {
+      List<String> dummyListData = [];
+      dummySearchList.forEach((item) {
+        if (item.toLowerCase().contains(query.toLowerCase())) {
+          dummyListData.add(item);
+        }
+      });
+      setState(() {
+        filteredTerms.clear();
+        filteredTerms.addAll(dummyListData);
+      });
+      return;
+    } else {
+      setState(() {
+        filteredTerms.clear();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var serviceOptions = FutureBuilder<List<String>>(
@@ -162,6 +211,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           child: Column(
             children: <Widget>[
               serviceOptions,
+              UserSearchExample(),
               // CustomTextField(
               //   width: 250,
               //   controller: _serviceNameController,
@@ -172,6 +222,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               //     return getFieldValidationMessage("Service Name", value);
               //   },
               // ),
+
               CustomCalender(
                 width: 250,
                 label: "Appointment date",
@@ -186,16 +237,46 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 label: "Appointment time",
                 controller: _timeController,
               ),
-              CustomTextField(
-                width: 250,
+              CustomDropDown(
                 controller: _statusController,
-                hintText: "Status",
-                label: "Status",
-                isObscre: false,
-                validator: (value) {
-                  return getFieldValidationMessage("Status", value);
-                },
+                selected: selectedStatus,
+                sizeOptions: statusList,
+                width: 250,
               ),
+              TextField(
+                style: TextStyle(color: Colors.black),
+                onChanged: (value) {
+                  _filterSearchResults(value);
+                },
+                decoration: const InputDecoration(
+                  fillColor: Colors.amber,
+                  labelText: "Search",
+                  hintText: "Search",
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                  ),
+                ),
+              ),
+              // IconButton(
+              //   icon: const Icon(Icons.search),
+              //   onPressed: () {
+              //     showSearch(
+              //       context: context,
+              //       delegate: CustomSearchDelegate(searchTerms: statusList),
+              //     );
+              //   },
+              // ),
+              // CustomTextField(
+              //   width: 250,
+              //   controller: _statusController,
+              //   hintText: "Status",
+              //   label: "Status",
+              //   isObscre: false,
+              //   validator: (value) {
+              //     return getFieldValidationMessage("Status", value);
+              //   },
+              // ),
               CustomTextField(
                 width: 250,
                 controller: _clientIdController,

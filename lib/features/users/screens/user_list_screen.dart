@@ -6,6 +6,7 @@ import '../../../common/widgets/custom_action_button.dart';
 import '../models/user_model.dart';
 import '../services/car_wash_api_service.dart';
 import 'user_form.dart';
+import '../../../common/widgets/navigation_bar.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});

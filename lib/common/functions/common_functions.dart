@@ -20,81 +20,81 @@ List<Widget> rattedStars({required int ratting}) {
   );
 }
 
-getTopNavigation(BuildContext context) {
-  var appBar2 = AppBar(
-    bottomOpacity: 10,
-    title: const Text("KBM Carwash platform"),
-    flexibleSpace: Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 61, 118, 242),
-            Color.fromARGB(255, 61, 118, 242)
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-    ),
-    actions: [
-      TextButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (ctx) => AppointmentListScreen()));
-        },
-        child: const Text(
-          "Appointments",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (ctx) => const ServiceListScreen()));
-        },
-        child: const Text(
-          "Car wash services",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (ctx) => const UserListScreen()));
-        },
-        child: const Text(
-          "Users",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      TextButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (ctx) => const RewardConfigListScreen()));
-        },
-        child: const Text(
-          "Reward Configurations",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-      // TextButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //         context,
-      //         MaterialPageRoute(
-      //             builder: (ctx) => RewardAllocationListScreen()));
-      //   },
-      //   child: const Text(
-      //     "Reward Allocation",
-      //     style: TextStyle(color: Colors.white),
-      //   ),
-      // ),
-    ],
-  );
-  return appBar2;
-}
+// getTopNavigation(BuildContext context) {
+//   var appBar2 = AppBar(
+//     bottomOpacity: 10,
+//     title: const Text("KBM Carwash platform"),
+//     flexibleSpace: Container(
+//       decoration: const BoxDecoration(
+//         gradient: LinearGradient(
+//           colors: [
+//             Color.fromARGB(255, 61, 118, 242),
+//             Color.fromARGB(255, 61, 118, 242)
+//           ],
+//           begin: Alignment.topLeft,
+//           end: Alignment.bottomRight,
+//         ),
+//       ),
+//     ),
+//     actions: [
+//       TextButton(
+//         onPressed: () {
+//           Navigator.push(context,
+//               MaterialPageRoute(builder: (ctx) => const AppointmentListScreen()));
+//         },
+//         child: const Text(
+//           "Appointments",
+//           style: TextStyle(color: Colors.white),
+//         ),
+//       ),
+//       TextButton(
+//         onPressed: () {
+//           Navigator.push(context,
+//               MaterialPageRoute(builder: (ctx) => const ServiceListScreen()));
+//         },
+//         child: const Text(
+//           "Car wash services",
+//           style: TextStyle(color: Colors.white),
+//         ),
+//       ),
+//       TextButton(
+//         onPressed: () {
+//           Navigator.push(context,
+//               MaterialPageRoute(builder: (ctx) => const UserListScreen()));
+//         },
+//         child: const Text(
+//           "Users",
+//           style: TextStyle(color: Colors.white),
+//         ),
+//       ),
+//       TextButton(
+//         onPressed: () {
+//           Navigator.push(
+//               context,
+//               MaterialPageRoute(
+//                   builder: (ctx) => const RewardConfigListScreen()));
+//         },
+//         child: const Text(
+//           "Reward Configurations",
+//           style: TextStyle(color: Colors.white),
+//         ),
+//       ),
+//       // TextButton(
+//       //   onPressed: () {
+//       //     Navigator.push(
+//       //         context,
+//       //         MaterialPageRoute(
+//       //             builder: (ctx) => RewardAllocationListScreen()));
+//       //   },
+//       //   child: const Text(
+//       //     "Reward Allocation",
+//       //     style: TextStyle(color: Colors.white),
+//       //   ),
+//       // ),
+//     ],
+//   );
+//   return appBar2;
+// }
 
 DataCell getDataCell(String cellValue) {
   return DataCell(Expanded(

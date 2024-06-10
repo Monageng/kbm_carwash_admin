@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/common/functions/common_functions.dart';
+import 'package:kbm_carwash_admin/features/booking/screens/appointment_list.dart';
 
 import 'theme/custom_theme.dart';
 
@@ -41,18 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getTopNavigation(context),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-              style: TextStyle(color: Colors.red),
-            ),
-          ],
-        ),
-      ),
+      //appBar: getTopNavigation(context),
+      body: AppointmentListScreen(),
     );
   }
 }

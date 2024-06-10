@@ -7,6 +7,7 @@ import '../../../common/widgets/custom_action_button.dart';
 import '../models/reward_config.dart';
 import '../services/reward_service.dart';
 import 'reward_config_form.dart';
+import '../../../common/widgets/navigation_bar.dart';
 
 class RewardConfigListScreen extends StatefulWidget {
   const RewardConfigListScreen({super.key});

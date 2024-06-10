@@ -1,3 +1,5 @@
+import 'package:kbm_carwash_admin/features/users/models/user_model.dart';
+
 class CarWashAppointment {
   int id;
   bool? active;
@@ -7,6 +9,7 @@ class CarWashAppointment {
   String? status;
   int? clientId;
   String? time;
+  UserModel? client;
 
   CarWashAppointment({
     this.serviceName,
@@ -17,6 +20,7 @@ class CarWashAppointment {
     this.clientId,
     this.createAt,
     required this.id,
+    this.client,
   });
 
 // Method to deserialize JSON into a CarWashAppointment object
@@ -32,6 +36,8 @@ class CarWashAppointment {
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
       status: json['status'],
       clientId: json['client_id'],
+      client:
+          json['client'] != null ? UserModel.fromJson(json['client']) : null,
     );
   }
 
@@ -47,6 +53,7 @@ class CarWashAppointment {
       'date': date?.toIso8601String(), // Serialize DateTime to ISO 8601 format
       'status': status,
       'client_id': clientId,
+      'client': client!.toJson(),
     };
   }
 }
