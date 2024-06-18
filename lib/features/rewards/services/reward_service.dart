@@ -31,10 +31,8 @@ class RewardsApiService {
 
   Future<List<RewardConfig>> getAllRewardConfig() async {
     try {
-      var url = Uri.https(
-        supabaseUrlv2,
-        "rest/v1/reward_config",
-      );
+      var url = Uri.https(supabaseUrlv2, "rest/v1/reward_config",
+          {"active": "eq.true", "order": "title.asc"});
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
 

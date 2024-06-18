@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/booking/screens/test.dart';
 
 import '../../features/booking/screens/appointment_list.dart';
-import '../../features/booking/screens/client_suggestion_widget.dart';
 import '../../features/rewards/screens/reward_config_list_screen.dart';
 import '../../features/services/screens/car_wash_service_list_screen.dart';
 import '../../features/users/screens/user_list_screen.dart';
@@ -31,11 +29,11 @@ AppBar getTopNavigation(BuildContext context) {
             // Wide screen: show all buttons
             return Row(
               children: [
+                _buildTextButton(context, "Clients", const UserListScreen()),
                 _buildTextButton(
                     context, "Appointments", const AppointmentListScreen()),
                 _buildTextButton(
                     context, "Car wash services", const ServiceListScreen()),
-                _buildTextButton(context, "Users", const UserListScreen()),
                 _buildTextButton(context, "Reward Configurations",
                     const RewardConfigListScreen()),
               ],

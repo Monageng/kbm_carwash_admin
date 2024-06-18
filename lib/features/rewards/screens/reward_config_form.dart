@@ -81,7 +81,6 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
   }
 
   void update(RewardConfig rewardConfig) {
-    print(rewardConfig.toJson());
     if (rewardConfig.id > 0) {
       _activeController.text = "${rewardConfig.active}";
       _descriptionController.text = rewardConfig.description!;

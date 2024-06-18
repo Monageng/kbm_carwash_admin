@@ -7,18 +7,20 @@ class UserModel {
   String? mobileNumber;
   String? email;
   String? dateOfBirth;
+  bool? active;
 
-  UserModel(
-      {this.userId,
-      required this.id,
-      this.firstName,
-      this.lastName,
-      this.title,
-      this.mobileNumber,
-      this.email,
-      this.dateOfBirth});
+  UserModel({
+    this.userId,
+    required this.id,
+    this.firstName,
+    this.lastName,
+    this.title,
+    this.mobileNumber,
+    this.email,
+    this.dateOfBirth,
+    this.active,
+  });
 
-// Deserialize JSON to User object
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
@@ -29,10 +31,10 @@ class UserModel {
       mobileNumber: json['mobile_number'],
       email: json['email'],
       dateOfBirth: json['date_of_birth'],
+      active: json["active"],
     );
   }
 
-  // Serialize User object to JSON
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       "id": id,
@@ -43,6 +45,7 @@ class UserModel {
       'mobile_number': mobileNumber,
       'email': email,
       'date_of_birth': dateOfBirth,
+      "active": active,
     };
     return data;
   }

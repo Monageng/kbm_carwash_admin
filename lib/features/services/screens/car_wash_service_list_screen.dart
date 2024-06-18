@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/services/common_api_service.dart';
 import 'package:kbm_carwash_admin/features/services/service/car_wash_api_service.dart';
 
 import '../../../common/functions/common_functions.dart';
@@ -72,7 +73,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                       context: context,
                       builder: (BuildContext context) {
                         return ServiceCaptureScreen(
-                          carWashService: new CarWashService(id: -1),
+                          carWashService: CarWashService(id: -1),
                         );
                       },
                     );
@@ -125,7 +126,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                                 availableRowsPerPage: availableRowsPerPage2,
                                 onRowsPerPageChanged: (int? value) {},
                                 columns: [
-                                  const DataColumn(label: Text('ID')),
                                   DataColumn(
                                     label: const Text('Name'),
                                     onSort: (columnIndex, ascending) {
@@ -151,7 +151,6 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                                   const DataColumn(label: Text("Description")),
                                   const DataColumn(label: Text("Price")),
                                   const DataColumn(label: Text("Status")),
-                                  const DataColumn(label: Text("Code")),
                                   const DataColumn(label: Text('Action')),
                                 ],
                               ),
@@ -191,10 +190,6 @@ class MyDataTableSource extends DataTableSource {
       index: index,
       cells: [
         DataCell(Text(
-          service.id.toString(),
-          style: const TextStyle(color: Colors.grey),
-        )),
-        DataCell(Text(
           service.name ?? '',
           style: const TextStyle(color: Colors.grey),
         )),
@@ -210,22 +205,6 @@ class MyDataTableSource extends DataTableSource {
           service.active == true ? 'Active' : 'Inactive',
           style: const TextStyle(color: Colors.grey),
         )),
-        // DataCell(Text(
-        //   service.createdAt?.toLocal().toString() ?? '',
-        //   style: TextStyle(color: Colors.grey),
-        // )),
-        DataCell(Text(
-          service.code ?? '',
-          style: const TextStyle(color: Colors.grey),
-        )),
-        // DataCell(Text(
-        //   service.fromDate?.toLocal().toString() ?? '',
-        //   style: const TextStyle(color: Colors.grey),
-        // )),
-        // DataCell(Text(
-        //   service.toDate?.toLocal().toString() ?? '',
-        //   style: const TextStyle(color: Colors.grey),
-        // )),
         DataCell(
           Row(
             children: [
@@ -248,41 +227,41 @@ class MyDataTableSource extends DataTableSource {
               ),
               CustomElevatedButton(
                 onPressed: () {
-                  // showDialog(
-                  //     context: context,
-                  //     builder: (context) {
-                  //       return AlertDialog(
-                  //           title: const Text(
-                  //             'Delete confirmation',
-                  //             style: TextStyle(color: Colors.black),
-                  //           ),
-                  //           content: const Text(
-                  //               'Are you sure you want to delete restaurant?',
-                  //               style: TextStyle(color: Colors.black)),
-                  //           actions: <Widget>[
-                  //             TextButton(
-                  //               onPressed: () {
-                  //                 restaurant.isActive = false;
-                  //                 ApiServiceV2().updateById(restaurant.toJson(),
-                  //                     "restaurants", restaurant.uuid);
-                  //                 // Close the AlertDialog
-                  //                 _restaurants.remove(restaurant);
-                  //                 super.notifyListeners();
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                            title: const Text(
+                              'Delete confirmation',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: const Text(
+                                'Are you sure you want to delete car wash service name?',
+                                style: TextStyle(color: Colors.black)),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  service.active = false;
+                                  CommonApiService().update(service.id,
+                                      "car_wash_services", service.toJson());
+                                  // Close the AlertDialog
+                                  services.remove(service);
+                                  super.notifyListeners();
 
-                  //                 Navigator.of(context).pop(restaurant);
-                  //               },
-                  //               child: const Text('Yes',
-                  //                   style: TextStyle(color: Colors.black)),
-                  //             ),
-                  //             TextButton(
-                  //               onPressed: () {
-                  //                 Navigator.of(context).pop(restaurant);
-                  //               },
-                  //               child: const Text('No',
-                  //                   style: TextStyle(color: Colors.black)),
-                  //             ),
-                  //           ]);
-                  //     });
+                                  Navigator.of(context).pop(service);
+                                },
+                                child: const Text('Yes',
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(service);
+                                },
+                                child: const Text('No',
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                            ]);
+                      });
                 },
                 text: "Delete",
                 buttonColor: Colors.blue,

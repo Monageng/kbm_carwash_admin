@@ -3,6 +3,7 @@ import 'package:kbm_carwash_admin/features/booking/screens/appointment_form.dart
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
+import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/navigation_bar.dart';
 import '../models/appointment_model.dart';
@@ -34,8 +35,6 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
   }
 
   void _filterData(String filter) {
-    print("Filter text $filter ");
-
     _originalfutureList.then((result) {
       List<CarWashAppointment> filteredList = result.where((element) {
         return element.client!.firstName!
@@ -222,7 +221,42 @@ class MyDataTableSource extends DataTableSource {
                 ),
               ),
               CustomElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                            title: const Text(
+                              'Delete confirmation',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: const Text(
+                                'Are you sure you want to delete appointment?',
+                                style: TextStyle(color: Colors.black)),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  item.active = false;
+                                  item.client = null;
+                                  CommonApiService().update(
+                                      item.id, "appointment", item.toJson());
+                                  list.remove(item);
+                                  super.notifyListeners();
+                                  Navigator.of(context).pop(item);
+                                },
+                                child: const Text('Yes',
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(item);
+                                },
+                                child: const Text('No',
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                            ]);
+                      });
+                },
                 text: "Delete",
                 buttonColor: Colors.blue,
                 textColor: Colors.white,

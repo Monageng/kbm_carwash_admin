@@ -82,6 +82,7 @@ class _UserScreenState extends State<UserScreen> {
       if (key < 1) {
         key = await CommonApiService().getLatestID("client");
         widget.user.id = key;
+        widget.user.active = true;
         widget.user.userId = generateRandomString(36);
         responseMessage =
             await CommonApiService().save(widget.user.toJson(), "client");

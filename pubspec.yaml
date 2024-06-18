@@ -1,5 +1,5 @@
 name: kbm_carwash_admin
-description: "A new Flutter project."
+description: "KBM Car wash admin portal. The portal is used to administer the car washing business"
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -41,6 +41,8 @@ dependencies:
   amplify_auth_cognito: ^1.4.2
   amplify_authenticator: ^1.4.2
   flutter_spinner_time_picker: ^0.2.1
+  multi_charts: ^0.3.0
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:

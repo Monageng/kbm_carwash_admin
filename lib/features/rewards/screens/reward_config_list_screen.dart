@@ -129,19 +129,6 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
                                 availableRowsPerPage: availableRowsPerPage2,
                                 onRowsPerPageChanged: (int? value) {},
                                 columns: const [
-                                  DataColumn(label: Text('ID')),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Reward'),
-                                        Text('Code'),
-                                      ],
-                                    ),
-                                  ),
                                   DataColumn(
                                     label: Column(
                                       crossAxisAlignment:
@@ -267,8 +254,6 @@ class MyDataTableSource extends DataTableSource {
       color: MaterialStateProperty.all<Color>(rowColor),
       index: index,
       cells: [
-        getDataCellWithWidth(item.id.toString(), 10),
-        getDataCellWithWidth(item.rewardCode ?? '', 70),
         getDataCellWithWidth(item.title ?? '', 70),
         getDataCellWithWidth(item.rewardType ?? '', 70),
         getDataCellWithWidth(item.description ?? '', 70),

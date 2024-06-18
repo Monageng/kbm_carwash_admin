@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/functions/common_functions.dart';
 import 'package:kbm_carwash_admin/features/booking/screens/appointment_list.dart';
 
+import 'features/dashboard/client_barchart.dart';
 import 'theme/custom_theme.dart';
 
 void main() {
@@ -11,7 +11,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -41,8 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //appBar: getTopNavigation(context),
+    return const Scaffold(
       body: AppointmentListScreen(),
     );
   }

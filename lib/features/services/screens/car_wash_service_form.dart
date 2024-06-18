@@ -28,7 +28,7 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
   late final TextEditingController _descriptionController =
       TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
+  // final TextEditingController _codeController = TextEditingController();
   final TextEditingController _fromDateController = TextEditingController();
   final TextEditingController _toDateController = TextEditingController();
 
@@ -47,7 +47,7 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
       _nameController.text = carWashService.name!;
       _descriptionController.text = carWashService.description!;
       _priceController.text = "${carWashService.price!}";
-      _codeController.text = carWashService.code!;
+      // _codeController.text = carWashService.code!;
       _fromDateController.text = formatDateTime(carWashService.fromDate!);
       _toDateController.text = formatDateTime(carWashService.toDate!);
       _active = true;
@@ -58,7 +58,7 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
     _nameController.clear();
     _descriptionController.clear();
     _priceController.clear();
-    _codeController.clear();
+    // _codeController.clear();
     _fromDateController.clear();
     _toDateController.clear();
   }
@@ -72,8 +72,7 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
       widget.carWashService.name = _nameController.text;
       widget.carWashService.description = _descriptionController.text;
       widget.carWashService.price = double.tryParse(_priceController.text);
-      widget.carWashService.active = _active;
-      widget.carWashService.code = _codeController.text;
+      // widget.carWashService.code = _codeController.text;
       widget.carWashService.createdAt = DateTime.now();
       widget.carWashService.fromDate = DateTime.parse(_fromDateController.text);
       widget.carWashService.toDate = DateTime.parse(_toDateController.text);
@@ -126,16 +125,16 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
                   return getFieldValidationMessage("Name", value);
                 },
               ),
-              CustomTextField(
-                width: 250,
-                controller: _codeController,
-                hintText: "Code",
-                label: "Code",
-                isObscre: false,
-                validator: (value) {
-                  return getFieldValidationMessage("Code", value);
-                },
-              ),
+              // CustomTextField(
+              //   width: 250,
+              //   controller: _codeController,
+              //   hintText: "Code",
+              //   label: "Code",
+              //   isObscre: false,
+              //   validator: (value) {
+              //     return getFieldValidationMessage("Code", value);
+              //   },
+              // ),
               CustomTextField(
                 width: 250,
                 controller: _descriptionController,
@@ -165,20 +164,6 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
                   } catch (e) {
                     return 'Invalid price format';
                   }
-                },
-              ),
-              SwitchListTile(
-                activeColor: Colors.orange,
-                inactiveTrackColor: Colors.white,
-                title: const Text(
-                  'Active',
-                  style: TextStyle(color: Colors.black),
-                ),
-                value: _active,
-                onChanged: (value) {
-                  setState(() {
-                    _active = value;
-                  });
                 },
               ),
               CustomCalender(

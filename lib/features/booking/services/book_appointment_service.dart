@@ -30,9 +30,7 @@ class BookAppointmentApiService {
     try {
       var url = Uri.https(supabaseUrlv2, "rest/v1/appointment",
           {"select": "*,client(*)", "active": "eq.true"});
-      print("Url2 ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
-      print("response ::: ${response.body}");
       if (response.statusCode == 200) {
         List<CarWashAppointment> list = (jsonDecode(response.body) as List)
             .map((json) => CarWashAppointment.fromJson(json))

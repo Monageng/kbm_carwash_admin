@@ -10,7 +10,8 @@ import '../models/user_model.dart';
 class UserApiService {
   Future<List<UserModel>> getAllUsers() async {
     try {
-      var url = Uri.https(supabaseUrlv2, "rest/v1/client");
+      var url = Uri.https(supabaseUrlv2, "rest/v1/client",
+          {"active": "eq.true", "order": "first_name.asc"});
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
       if (response.statusCode == 200) {

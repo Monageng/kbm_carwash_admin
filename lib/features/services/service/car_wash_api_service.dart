@@ -9,7 +9,8 @@ import 'dart:convert';
 class CarWashApiService {
   Future<List<CarWashService>> getAllCarWashService() async {
     try {
-      var url = Uri.https(supabaseUrlv2, "rest/v1/car_wash_services");
+      var url = Uri.https(supabaseUrlv2, "rest/v1/car_wash_services",
+          {"active": "eq.true", "order": "service_name.asc"});
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
       if (response.statusCode == 200) {

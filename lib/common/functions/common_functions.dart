@@ -1,12 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/booking/screens/appointment_list.dart';
-import 'package:kbm_carwash_admin/features/users/screens/user_list_screen.dart';
-
-import '../../features/rewards/screens/reward_config_list_screen.dart';
-import '../../features/services/screens/car_wash_service_list_screen.dart';
-import '../../features/rewards/screens/reward_allocation_list_screen.dart';
 
 List<Widget> rattedStars({required int ratting}) {
   const filledColor = Color.fromRGBO(254, 192, 77, 1);

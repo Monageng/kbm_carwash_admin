@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/common/widgets/custom_dropdown.dart';
-import 'package:kbm_carwash_admin/common/widgets/custom_future_dropbox.dart';
-import 'package:kbm_carwash_admin/features/booking/screens/client_suggestion_widget.dart';
-import 'package:kbm_carwash_admin/features/booking/screens/search_client.dart';
-
+import 'package:kbm_carwash_admin/features/users/models/user_model.dart';
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
@@ -15,8 +12,8 @@ import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
 import '../../services/models/car_wash_service_model.dart';
 import '../../services/service/car_wash_api_service.dart';
+import '../../users/services/car_wash_api_service.dart';
 import '../models/appointment_model.dart';
-import 'user_suggestion_box.dart';
 
 class AppointmentScreen extends StatefulWidget {
   late CarWashAppointment appointment;
@@ -38,9 +35,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
 
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+  final DateTime _selectedDate = DateTime.now();
+  final TimeOfDay _selectedTime = TimeOfDay.now();
   String selectedValue = "Select a car wash service";
+
+  List<UserModel> userList = [];
+  List<String?> searchUserList = [];
 
   String selectedStatus = "Select status";
   List<String> statusList = [
@@ -55,16 +55,30 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   void initState() {
     super.initState();
+    getUsers();
     update(widget.appointment);
   }
 
+  void getUsers() async {
+    List<UserModel> fetchedUsers = await UserApiService().getAllUsers();
+    setState(() {
+      userList = fetchedUsers;
+      searchUserList = userList.map((e) => e.firstName).toList();
+    });
+  }
+
   void update(CarWashAppointment appointment) {
-    if (appointment.id! > 0) {
+    print("Load apploingment ${appointment.toJson()}");
+    if (appointment.id > 0) {
       _serviceNameController.text = appointment.serviceName!;
       _clientIdController.text = "${appointment.clientId!}";
       _dateController.text = formatDateTime(appointment.date);
-      _statusController.text = appointment.status!;
-      selectedStatus = appointment.status!;
+
+      if (appointment.status != null) {
+        selectedStatus = appointment.status!;
+      }
+      _statusController.text = selectedStatus;
+
       _timeController.text = appointment.time!;
     }
   }
@@ -83,7 +97,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
       int key = widget.appointment.id;
 
-      widget.appointment.clientId = int.tryParse(_clientIdController.text);
+      widget.appointment.clientId = widget.appointment.clientId!;
       widget.appointment.createAt = DateTime.now();
       widget.appointment.date = DateTime.parse(_dateController.text);
       widget.appointment.serviceName = selectedValue;
@@ -95,6 +109,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         key = await CommonApiService().getLatestID("appointment");
         widget.appointment.id = key;
         widget.appointment.active = true;
+        widget.appointment.status = "Recieved";
         responseMessage = await CommonApiService()
             .save(widget.appointment.toJson(), "appointment");
       } else {
@@ -123,7 +138,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         await CarWashApiService().getAllCarWashService();
 
     List<String> lis =
-        carwashServiceList?.map((service) => service.name ?? '').toList() ?? [];
+        carwashServiceList.map((service) => service.name ?? '').toList();
     lis.add("Select a car wash service");
     return lis;
   }
@@ -165,9 +180,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   @override
   Widget build(BuildContext context) {
     var serviceOptions = FutureBuilder<List<String>>(
-      future:
-          _fetchCarWashNames(), // Assuming _fetchCarWashNames is a function that maps the list of CarWashService to their names
-
+      future: _fetchCarWashNames(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator(); // Show loading indicator while waiting for data
@@ -211,18 +224,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           child: Column(
             children: <Widget>[
               serviceOptions,
-              UserSearchExample(),
-              // CustomTextField(
-              //   width: 250,
-              //   controller: _serviceNameController,
-              //   hintText: "Service Name",
-              //   label: " Service Name",
-              //   isObscre: false,
-              //   validator: (value) {
-              //     return getFieldValidationMessage("Service Name", value);
-              //   },
-              // ),
-
               CustomCalender(
                 width: 250,
                 label: "Appointment date",
@@ -243,50 +244,32 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 sizeOptions: statusList,
                 width: 250,
               ),
-              TextField(
-                style: TextStyle(color: Colors.black),
-                onChanged: (value) {
-                  _filterSearchResults(value);
-                },
-                decoration: const InputDecoration(
-                  fillColor: Colors.amber,
-                  labelText: "Search",
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                  ),
-                ),
-              ),
-              // IconButton(
-              //   icon: const Icon(Icons.search),
-              //   onPressed: () {
-              //     showSearch(
-              //       context: context,
-              //       delegate: CustomSearchDelegate(searchTerms: statusList),
-              //     );
+              // TextField(
+              //   style: TextStyle(color: Colors.black),
+              //   onChanged: (value) {
+              //     _filterSearchResults(value);
               //   },
+              //   decoration: const InputDecoration(
+              //     fillColor: Colors.amber,
+              //     labelText: "Search",
+              //     hintText: "Search",
+              //     prefixIcon: Icon(Icons.search),
+              //     border: OutlineInputBorder(
+              //       borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              //     ),
+              //   ),
               // ),
+
               // CustomTextField(
               //   width: 250,
-              //   controller: _statusController,
-              //   hintText: "Status",
-              //   label: "Status",
+              //   controller: _clientIdController,
+              //   hintText: "Client Id",
+              //   label: "Client Id",
               //   isObscre: false,
               //   validator: (value) {
-              //     return getFieldValidationMessage("Status", value);
+              //     return getFieldValidationMessage("Client id", value);
               //   },
               // ),
-              CustomTextField(
-                width: 250,
-                controller: _clientIdController,
-                hintText: "Client Id",
-                label: "Client Id",
-                isObscre: false,
-                validator: (value) {
-                  return getFieldValidationMessage("Client id", value);
-                },
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

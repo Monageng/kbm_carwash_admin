@@ -53,7 +53,7 @@ class CarWashAppointment {
       'date': date?.toIso8601String(), // Serialize DateTime to ISO 8601 format
       'status': status,
       'client_id': clientId,
-      'client': client!.toJson(),
+      //d'client': client!.toJson(),
     };
   }
 }

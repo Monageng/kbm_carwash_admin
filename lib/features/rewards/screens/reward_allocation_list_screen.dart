@@ -3,9 +3,6 @@ import 'package:kbm_carwash_admin/features/rewards/models/reward_model.dart';
 import 'package:kbm_carwash_admin/features/rewards/services/reward_service.dart';
 
 import '../../../common/functions/common_functions.dart';
-import '../../../common/widgets/custom_action_button.dart';
-import '../../services/models/car_wash_service_model.dart';
-import '../../services/screens/car_wash_service_form.dart';
 import '../../../common/widgets/navigation_bar.dart';
 
 class RewardAllocationListScreen extends StatefulWidget {
@@ -23,9 +20,8 @@ class _RewardAllocationListScreenState
   late Future<List<Reward>> _futureList;
   late Future<List<Reward>> _originalfutureList;
 
-  bool _sortAscending = true;
-  int _sortColumnIndex = 0;
-  final String _filter = '';
+  final bool _sortAscending = true;
+  final int _sortColumnIndex = 0;
   final TextEditingController _filterController = TextEditingController();
 
   @override
@@ -71,21 +67,6 @@ class _RewardAllocationListScreenState
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomElevatedButton(
-                  text: "Add car service",
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return ServiceCaptureScreen(
-                          carWashService: new CarWashService(id: -1),
-                        );
-                      },
-                    );
-                  }),
-            ),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: TextField(
@@ -133,7 +114,6 @@ class _RewardAllocationListScreenState
                                 availableRowsPerPage: availableRowsPerPage2,
                                 onRowsPerPageChanged: (int? value) {},
                                 columns: const [
-                                  DataColumn(label: Text('ID')),
                                   DataColumn(label: Text("Title")),
                                   DataColumn(label: Text("Description")),
                                   DataColumn(label: Text("Transaction Date")),
@@ -179,10 +159,6 @@ class MyDataTableSource extends DataTableSource {
       index: index,
       cells: [
         DataCell(Text(
-          service.clientId.toString(),
-          style: const TextStyle(color: Colors.grey),
-        )),
-        DataCell(Text(
           service.title ?? '',
           style: const TextStyle(color: Colors.grey),
         )),
@@ -206,71 +182,6 @@ class MyDataTableSource extends DataTableSource {
           service.discountedAmount?.toStringAsFixed(2) ?? '',
           style: const TextStyle(color: Colors.grey),
         )),
-        // DataCell(
-        //   Row(
-        //     children: [
-        //       Padding(
-        //         padding: const EdgeInsets.all(10),
-        //         child: CustomElevatedButton(
-        //           onPressed: () async {
-        //             // await showDialog(
-        //             //   context: context,
-        //             //   builder: (BuildContext context) {
-        //             //     return ServiceCaptureScreen(
-        //             //       carWashService: service,
-        //             //     );
-        //             //   },
-        //             // );
-        //           },
-        //           text: "Edit",
-        //           textColor: Colors.white,
-        //         ),
-        //       ),
-        //       CustomElevatedButton(
-        //         onPressed: () {
-        //           // showDialog(
-        //           //     context: context,
-        //           //     builder: (context) {
-        //           //       return AlertDialog(
-        //           //           title: const Text(
-        //           //             'Delete confirmation',
-        //           //             style: TextStyle(color: Colors.black),
-        //           //           ),
-        //           //           content: const Text(
-        //           //               'Are you sure you want to delete restaurant?',
-        //           //               style: TextStyle(color: Colors.black)),
-        //           //           actions: <Widget>[
-        //           //             TextButton(
-        //           //               onPressed: () {
-        //           //                 restaurant.isActive = false;
-        //           //                 ApiServiceV2().updateById(restaurant.toJson(),
-        //           //                     "restaurants", restaurant.uuid);
-        //           //                 // Close the AlertDialog
-        //           //                 _restaurants.remove(restaurant);
-        //           //                 super.notifyListeners();
-
-        //           //                 Navigator.of(context).pop(restaurant);
-        //           //               },
-        //           //               child: const Text('Yes',
-        //           //                   style: TextStyle(color: Colors.black)),
-        //           //             ),
-        //           //             TextButton(
-        //           //               onPressed: () {
-        //           //                 Navigator.of(context).pop(restaurant);
-        //           //               },
-        //           //               child: const Text('No',
-        //           //                   style: TextStyle(color: Colors.black)),
-        //           //             ),
-        //           //           ]);
-        //           //     });
-        //         },
-        //         text: "Delete",
-        //         buttonColor: Colors.blue,
-        //         textColor: Colors.white,
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ],
     );
   }
