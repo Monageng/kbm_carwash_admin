@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/features/dashboard/appointment_dash.dart';
 
 import '../../features/booking/screens/appointment_list.dart';
 import '../../features/rewards/screens/reward_config_list_screen.dart';
@@ -27,8 +28,10 @@ AppBar getTopNavigation(BuildContext context) {
           // Check the width of the screen
           if (constraints.maxWidth > 800) {
             // Wide screen: show all buttons
+
             return Row(
               children: [
+                _buildTextButton(context, "Dashboard", const DashboardScreen()),
                 _buildTextButton(context, "Clients", const UserListScreen()),
                 _buildTextButton(
                     context, "Appointments", const AppointmentListScreen()),
