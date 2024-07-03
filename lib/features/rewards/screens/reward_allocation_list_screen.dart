@@ -34,19 +34,12 @@ class _RewardAllocationListScreenState
   }
 
   void _filterData(String filter) {
-    print("Filter text $filter ");
-
     _originalfutureList.then((result) {
       List<Reward> filteredList = result.where((element) {
         return element.description!
             .toUpperCase()
             .contains(filter.toUpperCase());
       }).toList();
-
-      for (var element in filteredList) {
-        print("Filtered ${element.description}");
-      }
-
       setState(() {
         _futureList = Future.value(filteredList);
       });

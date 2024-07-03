@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/common/widgets/custom_dropdown.dart';
 import 'package:kbm_carwash_admin/features/users/models/user_model.dart';
-import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_calendar.dart';
-import '../../../common/widgets/custom_text_field.dart';
 import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
 import '../../services/models/car_wash_service_model.dart';
@@ -24,7 +22,7 @@ class AppointmentScreen extends StatefulWidget {
   });
 
   @override
-  _AppointmentScreenState createState() => _AppointmentScreenState();
+  State<AppointmentScreen> createState() => _AppointmentScreenState();
 }
 
 class _AppointmentScreenState extends State<AppointmentScreen> {
@@ -68,7 +66,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   }
 
   void update(CarWashAppointment appointment) {
-    print("Load apploingment ${appointment.toJson()}");
     if (appointment.id > 0) {
       _serviceNameController.text = appointment.serviceName!;
       _clientIdController.text = "${appointment.clientId!}";
@@ -155,28 +152,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   ];
   List<String> filteredTerms = [];
 
-  void _filterSearchResults(String query) {
-    List<String> dummySearchList = [];
-    dummySearchList.addAll(searchTerms);
-    if (query.isNotEmpty) {
-      List<String> dummyListData = [];
-      dummySearchList.forEach((item) {
-        if (item.toLowerCase().contains(query.toLowerCase())) {
-          dummyListData.add(item);
-        }
-      });
-      setState(() {
-        filteredTerms.clear();
-        filteredTerms.addAll(dummyListData);
-      });
-      return;
-    } else {
-      setState(() {
-        filteredTerms.clear();
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var serviceOptions = FutureBuilder<List<String>>(
@@ -203,7 +178,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
               );
             }).toList(),
             onChanged: (String? value) {
-              print("selectedValue : $selectedValue");
               setState(() {
                 selectedValue = value!;
               });
@@ -229,7 +203,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 label: "Appointment date",
                 controller: _dateController,
                 firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(Duration(days: 365898)),
+                lastDate: DateTime.now().add(const Duration(days: 365898)),
                 selectedDate: _selectedDate,
               ),
               CustomTime(

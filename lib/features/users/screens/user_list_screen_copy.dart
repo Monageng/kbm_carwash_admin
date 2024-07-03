@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/common/services/common_api_service.dart';
-import 'package:kbm_carwash_admin/features/services/service/car_wash_api_service.dart';
-
+import 'package:kbm_carwash_admin/features/booking/models/appointment_model.dart';
+import 'package:kbm_carwash_admin/features/rewards/screens/reward_allocation_list_screen.dart';
 import '../../../common/functions/common_functions.dart';
 import '../../../common/widgets/custom_action_button.dart';
-import '../models/car_wash_service_model.dart';
-import 'car_wash_service_form.dart';
+import '../../booking/screens/appointment_form.dart';
+import '../models/user_model.dart';
+import '../services/car_wash_api_service.dart';
+import 'user_form.dart';
 import '../../../common/widgets/navigation_bar.dart';
 
-class ServiceListScreen extends StatefulWidget {
-  const ServiceListScreen({super.key});
+class UserListScreenOld extends StatefulWidget {
+  const UserListScreenOld({super.key});
 
   @override
-  State<ServiceListScreen> createState() => _ServiceListScreenState();
+  State<UserListScreenOld> createState() => _UserListScreenState();
 }
 
-class _ServiceListScreenState extends State<ServiceListScreen> {
-  late Future<List<CarWashService>> _futureList;
-  late Future<List<CarWashService>> _originalfutureList;
+class _UserListScreenState extends State<UserListScreenOld> {
+  late Future<List<UserModel>> _futureList;
+  late Future<List<UserModel>> _originalfutureList;
 
   bool _sortAscending = true;
   int _sortColumnIndex = 0;
@@ -34,8 +36,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 
   void _filterData(String filter) {
     _originalfutureList.then((result) {
-      List<CarWashService> filteredList = result.where((element) {
-        return element.name!.toUpperCase().contains(filter.toUpperCase());
+      List<UserModel> filteredList = result.where((element) {
+        return element.firstName!.toUpperCase().contains(filter.toUpperCase());
       }).toList();
 
       setState(() {
@@ -45,7 +47,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
   }
 
   void getData() {
-    _futureList = CarWashApiService().getAllCarWashService();
+    _futureList = UserApiService().getAllUsers();
     _originalfutureList = _futureList;
   }
 
@@ -60,13 +62,13 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CustomElevatedButton(
-                  text: "Add car service",
+                  text: "Add new client",
                   onPressed: () async {
                     await showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return ServiceCaptureScreen(
-                          carWashService: CarWashService(id: -1),
+                        return UserScreen(
+                          user: UserModel(id: -1),
                         );
                       },
                     );
@@ -84,7 +86,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                 ),
               ),
             ),
-            FutureBuilder<List<CarWashService>>(
+            FutureBuilder<List<UserModel>>(
               future: _futureList,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -94,7 +96,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(child: Text('No data available'));
                 } else {
-                  List<CarWashService>? list = snapshot.data;
+                  List<UserModel>? list = snapshot.data;
                   return LayoutBuilder(
                     builder: (context, constraints) {
                       return SingleChildScrollView(
@@ -114,21 +116,22 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                                   list!,
                                   context,
                                 ),
-                                rowsPerPage:
-                                    list.length < 10 ? list.length : 10,
+                                rowsPerPage: list.length < 10 ? list.length : 5,
                                 availableRowsPerPage: availableRowsPerPage2,
                                 onRowsPerPageChanged: (int? value) {},
                                 columns: [
+                                  const DataColumn(label: Text('User ID')),
+                                  const DataColumn(label: Text("Title")),
                                   DataColumn(
-                                    label: const Text('Name'),
+                                    label: const Text('First Name'),
                                     onSort: (columnIndex, ascending) {
                                       setState(() {
                                         _sortColumnIndex = columnIndex;
                                         _sortAscending = ascending;
 
                                         list.sort((a, b) {
-                                          final aValue = a.name;
-                                          final bValue = b.name;
+                                          final aValue = a.firstName;
+                                          final bValue = b.firstName;
 
                                           if (_sortAscending) {
                                             return Comparable.compare(
@@ -141,9 +144,33 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                                       });
                                     },
                                   ),
-                                  const DataColumn(label: Text("Description")),
-                                  const DataColumn(label: Text("Price")),
-                                  const DataColumn(label: Text("Status")),
+                                  DataColumn(
+                                    label: const Text('Surname'),
+                                    onSort: (columnIndex, ascending) {
+                                      setState(() {
+                                        _sortColumnIndex = columnIndex;
+                                        _sortAscending = ascending;
+
+                                        list.sort((a, b) {
+                                          final aValue = a.lastName;
+                                          final bValue = b.lastName;
+
+                                          if (_sortAscending) {
+                                            return Comparable.compare(
+                                                aValue!, bValue!);
+                                          } else {
+                                            return Comparable.compare(
+                                                bValue!, aValue!);
+                                          }
+                                        });
+                                      });
+                                    },
+                                  ),
+                                  const DataColumn(
+                                      label: Text("Mobile Number")),
+                                  const DataColumn(label: Text("Email")),
+                                  const DataColumn(
+                                      label: Text("Date Of Birth")),
                                   const DataColumn(label: Text('Action')),
                                 ],
                               ),
@@ -164,14 +191,14 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 }
 
 class MyDataTableSource extends DataTableSource {
-  final List<CarWashService> services;
+  final List<UserModel> list;
   final BuildContext context;
 
-  MyDataTableSource(this.services, this.context);
+  MyDataTableSource(this.list, this.context);
 
   @override
   DataRow getRow(int index) {
-    final service = services[index];
+    final item = list[index];
     final rowColor = MaterialStateColor.resolveWith((states) {
       if (states.contains(MaterialState.selected)) {
         return Colors.blue; // Change to the color you want when selected
@@ -182,41 +209,59 @@ class MyDataTableSource extends DataTableSource {
       color: MaterialStateProperty.all<Color>(rowColor),
       index: index,
       cells: [
-        DataCell(Text(
-          service.name ?? '',
-          style: const TextStyle(color: Colors.grey),
-        )),
-        DataCell(Text(
-          service.description ?? '',
-          style: const TextStyle(color: Colors.grey),
-        )),
-        DataCell(Text(
-          service.price?.toStringAsFixed(2) ?? '',
-          style: const TextStyle(color: Colors.grey),
-        )),
-        DataCell(Text(
-          service.active == true ? 'Active' : 'Inactive',
-          style: const TextStyle(color: Colors.grey),
-        )),
+        getDataCellWithWidth(item.userId ?? '', 180),
+        getDataCellWithWidth(item.title ?? '', 20),
+        getDataCellWithWidth(item.firstName ?? '', 100),
+        getDataCellWithWidth(item.lastName ?? '', 100),
+        getDataCellWithWidth(item.mobileNumber ?? '', 100),
+        getDataCellWithWidth(item.email ?? '', 250),
+        getDataCellWithWidth(item.dateOfBirth ?? '', 80),
         DataCell(
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: CustomElevatedButton(
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return ServiceCaptureScreen(
-                          carWashService: service,
-                        );
-                      },
-                    );
-                  },
-                  text: "Edit",
-                  textColor: Colors.white,
-                ),
+              CustomElevatedButton(
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return UserScreen(
+                        user: item,
+                      );
+                    },
+                  );
+                },
+                text: "Edit",
+                textColor: Colors.white,
+              ),
+              CustomElevatedButton(
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AppointmentScreen(
+                        appointment: CarWashAppointment(
+                            id: -1, client: item, clientId: item.id),
+                      );
+                    },
+                  );
+                },
+                text: "Book",
+                textColor: Colors.white,
+              ),
+              CustomElevatedButton(
+                onPressed: () async {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return RewardAllocationListScreen(
+                        userId: item.userId!,
+                      );
+                    },
+                  );
+                },
+                text: "View rewards",
+                textColor: Colors.white,
               ),
               CustomElevatedButton(
                 onPressed: () {
@@ -229,26 +274,24 @@ class MyDataTableSource extends DataTableSource {
                               style: TextStyle(color: Colors.black),
                             ),
                             content: const Text(
-                                'Are you sure you want to delete car wash service name?',
+                                'Are you sure you want to delete user?',
                                 style: TextStyle(color: Colors.black)),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
-                                  service.active = false;
-                                  CommonApiService().update(service.id,
-                                      "car_wash_services", service.toJson());
-                                  // Close the AlertDialog
-                                  services.remove(service);
+                                  item.active = false;
+                                  CommonApiService()
+                                      .update(item.id, "client", item.toJson());
+                                  list.remove(item);
                                   super.notifyListeners();
-
-                                  Navigator.of(context).pop(service);
+                                  Navigator.of(context).pop(item);
                                 },
                                 child: const Text('Yes',
                                     style: TextStyle(color: Colors.black)),
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop(service);
+                                  Navigator.of(context).pop(item);
                                 },
                                 child: const Text('No',
                                     style: TextStyle(color: Colors.black)),
@@ -271,7 +314,7 @@ class MyDataTableSource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => services.length;
+  int get rowCount => list.length;
 
   @override
   int get selectedRowCount => 0;

@@ -20,7 +20,7 @@ class RewardConfigScreen extends StatefulWidget {
   });
 
   @override
-  _RewardConfigScreenState createState() => _RewardConfigScreenState();
+  State<RewardConfigScreen> createState() => _RewardConfigScreenState();
 }
 
 class _RewardConfigScreenState extends State<RewardConfigScreen> {
@@ -224,7 +224,7 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                 label: "From date",
                 controller: _fromDateController,
                 firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(Duration(days: 30000)),
+                lastDate: DateTime.now().add(const Duration(days: 30000)),
                 selectedDate: DateTime.now(),
               ),
               CustomCalender(
@@ -232,7 +232,7 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                 label: "To date",
                 controller: _toDateController,
                 firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(Duration(days: 30000)),
+                lastDate: DateTime.now().add(const Duration(days: 30000)),
                 selectedDate: DateTime.now(),
               ),
               Row(

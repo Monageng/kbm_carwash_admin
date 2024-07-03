@@ -20,7 +20,7 @@ class UserScreen extends StatefulWidget {
   });
 
   @override
-  _UserScreenState createState() => _UserScreenState();
+  State<UserScreen> createState() => _UserScreenState();
 }
 
 class _UserScreenState extends State<UserScreen> {
@@ -34,8 +34,6 @@ class _UserScreenState extends State<UserScreen> {
   final TextEditingController _mobileNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
-
-  bool _active = false;
 
   @override
   void initState() {
@@ -147,7 +145,7 @@ class _UserScreenState extends State<UserScreen> {
                 width: 250,
                 label: "date of birth",
                 controller: _dateOfBirthController,
-                firstDate: DateTime.now().add(Duration(days: -29200)),
+                firstDate: DateTime.now().add(const Duration(days: -29200)),
                 selectedDate: DateTime.now(),
               ),
               Row(

@@ -20,9 +20,8 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
   late Future<List<RewardConfig>> _futureList;
   late Future<List<RewardConfig>> _originalfutureList;
 
-  bool _sortAscending = true;
-  int _sortColumnIndex = 0;
-  final String _filter = '';
+  final bool _sortAscending = true;
+  final int _sortColumnIndex = 0;
   final TextEditingController _filterController = TextEditingController();
 
   @override
@@ -35,19 +34,12 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
   }
 
   void _filterData(String filter) {
-    print("Filter text $filter ");
-
     _originalfutureList.then((result) {
       List<RewardConfig> filteredList = result.where((element) {
         return element.description!
             .toUpperCase()
             .contains(filter.toUpperCase());
       }).toList();
-
-      for (var element in filteredList) {
-        print("Filtered ${element.description}");
-      }
-
       setState(() {
         _futureList = Future.value(filteredList);
       });

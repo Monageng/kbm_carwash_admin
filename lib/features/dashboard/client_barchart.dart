@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class ClientBarChart extends StatelessWidget {
-  const ClientBarChart();
+  const ClientBarChart({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class ClientBarChart extends StatelessWidget {
       );
 
   Widget getTitles(double value, TitleMeta meta) {
-    final style = TextStyle(
+    const style = TextStyle(
       color: Colors.blue,
       fontWeight: FontWeight.bold,
       fontSize: 14,
@@ -106,7 +106,7 @@ class ClientBarChart extends StatelessWidget {
         show: false,
       );
 
-  LinearGradient get _barsGradient => LinearGradient(
+  LinearGradient get _barsGradient => const LinearGradient(
         colors: [
           Colors.blue,
           Colors.cyan,

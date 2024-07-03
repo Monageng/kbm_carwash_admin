@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/features/dashboard/appointment_dash.dart';
+import 'package:kbm_carwash_admin/features/dashboard/booking_dashboard.dart';
 
 import '../../features/booking/screens/appointment_list.dart';
+import '../../features/dashboard/pie_chart.dart';
+import '../../features/dashboard/restaurant_bookings_pie.dart';
 import '../../features/rewards/screens/reward_config_list_screen.dart';
 import '../../features/services/screens/car_wash_service_list_screen.dart';
 import '../../features/users/screens/user_list_screen.dart';
@@ -31,6 +34,9 @@ AppBar getTopNavigation(BuildContext context) {
 
             return Row(
               children: [
+                _buildTextButton(context, "Dashboard 1", BookingGraph()),
+                _buildTextButton(context, "Pie", BookingPieChart()),
+                _buildTextButton(context, "Pie2", RestaurantBookingPieChart()),
                 _buildTextButton(context, "Dashboard", const DashboardScreen()),
                 _buildTextButton(context, "Clients", const UserListScreen()),
                 _buildTextButton(

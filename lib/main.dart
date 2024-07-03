@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/features/booking/screens/appointment_list.dart';
 
-import 'features/dashboard/client_barchart.dart';
 import 'theme/custom_theme.dart';
 
 void main() {

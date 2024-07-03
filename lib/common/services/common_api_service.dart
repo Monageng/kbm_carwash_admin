@@ -16,8 +16,8 @@ class CommonApiService {
       String encodedRequest = jsonEncode(jsonRequest);
       var response = await http1.post(url,
           body: encodedRequest, headers: getHttpHeaders());
-      logger.d("url : ${url}");
-      logger.d("encodedRequest : ${encodedRequest}");
+      logger.d("url : $url");
+      logger.d("encodedRequest : $encodedRequest");
       logger.d("response.statusCode : ${response.statusCode}");
       if (response.statusCode == 201) {
         responseMessage = "Record saved successfully";
@@ -41,8 +41,8 @@ class CommonApiService {
     try {
       var url = Uri.https(supabaseUrlv2, "/rest/v1/$entity", {"id": "eq.$id"});
 
-      logger.d("Update url : ${url}");
-      logger.d("Update data : ${updatedData}");
+      logger.d("Update url : $url");
+      logger.d("Update data : $updatedData");
       final response = await http1.patch(
         url,
         headers: getHttpHeaders(),
@@ -59,7 +59,6 @@ class CommonApiService {
             "Error occured ${errorResponse.details},  ${errorResponse.message} ";
       }
     } catch (error) {
-      print('Error: $error');
       responseMessage = error.toString();
     }
     return Future.value(responseMessage);
@@ -81,9 +80,8 @@ class CommonApiService {
           key = primaryKeyList[0].uuid + 1;
         }
       }
-      print("Next Available key is $key");
     } catch (e) {
-      throw e;
+      rethrow;
     }
     return Future.value(key);
   }

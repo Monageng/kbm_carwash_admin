@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 final customTheme = ThemeData(
   useMaterial3: true,
-  primaryColor: Color.fromARGB(255, 61, 118, 242),
+  primaryColor: const Color.fromARGB(255, 61, 118, 242),
   colorScheme: const ColorScheme(
     brightness: Brightness.light,
     primary: Color.fromARGB(255, 61, 118, 242),

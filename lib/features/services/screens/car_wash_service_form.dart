@@ -19,7 +19,7 @@ class ServiceCaptureScreen extends StatefulWidget {
   });
 
   @override
-  _ServiceCaptureScreenState createState() => _ServiceCaptureScreenState();
+  State<ServiceCaptureScreen> createState() => _ServiceCaptureScreenState();
 }
 
 class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
@@ -31,10 +31,6 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
   // final TextEditingController _codeController = TextEditingController();
   final TextEditingController _fromDateController = TextEditingController();
   final TextEditingController _toDateController = TextEditingController();
-
-  bool _active = false;
-  DateTime? _fromDate;
-  DateTime? _toDate;
 
   @override
   void initState() {
@@ -50,7 +46,6 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
       // _codeController.text = carWashService.code!;
       _fromDateController.text = formatDateTime(carWashService.fromDate!);
       _toDateController.text = formatDateTime(carWashService.toDate!);
-      _active = true;
     }
   }
 
@@ -164,6 +159,8 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
                   } catch (e) {
                     return 'Invalid price format';
                   }
+
+                  return null;
                 },
               ),
               CustomCalender(

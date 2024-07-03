@@ -35,14 +35,14 @@ class ContactNumberTextField extends StatelessWidget {
         style: const TextStyle(color: Colors.black, fontSize: 12),
         controller: controller,
         decoration: InputDecoration(
-          labelStyle: TextStyle(color: Colors.grey),
+          labelStyle: const TextStyle(color: Colors.grey),
           labelText: label, // Change background color
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey), // Change border color
           ),
 
           hintText: label,
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: Colors.black,
           ),
         ),

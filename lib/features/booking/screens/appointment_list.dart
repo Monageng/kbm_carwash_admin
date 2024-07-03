@@ -20,9 +20,8 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
   late Future<List<CarWashAppointment>> _futureList;
   late Future<List<CarWashAppointment>> _originalfutureList;
 
-  bool _sortAscending = true;
-  int _sortColumnIndex = 0;
-  final String _filter = '';
+  final bool _sortAscending = true;
+  final int _sortColumnIndex = 0;
   final TextEditingController _filterController = TextEditingController();
 
   @override
@@ -55,8 +54,6 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final MyDataTableSource _data = MyDataTableSource(appointments);
-
     return Scaffold(
       appBar: getTopNavigation(context),
       body: SingleChildScrollView(

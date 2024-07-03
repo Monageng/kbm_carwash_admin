@@ -20,9 +20,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // CommonBusinessService().fetchProvinceLookup();
       // CommonBusinessService().fetchCityLookup();
       // MealBusinessService().fetchCategories();
-    } catch (e) {
-      print(e);
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   void loadData() async {

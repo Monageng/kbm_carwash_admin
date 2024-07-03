@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class UserCreationGraphScreen extends StatelessWidget {
-  const UserCreationGraphScreen({required this.isShowingMainData});
+  const UserCreationGraphScreen({super.key, required this.isShowingMainData});
 
   final bool isShowingMainData;
 
@@ -166,11 +166,11 @@ class UserCreationGraphScreen extends StatelessWidget {
 
   FlBorderData get borderData => FlBorderData(
         show: true,
-        border: Border(
+        border: const Border(
           bottom: BorderSide(color: Colors.amber, width: 4),
-          left: const BorderSide(color: Colors.transparent),
-          right: const BorderSide(color: Colors.transparent),
-          top: const BorderSide(color: Colors.transparent),
+          left: BorderSide(color: Colors.transparent),
+          right: BorderSide(color: Colors.transparent),
+          top: BorderSide(color: Colors.transparent),
         ),
       );
 

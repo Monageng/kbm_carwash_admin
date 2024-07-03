@@ -11,18 +11,14 @@ class BookAppointmentApiService {
     try {
       var url = Uri.https(supabaseUrlv2, "rest/v1/appointment",
           {"select": "*", "active": "eq.true", "client_id": "eq.$clientId"});
-      print("Url2 ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
-      print("response ::: ${response.body}");
       if (response.statusCode == 200) {
         List<CarWashAppointment> list = (jsonDecode(response.body) as List)
             .map((json) => CarWashAppointment.fromJson(json))
             .toList();
         return Future.value(list);
       }
-    } catch (e) {
-      print("object ${e.toString()}");
-    }
+    } catch (e) {}
     return Future.value([]);
   }
 
@@ -37,9 +33,7 @@ class BookAppointmentApiService {
             .toList();
         return Future.value(list);
       }
-    } catch (e) {
-      print("object ${e.toString()}");
-    }
+    } catch (e) {}
     return Future.value([]);
   }
 }

@@ -23,7 +23,6 @@ class _UserListScreenState extends State<UserListScreen> {
 
   bool _sortAscending = true;
   int _sortColumnIndex = 0;
-  final String _filter = '';
   final TextEditingController _filterController = TextEditingController();
 
   @override
@@ -36,16 +35,10 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 
   void _filterData(String filter) {
-    print("Filter text $filter ");
-
     _originalfutureList.then((result) {
       List<UserModel> filteredList = result.where((element) {
         return element.firstName!.toUpperCase().contains(filter.toUpperCase());
       }).toList();
-
-      for (var element in filteredList) {
-        print("Filtered ${element.firstName}");
-      }
 
       setState(() {
         _futureList = Future.value(filteredList);

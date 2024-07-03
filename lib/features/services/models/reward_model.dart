@@ -26,25 +26,18 @@ class Reward {
 
   factory Reward.fromJson(Map<String, dynamic> json) {
     return Reward(
-      title: json['title'],
-      clientId: json['client_id'],
-      description: json['description'],
-      rewardConfig: json['reward_config'] != null
-          ? RewardConfig.fromJson(json['reward_config'])
-          : null,
-      date: json['transaction_date'] != null
-          ? DateTime.parse(json['transaction_date'])
-          : null,
-      transactionAmount: json['transaction_amount'] != null
-          ? json['transaction_amount'].toDouble()
-          : null,
-      rewardAmount: json['reward_amount'] != null
-          ? json['reward_amount'].toDouble()
-          : null,
-      discountedAmount: json['discounted_amount'] != null
-          ? json['discounted_amount'].toDouble()
-          : null,
-    );
+        title: json['title'],
+        clientId: json['client_id'],
+        description: json['description'],
+        rewardConfig: json['reward_config'] != null
+            ? RewardConfig.fromJson(json['reward_config'])
+            : null,
+        date: json['transaction_date'] != null
+            ? DateTime.parse(json['transaction_date'])
+            : null,
+        transactionAmount: json['transaction_amount'] as double,
+        rewardAmount: json['reward_amount'] as double,
+        discountedAmount: json['discounted_amount'] as double);
   }
 
   Map<String, dynamic> toJson() {
