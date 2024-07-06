@@ -34,9 +34,6 @@ AppBar getTopNavigation(BuildContext context) {
 
             return Row(
               children: [
-                _buildTextButton(context, "Dashboard 1", BookingGraph()),
-                _buildTextButton(context, "Pie", BookingPieChart()),
-                _buildTextButton(context, "Pie2", RestaurantBookingPieChart()),
                 _buildTextButton(context, "Dashboard", const DashboardScreen()),
                 _buildTextButton(context, "Clients", const UserListScreen()),
                 _buildTextButton(
