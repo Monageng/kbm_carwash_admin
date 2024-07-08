@@ -125,15 +125,13 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
       widget.rewardConfig.frequencyCount =
           int.tryParse(_frequencyCountController.text);
       widget.rewardConfig.frequencyType = _frequencyTypeController.text;
-      widget.rewardConfig.fromDate =
-          DateTime.now(); //DateTime.parse(_fromDateController.text);
+      widget.rewardConfig.fromDate = DateTime.parse(_fromDateController.text);
       widget.rewardConfig.rewardCode = _rewardCodeController.text;
       widget.rewardConfig.rewardType = _rewardTypeController.text;
       widget.rewardConfig.rewardValue =
           double.tryParse(_rewardValueController.text);
       widget.rewardConfig.title = _titleController.text;
-      widget.rewardConfig.toDate =
-          DateTime.now(); //DateTime.parse(_toDateController.text);
+      widget.rewardConfig.toDate = DateTime.parse(_toDateController.text);
 
       String responseMessage;
       if (key < 1) {

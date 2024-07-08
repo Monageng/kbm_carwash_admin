@@ -113,6 +113,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         widget.appointment.id = key;
         responseMessage = await CommonApiService()
             .update(key, "appointment", widget.appointment.toJson());
+        if (responseMessage.contains("successfully")) {
+          if (widget.appointment.status!.contains("Completed")) {}
+        }
       }
       logger.d("responseMessage $responseMessage");
 
