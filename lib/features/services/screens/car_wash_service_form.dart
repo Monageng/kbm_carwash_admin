@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
-import 'package:kbm_carwash_admin/common/functions/logger_utils.dart';
 
 import '../../../common/functions/common_functions.dart';
+import '../../../common/functions/date_utils.dart';
+import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_calendar.dart';
@@ -74,15 +74,15 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
 
       String responseMessage;
       if (key < 1) {
-        key = await CommonApiService().getLatestID("car_wash_services");
+        key = await CommonApiService().getLatestID("services");
         widget.carWashService.id = key;
         widget.carWashService.active = true;
         responseMessage = await CommonApiService()
-            .save(widget.carWashService.toJson(), "car_wash_services");
+            .save(widget.carWashService.toJson(), "services");
       } else {
         widget.carWashService.id = key;
         responseMessage = await CommonApiService()
-            .update(key, "car_wash_services", widget.carWashService.toJson());
+            .update(key, "services", widget.carWashService.toJson());
       }
       logger.d("responseMessage $responseMessage");
 

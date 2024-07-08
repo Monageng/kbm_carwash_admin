@@ -140,7 +140,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   getAppointmentDate() async {
-    List<CarWashAppointment>? appointments =
+    List<Appointment>? appointments =
         await BookAppointmentApiService().getAllActiveAppointments();
     Map<String, int> groupedData = {};
 
@@ -220,7 +220,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void getBookingMonthData(
-      List<CarWashAppointment> appointments, Map<String, int> groupedData) {
+      List<Appointment> appointments, Map<String, int> groupedData) {
     for (var appointment in appointments) {
       String month = DateFormat('yyyy-MM').format(appointment.date!);
       if (groupedData.containsKey(month)) {
@@ -279,7 +279,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final bars = <BarChartRodData>[];
       bookingCounts.forEach((restaurant, monthCounts) {
         final count = monthCounts[i] ?? 0;
-        print("restaurant $restaurant count is $i count is $count");
 
         bars.add(
           BarChartRodData(
@@ -333,7 +332,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               const SizedBox(width: 4),
               Text(
                 entry.key,
-                style: TextStyle(color: Colors.red),
+                style: const TextStyle(color: Colors.red),
               ),
             ],
           );
@@ -365,8 +364,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   _touchedIndex = -1;
                   return;
                 }
-                print(
-                    "object ###${barTouchResponse.spot!.touchedBarGroupIndex}");
                 _touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
               });
             },
@@ -378,7 +375,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 String month = bottomTitles[group.x.toInt()];
                 return BarTooltipItem(
                   '${rod.toY}',
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  const TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 );
               },
             ),
@@ -431,57 +429,50 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
 
-    var localPieChart = Container(
-      //color: Colors.yellow,
-      // width: 300, // Set the desired width
-      width: MediaQuery.of(context).size.width * 0.25,
-      height: 150, // Set the desired height
-      padding: const EdgeInsets.all(16.0),
-      child: PieChart(
-        PieChartData(
-          sections: pieChartData.asMap().entries.map((entry) {
-            final index = entry.key;
-            final data = entry.value;
-            final isTouched = index == _touchedIndex;
-            final double fontSize = isTouched ? 18 : 16;
-            final double radius = isTouched ? 200 : 180;
-            // final double fontSize =
-            //     isTouched ? screenWidth * 0.05 : screenWidth * 0.04;
-            // final double radius =
-            //     isTouched ? screenWidth * 0.14 : screenWidth * 0.12;
+    var localPieChart = PieChart(
+      PieChartData(
+        sections: pieChartData.asMap().entries.map((entry) {
+          final index = entry.key;
+          final data = entry.value;
+          final isTouched = index == _touchedIndex;
+          final double fontSize = isTouched ? 18 : 16;
+          final double radius = isTouched ? 200 : 180;
+          // final double fontSize =
+          //     isTouched ? screenWidth * 0.05 : screenWidth * 0.04;
+          // final double radius =
+          //     isTouched ? screenWidth * 0.14 : screenWidth * 0.12;
 
-            return PieChartSectionData(
-              color: data.color,
-              value: data.value,
-              title: "${data.title} - ${data.value}",
-              radius: radius,
-              titleStyle: TextStyle(
-                fontSize: fontSize,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            );
-          }).toList(),
-          sectionsSpace: 5,
-          centerSpaceRadius: 10,
-          centerSpaceColor: Colors.blue,
-          borderData: FlBorderData(
-            show: false,
-          ),
-          pieTouchData: PieTouchData(
-            touchCallback: (FlTouchEvent event, pieTouchResponse) {
-              setState(() {
-                if (!event.isInterestedForInteractions ||
-                    pieTouchResponse == null ||
-                    pieTouchResponse.touchedSection == null) {
-                  _touchedIndex = -1;
-                  return;
-                }
-                _touchedIndex =
-                    pieTouchResponse.touchedSection!.touchedSectionIndex;
-              });
-            },
-          ),
+          return PieChartSectionData(
+            color: data.color,
+            value: data.value,
+            title: "${data.title} - ${data.value}",
+            radius: radius,
+            titleStyle: TextStyle(
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          );
+        }).toList(),
+        sectionsSpace: 5,
+        centerSpaceRadius: 10,
+        centerSpaceColor: Colors.blue,
+        borderData: FlBorderData(
+          show: false,
+        ),
+        pieTouchData: PieTouchData(
+          touchCallback: (FlTouchEvent event, pieTouchResponse) {
+            setState(() {
+              if (!event.isInterestedForInteractions ||
+                  pieTouchResponse == null ||
+                  pieTouchResponse.touchedSection == null) {
+                _touchedIndex = -1;
+                return;
+              }
+              _touchedIndex =
+                  pieTouchResponse.touchedSection!.touchedSectionIndex;
+            });
+          },
         ),
       ),
     );
@@ -499,6 +490,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blue.withOpacity(0.2),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+              ),
               padding: const EdgeInsets.all(16),
               //width: MediaQuery.of(context).size.width * 0.8, //double.infinity,
               height: 300,
@@ -524,8 +527,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           _touchedIndex = -1;
                           return;
                         }
-                        print(
-                            "object ###${barTouchResponse.spot!.touchedBarGroupIndex}");
                         _touchedIndex =
                             barTouchResponse.spot!.touchedBarGroupIndex;
                       });
@@ -538,7 +539,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         String month = bottomTitles[group.x.toInt()];
                         return BarTooltipItem(
                           '${rod.toY}',
-                          TextStyle(
+                          const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         );
                       },
@@ -614,7 +615,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
-                  gridData: FlGridData(
+                  gridData: const FlGridData(
                     show: true,
                     drawHorizontalLine: true,
                     drawVerticalLine: true,
@@ -639,56 +640,220 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               )),
         ]);
+
+    // return Scaffold(
+    //   appBar: CustomAppBar(),
+    //   body: SingleChildScrollView(
+    //     child: Padding(
+    //       // color: Colors.red,
+    //       padding: const EdgeInsets.all(16.0),
+    //       child: LayoutBuilder(
+    //         builder: (context, constraints) {
+    //           double chartWidth = constraints.maxWidth;
+    //           double chartHeight = constraints.maxHeight;
+    //           return Column(
+    //             children: [
+    //               const SizedBox(height: 20),
+    //               if (appointments!.isNotEmpty) appointmentStats,
+    //               const SizedBox(height: 20),
+    //               if (appointments!.isNotEmpty)
+    //                 Row(
+    //                   children: [
+    //                     Container(
+    //                       decoration: BoxDecoration(
+    //                         color: Colors.white,
+    //                         borderRadius: BorderRadius.circular(8),
+    //                         boxShadow: [
+    //                           BoxShadow(
+    //                             color: Colors.orange.withOpacity(0.2),
+    //                             spreadRadius: 3,
+    //                             blurRadius: 5,
+    //                             offset: const Offset(
+    //                                 0, 3), // changes position of shadow
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       width: chartWidth * 0.4,
+    //                       height: chartWidth * 0.3,
+    //                       child: Column(
+    //                         children: [
+    //                           Text(
+    //                             'Total Bookings Per Restaurant',
+    //                             style: TextStyle(
+    //                               color: Colors.orange,
+    //                               fontSize: 16,
+    //                               fontWeight: FontWeight.bold,
+    //                             ),
+    //                           ),
+    //                           SizedBox(height: 20),
+    //                           Expanded(child: localPieChart),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     Container(
+    //                       decoration: BoxDecoration(
+    //                         color: Colors.white,
+    //                         borderRadius: BorderRadius.circular(8),
+    //                         boxShadow: [
+    //                           BoxShadow(
+    //                             color: Colors.orange.withOpacity(0.2),
+    //                             spreadRadius: 3,
+    //                             blurRadius: 5,
+    //                             offset: const Offset(
+    //                                 0, 3), // changes position of shadow
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       width: chartWidth * 0.6,
+    //                       height: chartWidth * 0.3,
+    //                       child: Column(
+    //                         children: [
+    //                           Text(
+    //                             'Monthly Bookings Per Restaurant',
+    //                             style: TextStyle(
+    //                               color: Colors.orange,
+    //                               fontSize: 16,
+    //                               fontWeight: FontWeight.bold,
+    //                             ),
+    //                           ),
+    //                           SizedBox(height: 20),
+    //                           Expanded(child: monthlyBarChart),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //             ],
+    //           );
+    //         },
+    //       ),
+
+    //     ),
+    //   ),
+    // );
+
     return Scaffold(
-        appBar: getTopNavigation(context),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Container(
-            // color: Colors.red,
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                appointmentStats,
-                const SizedBox(height: 32.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        const Text(
-                          ' Car wash service insights',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+      appBar: getTopNavigation(context),
+      body: SingleChildScrollView(
+        child: Padding(
+          // color: Colors.red,
+          padding: const EdgeInsets.all(16.0),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              double chartWidth = constraints.maxWidth;
+              double chartHeight = constraints.maxHeight;
+              return Column(
+                children: [
+                  const SizedBox(height: 20),
+                  appointmentStats,
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blue.withOpacity(0.2),
+                              spreadRadius: 3,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 40.0),
-                        localPieChart,
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Text(
-                          'Booking Chart',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blue,
-                          ),
+                        width: chartWidth * 0.4,
+                        height: chartWidth * 0.3,
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Total Bookings Per Merchant',
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Expanded(child: localPieChart),
+                          ],
                         ),
-                        const SizedBox(height: 40.0),
-                        monthlyBarChart,
-                        const SizedBox(height: 40.0),
-                        _buildLegend(restaurantColors),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blue.withOpacity(0.2),
+                              spreadRadius: 3,
+                              blurRadius: 5,
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        width: chartWidth * 0.6,
+                        height: chartWidth * 0.3,
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Monthly Bookings Per Merchant',
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Expanded(child: monthlyBarChart),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
           ),
-        ));
+          // child: Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     if (appointments!.isNotEmpty) appointmentStats,
+          //     const SizedBox(height: 32.0),
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         Column(
+          //           children: [
+          //             const SizedBox(height: 40.0),
+          //             if (appointments!.isNotEmpty) localPieChart,
+          //           ],
+          //         ),
+          //         // Column(
+          //         //   children: [
+          //         //     // const Text(
+          //         //     //   'Booking Chart',
+          //         //     //   style: TextStyle(
+          //         //     //     fontSize: 16,
+          //         //     //     fontWeight: FontWeight.bold,
+          //         //     //     color: Colors.orange,
+          //         //     //   ),
+          //         //     // ),
+          //         //     // const SizedBox(height: 40.0),
+          //         //     // if (appointments!.isNotEmpty) monthlyBarChart,
+          //         //     // const SizedBox(height: 40.0),
+          //         //     // if (appointments!.isNotEmpty)
+          //         //     //   _buildLegend(restaurantColors),
+          //         //],
+          //         // ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
+        ),
+      ),
+    );
   }
 }

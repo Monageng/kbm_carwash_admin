@@ -1,5 +1,4 @@
-import 'package:kbm_carwash_admin/features/rewards/models/reward_config.dart';
-
+import '../../rewards/models/reward_config.dart';
 import '../../users/models/user_model.dart';
 
 class Reward {

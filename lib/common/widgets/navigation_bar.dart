@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/dashboard/appointment_dash.dart';
-import 'package:kbm_carwash_admin/features/dashboard/booking_dashboard.dart';
 
-import '../../features/booking/screens/appointment_list.dart';
-import '../../features/dashboard/pie_chart.dart';
-import '../../features/dashboard/restaurant_bookings_pie.dart';
-import '../../features/rewards/screens/reward_config_list_screen.dart';
-import '../../features/services/screens/car_wash_service_list_screen.dart';
+import '../../features/dashboard/appointment_dash.dart';
+import '../../features/franchise/models/franchise_model.dart';
+import '../../features/franchise/screens/franchise_list_screen.dart';
 import '../../features/users/screens/user_list_screen.dart';
 
 AppBar getTopNavigation(BuildContext context) {
@@ -28,41 +24,30 @@ AppBar getTopNavigation(BuildContext context) {
     actions: [
       LayoutBuilder(
         builder: (context, constraints) {
-          // Check the width of the screen
           if (constraints.maxWidth > 800) {
-            // Wide screen: show all buttons
-
             return Row(
               children: [
+                _buildTextButton(
+                    context, "Franchise List", const FranchiseListScreen()),
                 _buildTextButton(context, "Dashboard", const DashboardScreen()),
-                _buildTextButton(context, "Clients", const UserListScreen()),
                 _buildTextButton(
-                    context, "Appointments", const AppointmentListScreen()),
-                _buildTextButton(
-                    context, "Car wash services", const ServiceListScreen()),
-                _buildTextButton(context, "Reward Configurations",
-                    const RewardConfigListScreen()),
+                    context,
+                    "Clients",
+                    UserListScreen(
+                      franchise: Franchise(id: -1, name: ""),
+                    )),
               ],
             );
-          } else if (constraints.maxWidth > 600) {
+          } else {
             // Medium screen: show fewer buttons
             return Row(
               children: [
                 _buildTextButton(
-                    context, "Appointments", const AppointmentListScreen()),
-                _buildTextButton(
-                    context, "Car wash services", const ServiceListScreen()),
-                _buildTextButton(context, "Users", const UserListScreen()),
-              ],
-            );
-          } else {
-            // Small screen: show minimal buttons
-            return Row(
-              children: [
-                _buildTextButton(
-                    context, "Appointments", const AppointmentListScreen()),
-                _buildTextButton(
-                    context, "Car wash services", const ServiceListScreen()),
+                    context,
+                    "Users",
+                    UserListScreen(
+                      franchise: Franchise(id: -1, name: ""),
+                    )),
               ],
             );
           }

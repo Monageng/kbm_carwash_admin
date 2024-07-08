@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/services/common_api_service.dart';
-import 'package:kbm_carwash_admin/features/booking/models/appointment_model.dart';
-import 'package:kbm_carwash_admin/features/rewards/screens/reward_allocation_list_screen.dart';
 import '../../../common/functions/common_functions.dart';
+import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
+import '../../booking/models/appointment_model.dart';
 import '../../booking/screens/appointment_form.dart';
+import '../../franchise/models/franchise_model.dart';
+import '../../rewards/screens/reward_allocation_list_screen.dart';
 import '../models/user_model.dart';
 import '../services/car_wash_api_service.dart';
 import 'user_form.dart';
 import '../../../common/widgets/navigation_bar.dart';
 
 class UserListScreen extends StatefulWidget {
-  const UserListScreen({super.key});
+  Franchise franchise;
+  UserListScreen({super.key, required this.franchise});
 
   @override
   State<UserListScreen> createState() => _UserListScreenState();
@@ -116,6 +118,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                       source: MyDataTableSource(
                                         list!,
                                         context,
+                                        widget.franchise,
                                       ),
                                       rowsPerPage:
                                           list.length < 10 ? list.length : 5,
@@ -201,8 +204,9 @@ class _UserListScreenState extends State<UserListScreen> {
 class MyDataTableSource extends DataTableSource {
   final List<UserModel> list;
   final BuildContext context;
+  Franchise franchise;
 
-  MyDataTableSource(this.list, this.context);
+  MyDataTableSource(this.list, this.context, this.franchise);
 
   @override
   DataRow getRow(int index) {
@@ -242,21 +246,25 @@ class MyDataTableSource extends DataTableSource {
                 text: "Edit",
                 textColor: Colors.white,
               ),
-              CustomElevatedButton(
-                onPressed: () async {
-                  await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AppointmentScreen(
-                        appointment: CarWashAppointment(
-                            id: -1, client: item, clientId: item.id),
-                      );
-                    },
-                  );
-                },
-                text: "Book",
-                textColor: Colors.white,
-              ),
+              if (franchise.id > 0)
+                CustomElevatedButton(
+                  onPressed: () async {
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AppointmentScreen(
+                          appointment: Appointment(
+                              id: -1,
+                              client: item,
+                              clientId: item.id,
+                              franchiseId: franchise.id),
+                        );
+                      },
+                    );
+                  },
+                  text: "Book",
+                  textColor: Colors.white,
+                ),
               CustomElevatedButton(
                 onPressed: () async {
                   await showDialog(

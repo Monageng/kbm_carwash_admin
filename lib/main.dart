@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/booking/screens/appointment_list.dart';
 
+import 'common/services/common_api_service.dart';
+import 'features/franchise/screens/franchise_list_screen.dart';
+import 'session/app_session.dart';
 import 'theme/custom_theme.dart';
 
 void main() {
@@ -35,12 +37,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    try {
+      AppSessionModel().setProvince(CommonApiService().fetchProvince());
+      AppSessionModel().setCity(CommonApiService().fetchCity());
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: AppointmentListScreen(),
+      body: FranchiseListScreen(),
     );
   }
 }

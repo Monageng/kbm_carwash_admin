@@ -1,7 +1,8 @@
 import 'package:kbm_carwash_admin/features/users/models/user_model.dart';
 
-class CarWashAppointment {
+class Appointment {
   int id;
+  int? franchiseId;
   bool? active;
   String? serviceName;
   DateTime? createAt;
@@ -11,7 +12,7 @@ class CarWashAppointment {
   String? time;
   UserModel? client;
 
-  CarWashAppointment({
+  Appointment({
     this.serviceName,
     this.time,
     this.date,
@@ -21,12 +22,14 @@ class CarWashAppointment {
     this.createAt,
     required this.id,
     this.client,
+    this.franchiseId,
   });
 
 // Method to deserialize JSON into a CarWashAppointment object
-  factory CarWashAppointment.fromJson(Map<String, dynamic> json) {
-    return CarWashAppointment(
+  factory Appointment.fromJson(Map<String, dynamic> json) {
+    return Appointment(
       id: json['id'],
+      franchiseId: json["franchise_id"],
       time: json['time'],
       active: json['active'],
       serviceName: json['service_name'],
@@ -53,6 +56,7 @@ class CarWashAppointment {
       'date': date?.toIso8601String(), // Serialize DateTime to ISO 8601 format
       'status': status,
       'client_id': clientId,
+      "franchise_id": franchiseId,
       //d'client': client!.toJson(),
     };
   }

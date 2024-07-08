@@ -5,6 +5,8 @@ import 'package:kbm_carwash_admin/common/functions/logger_utils.dart';
 
 import '../enviroment/env_variable.dart';
 import '../functions/http_utils.dart';
+import '../model/city_model.dart';
+import '../model/province.dart';
 import 'api_error_response.dart';
 import 'primary_ket_response.dart';
 
@@ -69,7 +71,9 @@ class CommonApiService {
     try {
       Uri url = Uri.https(supabaseUrlv2, "/rest/v1/$entity",
           {"select": "id", "order": "id.desc", "limit": "1"});
+      logger.d("url $url");
       var response = await http1.get(url, headers: {"apikey": supabaseKeyv2});
+      logger.d("getLatestID response.body ${response.body} ");
       if (response.statusCode == 200) {
         List<PrimaryKeyResponse> primaryKeyList =
             (jsonDecode(response.body) as List)
@@ -84,5 +88,75 @@ class CommonApiService {
       rethrow;
     }
     return Future.value(key);
+  }
+
+  Future<List<Province>> fetchProvince() async {
+    var url =
+        Uri.https(supabaseUrlv2, "/rest/v1/provinces", {"order": "name.asc"});
+
+    print("URL $url");
+    var response = await http1.get(url, headers: getHttpHeaders());
+    print("response ${response.statusCode}");
+    print("fetchProvince response ${response.body}");
+    if (response.statusCode == 200) {
+      List<Province> data = (jsonDecode(response.body) as List)
+          .map((json) => Province.fromJson(json))
+          .toList();
+
+      return data;
+    } else {
+      throw Exception('Failed to load provinces');
+    }
+  }
+
+  Future<List<City>> fetchCity() async {
+    var url =
+        Uri.https(supabaseUrlv2, "/rest/v1/cities", {"order": "name.asc"});
+    var response = await http1.get(url, headers: getHttpHeaders());
+    print("URL $url");
+    print("fetchCity response ${response.body}");
+    if (response.statusCode == 200) {
+      List<City> data = (jsonDecode(response.body) as List)
+          .map((json) => City.fromJson(json))
+          .toList();
+
+      return data;
+    } else {
+      throw Exception('Failed to load cities');
+    }
+  }
+
+  Future<List<City>> fetchCityByProvince(String province) async {
+    var url = Uri.https(supabaseUrlv2, "/rest/v1/cities", {
+      "select": "*,province:province_id(*)",
+      "province.name": "eq.$province"
+    });
+
+    var response = await http1.get(url, headers: getHttpHeaders());
+
+    //https://jazesnfbevoyuzaizgko.supabase.co/rest/v1/cities?province.name=eq.Gauteng&select=*,province:province_uuid(*)&isActive=eq.true
+    print("fetchCityByProvince url  ${url} ");
+    if (response.statusCode == 200) {
+      print("fetchCityByProvince ${jsonDecode(response.body)} ");
+      List<City> data = (jsonDecode(response.body) as List)
+          .map((json) => City.fromJson(json))
+          .toList();
+
+      List<City> filteredList =
+          data.where((element) => element.province != null).toList();
+
+      for (var element in filteredList) {
+        if (element.province != null) {
+          print("PROVICE is not null for ${element.name} ");
+        } else {
+          print("Nulll  ${element.name} ");
+        }
+      }
+
+      print("filteredList ${filteredList} ");
+      return filteredList;
+    } else {
+      throw Exception('Failed to load cities');
+    }
   }
 }

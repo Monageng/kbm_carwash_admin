@@ -1,12 +1,13 @@
+import '../common/model/city_model.dart';
+import '../common/model/province.dart';
 import '../features/booking/models/appointment_model.dart';
 
 class AppSessionModel {
   String? _token;
   DateTime? _expiryDate;
-  // Future<List<CarWashService>>? _carwashServiceList;
-  Future<List<CarWashAppointment>>? _appointmentList;
-  // Future<List<Reward>>? _rewardsAllocation;
-  // Future<List<RewardRunningTotal>>? _rewardRunningTotal;
+  late Future<List<Province>> _provinceList;
+  late Future<List<City>> _cityList;
+  Future<List<Appointment>>? _appointmentList;
 
   static final AppSessionModel _instance = AppSessionModel._internal();
 
@@ -16,36 +17,15 @@ class AppSessionModel {
 
   AppSessionModel._internal();
 
-  // UserModel? get loggedOnUser => _loggedOnUser;
   String? get token => _token;
   DateTime? get expiryDate => _expiryDate;
-  // Future<List<CarWashService>>? get carwashServiceList => _carwashServiceList;
-  Future<List<CarWashAppointment>>? get appointmentList => _appointmentList;
-  // Future<List<Reward>>? get rewardsAllocation => _rewardsAllocation;
+  Future<List<Appointment>>? get appointmentList => _appointmentList;
+  Future<List<Province>> get provinceList => _provinceList;
+  Future<List<City>> get cityList => _cityList;
 
-  // Future<List<RewardRunningTotal>>? get rewardRunningTotal =>
-  //     _rewardRunningTotal;
-
-  // void setRewardRunningTotal(
-  //     Future<List<RewardRunningTotal>>? rewardRunningTotal) {
-  //   _rewardRunningTotal = rewardRunningTotal;
-  // }
-
-  // void setRewardAllocation(Future<List<Reward>>? rewardsAllocation) {
-  //   _rewardsAllocation = rewardsAllocation;
-  // }
-
-  // void setCarwashServiceList(Future<List<CarWashService>>? carwashServiceList) {
-  //   _carwashServiceList = carwashServiceList;
-  // }
-
-  void setAppointmentList(Future<List<CarWashAppointment>>? appointmentList) {
+  void setAppointmentList(Future<List<Appointment>>? appointmentList) {
     _appointmentList = appointmentList;
   }
-
-  // void setLoggedInUser(UserModel? loggedOnUser) {
-  //   _loggedOnUser = loggedOnUser;
-  // }
 
   void setToken(String? token) {
     _token = token;
@@ -53,5 +33,13 @@ class AppSessionModel {
 
   void setExpiryDate(DateTime? expiryDate) {
     _expiryDate = expiryDate;
+  }
+
+  void setCity(Future<List<City>> cityList) {
+    _cityList = cityList;
+  }
+
+  void setProvince(Future<List<Province>> provinceList) {
+    _provinceList = provinceList;
   }
 }

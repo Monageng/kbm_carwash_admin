@@ -12,6 +12,7 @@ class RewardConfig {
   String? rewardCode;
   String? frequencyType;
   int? frequencyCount;
+  int? franchiseId;
 
   RewardConfig({
     required this.id,
@@ -27,11 +28,13 @@ class RewardConfig {
     this.rewardCode,
     this.frequencyCount,
     this.frequencyType,
+    this.franchiseId,
   });
 
   factory RewardConfig.fromJson(Map<String, dynamic> json) {
     var rewardConfig = RewardConfig(
       id: json['id'] as int,
+      franchiseId: json["franchise_id"] as int,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : null,
@@ -55,6 +58,7 @@ class RewardConfig {
   Map<String, dynamic> toJson() {
     var d = {
       'id': id,
+      "franchise_id": franchiseId!,
       'created_at': createdAt!.toIso8601String(),
       'title': title!,
       'description': description!,

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
-import 'package:kbm_carwash_admin/features/rewards/models/reward_config.dart';
 
 import '../../../common/functions/common_functions.dart';
+import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
@@ -10,9 +9,10 @@ import '../../../common/widgets/custom_calendar.dart';
 import '../../../common/widgets/custom_dropdown.dart';
 import '../../../common/widgets/custom_text_field.dart';
 import '../../../common/widgets/error_dialog.dart';
+import '../models/reward_config.dart';
 
 class RewardConfigScreen extends StatefulWidget {
-  late RewardConfig rewardConfig;
+  RewardConfig rewardConfig;
 
   RewardConfigScreen({
     super.key,

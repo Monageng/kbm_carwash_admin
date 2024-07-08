@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/widgets/custom_dropdown.dart';
-import 'package:kbm_carwash_admin/features/users/models/user_model.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_calendar.dart';
+import '../../../common/widgets/custom_dropdown.dart';
 import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
 import '../../services/models/car_wash_service_model.dart';
 import '../../services/service/car_wash_api_service.dart';
+import '../../users/models/user_model.dart';
 import '../../users/services/car_wash_api_service.dart';
 import '../models/appointment_model.dart';
 
 class AppointmentScreen extends StatefulWidget {
-  late CarWashAppointment appointment;
+  late Appointment appointment;
 
   AppointmentScreen({
     super.key,
@@ -65,7 +65,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     });
   }
 
-  void update(CarWashAppointment appointment) {
+  void update(Appointment appointment) {
     if (appointment.id > 0) {
       _serviceNameController.text = appointment.serviceName!;
       _clientIdController.text = "${appointment.clientId!}";
@@ -221,32 +221,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 sizeOptions: statusList,
                 width: 250,
               ),
-              // TextField(
-              //   style: TextStyle(color: Colors.black),
-              //   onChanged: (value) {
-              //     _filterSearchResults(value);
-              //   },
-              //   decoration: const InputDecoration(
-              //     fillColor: Colors.amber,
-              //     labelText: "Search",
-              //     hintText: "Search",
-              //     prefixIcon: Icon(Icons.search),
-              //     border: OutlineInputBorder(
-              //       borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              //     ),
-              //   ),
-              // ),
-
-              // CustomTextField(
-              //   width: 250,
-              //   controller: _clientIdController,
-              //   hintText: "Client Id",
-              //   label: "Client Id",
-              //   isObscre: false,
-              //   validator: (value) {
-              //     return getFieldValidationMessage("Client id", value);
-              //   },
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [

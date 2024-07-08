@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
 
 import '../../../common/functions/common_functions.dart';
+import '../../../common/functions/date_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
+import '../../franchise/models/franchise_model.dart';
 import '../models/reward_config.dart';
 import '../services/reward_service.dart';
 import 'reward_config_form.dart';
-import '../../../common/widgets/navigation_bar.dart';
 
 class RewardConfigListScreen extends StatefulWidget {
-  const RewardConfigListScreen({super.key});
+  Franchise franchise;
+  RewardConfigListScreen({super.key, required this.franchise});
 
   @override
   State<RewardConfigListScreen> createState() => _RewardConfigListScreenState();
@@ -47,181 +48,178 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
   }
 
   void getData() {
-    _futureList = RewardsApiService().getAllRewardConfig();
+    _futureList = RewardsApiService()
+        .getAllRewardConfigByFranchiseId(widget.franchise.id);
     _originalfutureList = _futureList;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: getTopNavigation(context),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomElevatedButton(
-                  text: "Add Reward Configuration",
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return RewardConfigScreen(
-                          rewardConfig: RewardConfig(id: -1),
-                        );
-                      },
-                    );
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _filterController,
-                style: const TextStyle(color: Colors.black),
-                decoration: const InputDecoration(
-                  labelText: 'Filter by description',
-                  labelStyle: TextStyle(color: Colors.black),
-                  prefixIcon: Icon(Icons.search, color: Colors.amber),
-                ),
-              ),
-            ),
-            FutureBuilder<List<RewardConfig>>(
-              future: _futureList,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No data available'));
-                } else {
-                  List<RewardConfig>? list = snapshot.data;
-                  return LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              child: PaginatedDataTable(
-                                showFirstLastButtons: true,
-                                arrowHeadColor: Colors.black,
-                                sortAscending: _sortAscending,
-                                sortColumnIndex: _sortColumnIndex,
-                                onPageChanged: (value) {},
-                                columnSpacing: 16.0,
-                                source: MyDataTableSource(
-                                  list!,
-                                  context,
-                                ),
-                                rowsPerPage:
-                                    list.length < 10 ? list.length : 10,
-                                availableRowsPerPage: availableRowsPerPage2,
-                                onRowsPerPageChanged: (int? value) {},
-                                columns: const [
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Reward'),
-                                        Text('Title'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Reward'),
-                                        Text('Type.'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(label: Text('Description')),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Discount'),
-                                        Text('Type.'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Reward'),
-                                        Text('Value'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(label: Text('Frequency')),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Frequency'),
-                                        Text('Value'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('Start'),
-                                        Text('Date'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('End'),
-                                        Text('Date'),
-                                      ],
-                                    ),
-                                  ),
-                                  DataColumn(label: Text('Status')),
-                                  DataColumn(label: Text('Action')),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CustomElevatedButton(
+                text: "Add Reward Configuration",
+                onPressed: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return RewardConfigScreen(
+                        rewardConfig: RewardConfig(
+                            id: -1, franchiseId: widget.franchise.id),
                       );
                     },
                   );
-                }
-              },
+
+                  if (result != null) {
+                    setState(() {
+                      getData();
+                    });
+                  }
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              controller: _filterController,
+              style: const TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
+                labelText: 'Filter by description',
+                labelStyle: TextStyle(color: Colors.black),
+                prefixIcon: Icon(Icons.search, color: Colors.amber),
+              ),
             ),
-          ],
-        ),
+          ),
+          FutureBuilder<List<RewardConfig>>(
+            future: _futureList,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No data available'));
+              } else {
+                List<RewardConfig>? list = snapshot.data;
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: PaginatedDataTable(
+                              showFirstLastButtons: true,
+                              arrowHeadColor: Colors.black,
+                              sortAscending: _sortAscending,
+                              sortColumnIndex: _sortColumnIndex,
+                              onPageChanged: (value) {},
+                              columnSpacing: 16.0,
+                              source: MyDataTableSource(
+                                list!,
+                                context,
+                              ),
+                              rowsPerPage: list.length < 10 ? list.length : 10,
+                              availableRowsPerPage: availableRowsPerPage2,
+                              onRowsPerPageChanged: (int? value) {},
+                              columns: const [
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Reward'),
+                                      Text('Title'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Reward'),
+                                      Text('Type.'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(label: Text('Description')),
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Discount'),
+                                      Text('Type.'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Reward'),
+                                      Text('Value'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(label: Text('Frequency')),
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Frequency'),
+                                      Text('Value'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('Start'),
+                                      Text('Date'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('End'),
+                                      Text('Date'),
+                                    ],
+                                  ),
+                                ),
+                                DataColumn(label: Text('Status')),
+                                DataColumn(label: Text('Action')),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ),
+        ],
       ),
     );
   }
