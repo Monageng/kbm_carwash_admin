@@ -53,6 +53,12 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     _originalfutureList = _futureList;
   }
 
+  void refreshData() {
+    setState(() {
+      getData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -117,9 +123,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                               onPageChanged: (value) {},
                               columnSpacing: 16.0,
                               source: MyDataTableSource(
-                                list!,
-                                context,
-                              ),
+                                  list!, context, refreshData),
                               rowsPerPage: list.length < 10 ? list.length : 10,
                               availableRowsPerPage: availableRowsPerPage2,
                               onRowsPerPageChanged: (int? value) {},
@@ -170,8 +174,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 class MyDataTableSource extends DataTableSource {
   final List<CarWashService> services;
   final BuildContext context;
-
-  MyDataTableSource(this.services, this.context);
+  final VoidCallback refreshData;
+  MyDataTableSource(this.services, this.context, this.refreshData);
 
   @override
   DataRow getRow(int index) {
@@ -217,6 +221,7 @@ class MyDataTableSource extends DataTableSource {
                         );
                       },
                     );
+                    refreshData();
                   },
                   text: "Edit",
                   textColor: Colors.white,

@@ -53,6 +53,12 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
     _originalfutureList = _futureList;
   }
 
+  void refreshData() {
+    setState(() {
+      getData();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -120,9 +126,7 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
                               onPageChanged: (value) {},
                               columnSpacing: 16.0,
                               source: MyDataTableSource(
-                                list!,
-                                context,
-                              ),
+                                  list!, context, refreshData),
                               rowsPerPage: list.length < 10 ? list.length : 10,
                               availableRowsPerPage: availableRowsPerPage2,
                               onRowsPerPageChanged: (int? value) {},
@@ -149,7 +153,7 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
                                     ],
                                   ),
                                 ),
-                                DataColumn(label: Text('Description')),
+                                // DataColumn(label: Text('Description')),
                                 DataColumn(
                                   label: Column(
                                     crossAxisAlignment:
@@ -228,8 +232,8 @@ class _RewardConfigListScreenState extends State<RewardConfigListScreen> {
 class MyDataTableSource extends DataTableSource {
   final List<RewardConfig> list;
   final BuildContext context;
-
-  MyDataTableSource(this.list, this.context);
+  final VoidCallback refreshData;
+  MyDataTableSource(this.list, this.context, this.refreshData);
 
   @override
   DataRow getRow(int index) {
@@ -246,13 +250,13 @@ class MyDataTableSource extends DataTableSource {
       cells: [
         getDataCellWithWidth(item.title ?? '', 70),
         getDataCellWithWidth(item.rewardType ?? '', 70),
-        getDataCellWithWidth(item.description ?? '', 70),
+        // getDataCellWithWidth(item.description ?? '', 70),
         getDataCellWithWidth(item.discountType ?? '', 70),
         getDataCellWithWidth("${item.rewardValue}", 20),
         getDataCellWithWidth(item.frequencyType ?? '', 70),
         getDataCellWithWidth("${item.frequencyCount}", 20),
-        getDataCellWithWidth(formatDateTime(item.fromDate), 70),
-        getDataCellWithWidth(formatDateTime(item.toDate), 70),
+        getDataCellWithWidth(formatDateTime(item.fromDate), 80),
+        getDataCellWithWidth(formatDateTime(item.toDate), 80),
         getDataCellWithWidth("${item.active}", 40),
         DataCell(
           Row(
@@ -269,6 +273,7 @@ class MyDataTableSource extends DataTableSource {
                         );
                       },
                     );
+                    refreshData();
                   },
                   text: "Edit",
                   textColor: Colors.white,

@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http1;
-import 'package:kbm_carwash_admin/common/enviroment/env_variable.dart';
-import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
+
+import '../../../common/enviroment/env_variable.dart';
+import '../models/franchise_model.dart';
 
 class FranchiseApiService {
   Future<List<Franchise>> getAllFranchise() async {

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http1;
-import 'package:kbm_carwash_admin/common/functions/logger_utils.dart';
 
 import '../enviroment/env_variable.dart';
 import '../functions/http_utils.dart';
+import '../functions/logger_utils.dart';
 import '../model/city_model.dart';
 import '../model/province.dart';
 import 'api_error_response.dart';

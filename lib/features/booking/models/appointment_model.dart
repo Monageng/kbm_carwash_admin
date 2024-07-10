@@ -1,4 +1,4 @@
-import 'package:kbm_carwash_admin/features/users/models/user_model.dart';
+import '../../users/models/user_model.dart';
 
 class Appointment {
   int id;

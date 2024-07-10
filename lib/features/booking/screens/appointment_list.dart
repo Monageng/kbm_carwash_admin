@@ -50,6 +50,12 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
     });
   }
 
+  void refreshData() {
+    setState(() {
+      getData();
+    });
+  }
+
   void getData() {
     _futureList = BookAppointmentApiService()
         .getAllActiveAppointmentsByFranchiseId(widget.franchise.id);
@@ -115,8 +121,8 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                               sortColumnIndex: _sortColumnIndex,
                               onPageChanged: (value) {},
                               columnSpacing: 16.0,
-                              source: MyDataTableSource(
-                                  list!, context, widget.franchise),
+                              source: MyDataTableSource(list!, context,
+                                  widget.franchise, refreshData),
                               rowsPerPage: list.length < 10 ? list.length : 5,
                               availableRowsPerPage: availableRowsPerPage2,
                               onRowsPerPageChanged: (int? value) {},
@@ -170,8 +176,9 @@ class MyDataTableSource extends DataTableSource {
   final List<Appointment> list;
   final Franchise franchise;
   final BuildContext context;
+  final VoidCallback refreshData;
 
-  MyDataTableSource(this.list, this.context, this.franchise);
+  MyDataTableSource(this.list, this.context, this.franchise, this.refreshData);
 
   @override
   DataRow getRow(int index) {
@@ -210,6 +217,8 @@ class MyDataTableSource extends DataTableSource {
                         );
                       },
                     );
+
+                    refreshData();
                   },
                   text: "Edit",
                   textColor: Colors.white,
