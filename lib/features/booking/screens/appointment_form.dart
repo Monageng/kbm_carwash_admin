@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/widgets/custom_future_dropbox.dart';
+import 'package:kbm_carwash_admin/features/services/models/car_models_model.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
@@ -8,6 +10,7 @@ import '../../../common/widgets/custom_dropdown.dart';
 import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
 import '../../services/models/car_wash_service_model.dart';
+import '../../services/models/service_franchise_link_model.dart';
 import '../../services/service/car_wash_api_service.dart';
 import '../../users/models/user_model.dart';
 import '../../users/services/car_wash_api_service.dart';
@@ -32,13 +35,22 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+  final TextEditingController _carModelController = TextEditingController();
+  final TextEditingController _carServiceController = TextEditingController();
 
   final DateTime _selectedDate = DateTime.now();
   final TimeOfDay _selectedTime = TimeOfDay.now();
   String selectedValue = "Select a car wash service";
+  String selectedCarModelValue = "";
+  String selectedCarServiceValue = "";
 
   List<UserModel> userList = [];
   List<String?> searchUserList = [];
+
+  late List<CarModel?> carModelList;
+  late List<CarWashService?> carServiceList;
+
+  late Future<List<ServiceFranchiseLink>> serviceFranchiseList;
 
   String selectedStatus = "Select status";
   List<String> statusList = [
@@ -54,6 +66,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   void initState() {
     super.initState();
     getUsers();
+    serviceFranchiseList = getData();
     update(widget.appointment);
   }
 
@@ -101,6 +114,13 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       widget.appointment.status = _statusController.text;
       widget.appointment.time = _timeController.text;
 
+      int carModelId = carModelList
+          .firstWhere(
+              (element) => element!.carType == _carModelController.text)!
+          .id;
+      widget.appointment.carModelId = carModelId;
+      widget.appointment.serviceName = _carServiceController.text;
+
       String responseMessage;
       if (key < 1) {
         key = await CommonApiService().getLatestID("appointment");
@@ -133,14 +153,29 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     }
   }
 
-  Future<List<String>> _fetchCarWashNames() async {
-    List<CarWashService>? carwashServiceList =
-        await CarWashApiService().getAllCarWashService();
+  Future<List<String>> fetchCarModel() async {
+    List<ServiceFranchiseLink>? carwashServiceList = await serviceFranchiseList;
+    carModelList = carwashServiceList.map((e) => e.carModel).toList();
 
-    List<String> lis =
-        carwashServiceList.map((service) => service.name ?? '').toList();
-    lis.add("Select a car wash service");
+    List<String> lis = carwashServiceList
+        .map((service) => service.carModel!.carType ?? '')
+        .toList();
     return lis;
+  }
+
+  Future<List<String>> fetchCarService() async {
+    List<ServiceFranchiseLink>? carwashServiceList = await serviceFranchiseList;
+
+    carServiceList = carwashServiceList.map((e) => e.service).toList();
+    List<String> lis = carwashServiceList
+        .map((service) => service.service!.name ?? '')
+        .toList();
+    return lis;
+  }
+
+  Future<List<ServiceFranchiseLink>> getData() async {
+    return CarWashApiService()
+        .getServiceByFranchiseId(widget.appointment.franchiseId!);
   }
 
   final List<String> searchTerms = [
@@ -157,41 +192,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var serviceOptions = FutureBuilder<List<String>>(
-      future: _fetchCarWashNames(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Show loading indicator while waiting for data
-        } else if (snapshot.hasError) {
-          return Text(
-              'Error: ${snapshot.error}'); // Show error message if data fetching fails
-        } else {
-          List<String> serviceNames = snapshot.data as List<String>;
-
-          return DropdownButton<String>(
-            value: selectedValue,
-            items: serviceNames.map((String name) {
-              return DropdownMenuItem<String>(
-                value: name,
-                child: Text(
-                  name,
-                  style: const TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
-                ),
-              );
-            }).toList(),
-            onChanged: (String? value) {
-              setState(() {
-                selectedValue = value!;
-              });
-            },
-            hint: const Text(
-                'Select a car wash service'), // Placeholder text when no option is selected
-          );
-        }
-      },
-    );
-
     return AlertDialog(
       title: const Text('Appointment details',
           style: TextStyle(color: Colors.black)),
@@ -200,7 +200,18 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              serviceOptions,
+              CustomFutureDropbox(
+                  width: 250,
+                  futureList: fetchCarModel(),
+                  controller: _carModelController,
+                  hintText: "",
+                  selectedValue: selectedCarModelValue),
+              CustomFutureDropbox(
+                  width: 250,
+                  futureList: fetchCarService(),
+                  controller: _carServiceController,
+                  hintText: "",
+                  selectedValue: selectedCarServiceValue),
               CustomCalender(
                 width: 250,
                 label: "Appointment date",

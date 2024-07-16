@@ -12,13 +12,12 @@ class Franchise {
   String? effectiveToDate;
   String? modifiedBy;
   bool? active;
-
-  //String? operatingHours; // Assuming operating_hours can be of any type
   String? streetAddress;
   String? city;
   String? province;
   String? postalCode;
   String? country;
+  String? imageUrl;
 
   Franchise({
     required this.id,
@@ -38,9 +37,9 @@ class Franchise {
     this.modifiedBy,
     this.effectiveFromDate,
     this.effectiveToDate,
+    this.imageUrl,
   });
 
-  // Convert Branches object to a Map<String, dynamic>
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -60,10 +59,12 @@ class Franchise {
       'modified_by': modifiedBy,
       'effective_from_date': effectiveFromDate,
       'effective_to_date': effectiveToDate,
+      "image_url": imageUrl,
     };
   }
 
   factory Franchise.fromJson(Map<String, dynamic> json) {
+    print("EWERRRR $json");
     return Franchise(
       id: json['id'],
       name: json['name'] as String,
@@ -82,6 +83,7 @@ class Franchise {
       modifiedBy: json['modified_by'] as String?,
       effectiveFromDate: json['effective_from_date'] as String?,
       effectiveToDate: json['effective_to_date'] as String?,
+      imageUrl: json["image_url"] as String?,
     );
   }
 }

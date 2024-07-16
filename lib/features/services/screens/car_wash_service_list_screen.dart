@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/features/services/models/car_models_model.dart';
+import 'package:kbm_carwash_admin/features/services/models/car_wash_service_model.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../franchise/models/franchise_model.dart';
-import '../models/car_wash_service_model.dart';
+import '../models/service_franchise_link_model.dart';
 import '../service/car_wash_api_service.dart';
 import 'car_wash_service_form.dart';
 
@@ -17,8 +19,8 @@ class ServiceListScreen extends StatefulWidget {
 }
 
 class _ServiceListScreenState extends State<ServiceListScreen> {
-  late Future<List<CarWashService>> _futureList;
-  late Future<List<CarWashService>> _originalfutureList;
+  late Future<List<ServiceFranchiseLink>> _futureList;
+  late Future<List<ServiceFranchiseLink>> _originalfutureList;
 
   bool _sortAscending = true;
   int _sortColumnIndex = 0;
@@ -31,14 +33,14 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
     _filterController.addListener(() {
       _filterData(_filterController.text);
     });
-
-    print(" FranchiseAccordion ${widget.franchise.id}");
   }
 
   void _filterData(String filter) {
     _originalfutureList.then((result) {
-      List<CarWashService> filteredList = result.where((element) {
-        return element.name!.toUpperCase().contains(filter.toUpperCase());
+      List<ServiceFranchiseLink> filteredList = result.where((element) {
+        return element.service!.name!
+            .toUpperCase()
+            .contains(filter.toUpperCase());
       }).toList();
 
       setState(() {
@@ -48,8 +50,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
   }
 
   void getData() {
-    _futureList = CarWashApiService()
-        .getAllCarWashServiceByFranchise(widget.franchise.id);
+    _futureList =
+        CarWashApiService().getServiceByFranchiseId(widget.franchise.id);
     _originalfutureList = _futureList;
   }
 
@@ -74,8 +76,14 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return ServiceCaptureScreen(
-                        carWashService: CarWashService(
-                            id: -1, franchiseId: widget.franchise.id),
+                        carWashService: ServiceFranchiseLink(
+                            id: -1,
+                            franchiseId: widget.franchise.id,
+                            franchise: widget.franchise,
+                            service: CarWashService(
+                              id: -1,
+                            ),
+                            carModel: CarModel(id: -1)),
                       );
                     },
                   );
@@ -96,7 +104,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
               ),
             ),
           ),
-          FutureBuilder<List<CarWashService>>(
+          FutureBuilder<List<ServiceFranchiseLink>>(
             future: _futureList,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -106,7 +114,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(child: Text('No data available'));
               } else {
-                List<CarWashService>? list = snapshot.data;
+                List<ServiceFranchiseLink>? list = snapshot.data;
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     return SingleChildScrollView(
@@ -136,8 +144,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                                       _sortAscending = ascending;
 
                                       list.sort((a, b) {
-                                        final aValue = a.name;
-                                        final bValue = b.name;
+                                        final aValue = a.service!.name;
+                                        final bValue = b.service!.name;
 
                                         if (_sortAscending) {
                                           return Comparable.compare(
@@ -151,8 +159,8 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
                                   },
                                 ),
                                 const DataColumn(label: Text("Description")),
+                                const DataColumn(label: Text("Car Model")),
                                 const DataColumn(label: Text("Price")),
-                                const DataColumn(label: Text("Status")),
                                 const DataColumn(label: Text('Action')),
                               ],
                             ),
@@ -172,7 +180,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
 }
 
 class MyDataTableSource extends DataTableSource {
-  final List<CarWashService> services;
+  final List<ServiceFranchiseLink> services;
   final BuildContext context;
   final VoidCallback refreshData;
   MyDataTableSource(this.services, this.context, this.refreshData);
@@ -191,19 +199,19 @@ class MyDataTableSource extends DataTableSource {
       index: index,
       cells: [
         DataCell(Text(
-          service.name ?? '',
+          service.service!.name ?? '',
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(Text(
-          service.description ?? '',
+          service.service!.description ?? '',
+          style: const TextStyle(color: Colors.grey),
+        )),
+        DataCell(Text(
+          service.carModel!.carType ?? "",
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(Text(
           service.price?.toStringAsFixed(2) ?? '',
-          style: const TextStyle(color: Colors.grey),
-        )),
-        DataCell(Text(
-          service.active == true ? 'Active' : 'Inactive',
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(

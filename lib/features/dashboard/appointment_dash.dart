@@ -3,13 +3,15 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
 
 import '../../common/widgets/navigation_bar.dart';
 import '../booking/models/appointment_model.dart';
 import '../booking/services/book_appointment_service.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final Franchise franchise;
+  const DashboardScreen({super.key, required this.franchise});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();

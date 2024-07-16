@@ -42,7 +42,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
       TextEditingController();
   final TextEditingController _effectiveToDateController =
       TextEditingController();
-
+  final TextEditingController _imageController = TextEditingController();
   String selectedCountry = 'Select Country';
   String selectedCity = 'Select City';
   late List<String>? countries = ['Select Country'];
@@ -102,9 +102,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
       effectiveFromDate: DateTime.now().toIso8601String(),
       effectiveToDate: DateTime.now().toIso8601String(),
       modifiedBy: "System",
-      // operatingHours: operatingHours,
-      // websiteUrl: _websiteUrlController.text,
-      // imageUrl: _imageUrlController.text,
+      imageUrl: _imageController.text,
     );
 
     try {
@@ -185,9 +183,9 @@ class _FranchiseFormState extends State<FranchiseForm> {
       _postalCodeController.text = "${widget.franchise.postalCode}";
       _longitudeCodeController.text = "${widget.franchise.longitude}";
       _latituteCodeController.text = "${widget.franchise.latitude}";
-      _effectiveFromDateController.text =
-          "${widget.franchise.effectiveFromDate!}";
-      _effectiveToDateController.text = "${widget.franchise.effectiveToDate!}";
+      _imageController.text = "${widget.franchise.imageUrl}";
+      _effectiveFromDateController.text = widget.franchise.effectiveFromDate!;
+      _effectiveToDateController.text = widget.franchise.effectiveToDate!;
       loadLookupProvince().then((result) {
         setState(() {
           provinces!.clear();
@@ -271,6 +269,15 @@ class _FranchiseFormState extends State<FranchiseForm> {
                           width: 300,
                           label: "Contact number"),
                       EmailTextField(controller: _emilaController, width: 300),
+                      CustomTextField(
+                          width: 300,
+                          controller: _imageController,
+                          hintText: "Image",
+                          label: "Image",
+                          isObscre: false,
+                          validator: (value) {
+                            return null;
+                          }),
                       CustomCalender(
                         width: 300,
                         label: "From date",

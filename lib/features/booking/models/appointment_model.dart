@@ -1,3 +1,5 @@
+import 'package:kbm_carwash_admin/features/services/models/car_models_model.dart';
+
 import '../../users/models/user_model.dart';
 
 class Appointment {
@@ -9,6 +11,7 @@ class Appointment {
   DateTime? date;
   String? status;
   int? clientId;
+  int? carModelId;
   String? time;
   UserModel? client;
 
@@ -23,6 +26,7 @@ class Appointment {
     required this.id,
     this.client,
     this.franchiseId,
+    this.carModelId,
   });
 
 // Method to deserialize JSON into a CarWashAppointment object
@@ -39,6 +43,7 @@ class Appointment {
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
       status: json['status'],
       clientId: json['client_id'],
+      carModelId: json['car_model_id'],
       client:
           json['client'] != null ? UserModel.fromJson(json['client']) : null,
     );
@@ -57,6 +62,7 @@ class Appointment {
       'status': status,
       'client_id': clientId,
       "franchise_id": franchiseId,
+      "car_model_id": carModelId,
       //d'client': client!.toJson(),
     };
   }

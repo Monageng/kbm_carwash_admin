@@ -29,7 +29,12 @@ AppBar getTopNavigation(BuildContext context) {
               children: [
                 _buildTextButton(
                     context, "Franchise List", const FranchiseListScreen()),
-                _buildTextButton(context, "Dashboard", const DashboardScreen()),
+                _buildTextButton(
+                    context,
+                    "Dashboard",
+                    DashboardScreen(
+                      franchise: Franchise(id: -1, name: "name"),
+                    )),
                 _buildTextButton(
                     context,
                     "Clients",
