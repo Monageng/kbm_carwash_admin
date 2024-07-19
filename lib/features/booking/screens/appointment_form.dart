@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/widgets/custom_future_dropbox.dart';
-import 'package:kbm_carwash_admin/features/services/models/car_models_model.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_calendar.dart';
 import '../../../common/widgets/custom_dropdown.dart';
+import '../../../common/widgets/custom_future_dropbox.dart';
 import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
+import '../../services/models/car_models_model.dart';
 import '../../services/models/car_wash_service_model.dart';
 import '../../services/models/service_franchise_link_model.dart';
 import '../../services/service/car_wash_api_service.dart';
@@ -113,6 +113,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       widget.appointment.serviceName = selectedValue;
       widget.appointment.status = _statusController.text;
       widget.appointment.time = _timeController.text;
+      // widget.appointment.service_franchise_link_id =
 
       int carModelId = carModelList
           .firstWhere(
@@ -120,6 +121,16 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           .id;
       widget.appointment.carModelId = carModelId;
       widget.appointment.serviceName = _carServiceController.text;
+      List<ServiceFranchiseLink> list1 = await serviceFranchiseList;
+
+      print(" serviceLink ${widget.appointment.toJson()}");
+
+      ServiceFranchiseLink serviceLink = list1.firstWhere((element) =>
+          element.service!.name == widget.appointment.serviceName &&
+          element.carModelId == carModelId &&
+          element.franchiseId == widget.appointment.franchiseId);
+      widget.appointment.serviceFranchiseLinkId = serviceLink.id;
+      print(" Response for service link ${serviceLink.toJson()}");
 
       String responseMessage;
       if (key < 1) {
@@ -159,8 +170,10 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
     List<String> lis = carwashServiceList
         .map((service) => service.carModel!.carType ?? '')
+        .toSet()
         .toList();
-    return lis;
+    List<String> resonse = ['Select Model', ...lis];
+    return resonse;
   }
 
   Future<List<String>> fetchCarService() async {
@@ -170,7 +183,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     List<String> lis = carwashServiceList
         .map((service) => service.service!.name ?? '')
         .toList();
-    return lis;
+    List<String> resonse = ['Select service', ...lis];
+    return resonse;
   }
 
   Future<List<ServiceFranchiseLink>> getData() async {
@@ -178,16 +192,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         .getServiceByFranchiseId(widget.appointment.franchiseId!);
   }
 
-  final List<String> searchTerms = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Elderberry',
-    'Fig',
-    'Grape',
-    'Honeydew',
-  ];
   List<String> filteredTerms = [];
 
   @override

@@ -1,5 +1,5 @@
-import 'package:kbm_carwash_admin/features/services/models/car_models_model.dart';
-
+import '../../services/models/car_wash_service_model.dart';
+import '../../services/models/service_franchise_link_model.dart';
 import '../../users/models/user_model.dart';
 
 class Appointment {
@@ -12,8 +12,11 @@ class Appointment {
   String? status;
   int? clientId;
   int? carModelId;
+  int? serviceFranchiseLinkId;
   String? time;
   UserModel? client;
+  CarWashService? service;
+  ServiceFranchiseLink? serviceFranchiseLink;
 
   Appointment({
     this.serviceName,
@@ -27,11 +30,13 @@ class Appointment {
     this.client,
     this.franchiseId,
     this.carModelId,
+    this.service,
+    this.serviceFranchiseLinkId,
+    this.serviceFranchiseLink,
   });
 
-// Method to deserialize JSON into a CarWashAppointment object
   factory Appointment.fromJson(Map<String, dynamic> json) {
-    return Appointment(
+    var appointment = Appointment(
       id: json['id'],
       franchiseId: json["franchise_id"],
       time: json['time'],
@@ -44,9 +49,19 @@ class Appointment {
       status: json['status'],
       clientId: json['client_id'],
       carModelId: json['car_model_id'],
+      serviceFranchiseLinkId: json['service_franchise_link_id'],
       client:
           json['client'] != null ? UserModel.fromJson(json['client']) : null,
+      service: json['service'] != null
+          ? CarWashService.fromJson(json['service'])
+          : null,
+      serviceFranchiseLink: json['service_franchise_links'] != null
+          ? ServiceFranchiseLink.fromJson(json['service_franchise_links'])
+          : null,
     );
+
+    print("DDDD serviceFranchiseLink ${appointment.toJson()}");
+    return appointment;
   }
 
   // Method to serialize a CarWashAppointment object into JSON
@@ -63,7 +78,7 @@ class Appointment {
       'client_id': clientId,
       "franchise_id": franchiseId,
       "car_model_id": carModelId,
-      //d'client': client!.toJson(),
+      "service_franchise_link_id": serviceFranchiseLinkId
     };
   }
 }

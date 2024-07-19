@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/features/dashboard/appointment_dash.dart';
 
 import '../../../common/widgets/navigation_bar.dart';
 import '../../booking/screens/appointment_list.dart';
@@ -29,26 +30,35 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
       appBar: getTopNavigation(context),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          double padding = constraints.maxWidth * 0.05;
+          //double padding = constraints.maxWidth * 0.05;
           return SingleChildScrollView(
-            padding: EdgeInsets.all(padding),
+            // padding: EdgeInsets.all(padding),
             child: Column(
               children: <Widget>[
+                // buildAccordionItem(
+                //   title: 'Dashboard Details',
+                //   child: DashboardScreen(franchise: widget.franchise!),
+                //   isExpanded: true,
+                // ),
                 buildAccordionItem(
                   title: 'Franchise Details',
                   child: FranchiseForm(franchise: widget.franchise!),
+                  isExpanded: false,
                 ),
                 buildAccordionItem(
                   title: 'Appointments',
                   child: AppointmentListScreen(franchise: widget.franchise!),
+                  isExpanded: false,
                 ),
                 buildAccordionItem(
                   title: 'Services',
                   child: ServiceListScreen(franchise: widget.franchise!),
+                  isExpanded: false,
                 ),
                 buildAccordionItem(
                   title: 'Reward Configurations',
                   child: RewardConfigListScreen(franchise: widget.franchise!),
+                  isExpanded: false,
                 ),
               ],
             ),
@@ -58,7 +68,8 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
     );
   }
 
-  Widget buildAccordionItem({required String title, required Widget child}) {
+  Widget buildAccordionItem(
+      {required String title, required Widget child, required isExpanded}) {
     return Container(
       decoration: const BoxDecoration(
         border: Border(
@@ -69,6 +80,7 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
         ),
       ),
       child: ExpansionTile(
+        initiallyExpanded: isExpanded,
         collapsedIconColor: Colors.blue,
         iconColor: Colors.blue,
         backgroundColor: const Color.fromRGBO(249, 249, 249, 1),

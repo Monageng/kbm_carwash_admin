@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/features/booking/models/payment_transaction_model.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
@@ -106,6 +107,7 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                 return const Center(child: Text('No data available'));
               } else {
                 List<Appointment>? list = snapshot.data;
+                print("DDDD 1 ${list.toString()}");
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     return SingleChildScrollView(
@@ -179,10 +181,52 @@ class MyDataTableSource extends DataTableSource {
   final VoidCallback refreshData;
 
   MyDataTableSource(this.list, this.context, this.franchise, this.refreshData);
+  void createTransaction(Appointment appointment) async {
+    print("createTransaction ######### ${appointment.toJson()}");
+    try {
+//   int? clientId;
+//   int? franchiseId;
+//   int? servcieId;
+//   UserModel? client;
+//   Franchise? franchise;
+//   CarWashService? service;
+
+      int key = await CommonApiService().getLatestID("appointment");
+
+      PaymentTransaction paymentTransaction = PaymentTransaction(
+        id: key,
+        clientId: appointment.clientId,
+        franchiseId: appointment.franchiseId,
+        createAt: DateTime.now(),
+        date: DateTime.now(),
+        //amount: appointment.serviceFranchiseLink!.price,
+        //servcieId: appointment.service!.id,
+      );
+      print("paymentTransaction ######### ${paymentTransaction.toJson()}");
+      appointment.active = false;
+      appointment.client = null;
+
+      String responseMessage = await CommonApiService()
+          .save(paymentTransaction.toJson(), "paymentTransaction");
+
+      if (responseMessage.contains("successfully")) {
+        appointment.status = "Completed";
+        responseMessage = await CommonApiService()
+            .update(appointment.id, "appointment", appointment.toJson());
+      }
+    } catch (e) {}
+
+    //list.remove(item);
+    super.notifyListeners();
+    Navigator.of(context).pop(appointment);
+
+    refreshData;
+  }
 
   @override
   DataRow getRow(int index) {
     final item = list[index];
+    print("DDDD item $item");
     final rowColor = MaterialStateColor.resolveWith((states) {
       if (states.contains(MaterialState.selected)) {
         return Colors.blue; // Change to the color you want when selected
@@ -223,6 +267,41 @@ class MyDataTableSource extends DataTableSource {
                   text: "Edit",
                   textColor: Colors.white,
                 ),
+              ),
+              CustomElevatedButton(
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                            title: const Text(
+                              'Complete appointment',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            content: const Text(
+                                'You sure you want to completed the appointment?',
+                                style: TextStyle(color: Colors.black)),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  createTransaction(item);
+                                },
+                                child: const Text('Yes',
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(item);
+                                },
+                                child: const Text('No',
+                                    style: TextStyle(color: Colors.black)),
+                              ),
+                            ]);
+                      });
+                },
+                text: "Complete",
+                buttonColor: Colors.blue,
+                textColor: Colors.white,
               ),
               CustomElevatedButton(
                 onPressed: () {

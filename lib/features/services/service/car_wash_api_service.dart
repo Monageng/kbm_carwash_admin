@@ -17,13 +17,10 @@ class CarWashApiService {
       logger.d("Url  ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
 
-      logger.d("response getAllCarWashService ::: ${response.body}");
       if (response.statusCode == 200) {
         List<CarWashService> list = (jsonDecode(response.body) as List)
             .map((json) => CarWashService.fromJson(json))
             .toList();
-        logger
-            .d("response getAllCarWashService @@@@@@@@@::: ${list.toString()}");
         return Future.value(list);
       }
     } catch (e) {
@@ -37,7 +34,6 @@ class CarWashApiService {
       var url = Uri.https(supabaseUrlv2, "rest/v1/car_model");
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
-      logger.d("response.body ::: ${response.body}");
       if (response.statusCode == 200) {
         List<CarModel> list = (jsonDecode(response.body) as List)
             .map((json) => CarModel.fromJson(json))
@@ -60,7 +56,6 @@ class CarWashApiService {
       });
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
-      logger.d("response.body getServiceByFranchiseId ::: ${response.body}");
       if (response.statusCode == 200) {
         List<ServiceFranchiseLink> list = (jsonDecode(response.body) as List)
             .map((json) => ServiceFranchiseLink.fromJson(json))
@@ -72,43 +67,4 @@ class CarWashApiService {
     }
     return Future.value([]);
   }
-
-  // Future<List<CarWashService>> getAllCarWashServiceByFranchise(
-  //     int franchiseId) async {
-  //   try {
-  //     var url = Uri.https(supabaseUrlv2, "rest/v1/services", {
-  //       "active": "eq.true",
-  //       "select": "*,franchise:franchise_id(*)",
-  //       "franchise.id": "eq.$franchiseId",
-  //       "order": "service_name.asc"
-  //     });
-
-  //     logger.d("Url ::: $url");
-  //     var response = await http1.get(url, headers: getHttpHeaders());
-  //     if (response.statusCode == 200) {
-  //       List<CarWashService> data = (jsonDecode(response.body) as List)
-  //           .map((json) => CarWashService.fromJson(json))
-  //           .toList();
-  //       //return Future.value(list);
-
-  //       List<CarWashService> filteredList =
-  //           data.where((element) => element.franchise != null).toList();
-
-  //       for (var element in filteredList) {
-  //         if (element.franchise != null) {
-  //           print(
-  //               "Franchise is not null ${element.franchise} for ${element.name} ");
-  //         } else {
-  //           print("Nulll  ${element.name} ");
-  //         }
-  //       }
-
-  //       print("filteredList ${filteredList} ");
-  //       return filteredList;
-  //     }
-  //   } catch (e) {
-  //     logger.e("object ${e.toString()}");
-  //   }
-  //   return Future.value([]);
-  // }
 }

@@ -98,7 +98,6 @@ class RewardsApiService {
           {"select": "*,client(*)", "client.user_id": "eq.$userId"});
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
-      logger.d("getAllRewardAllocationByClientUserId ::: ${response.body}}");
       if (response.statusCode == 200) {
         List<Reward> list = (jsonDecode(response.body) as List)
             .map((json) => Reward.fromJson(json))

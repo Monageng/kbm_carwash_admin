@@ -28,7 +28,8 @@ class ServiceFranchiseLink {
   });
 
   factory ServiceFranchiseLink.fromJson(Map<String, dynamic> json) {
-    return ServiceFranchiseLink(
+    print("DDDD $json");
+    var serviceFranchiseLink = ServiceFranchiseLink(
       id: json['id'] as int,
       franchiseId: json["franchise_id"],
       carModelId: json["car_model_id"],
@@ -48,6 +49,9 @@ class ServiceFranchiseLink {
           ? CarModel.fromJson(json['car_model'])
           : null,
     );
+
+    print("DDDD serviceFranchiseLink ${serviceFranchiseLink.toJson()}");
+    return serviceFranchiseLink;
   }
 
   Map<String, dynamic> toJson() {

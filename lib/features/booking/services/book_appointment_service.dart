@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import '../../../common/enviroment/env_variable.dart';
 import '../../../common/functions/http_utils.dart';
+import '../../../common/functions/logger_utils.dart';
 import '../models/appointment_model.dart';
 
 class BookAppointmentApiService {
@@ -42,11 +43,14 @@ class BookAppointmentApiService {
     try {
       //franchise_id=eq.1
       var url = Uri.https(supabaseUrlv2, "rest/v1/appointment", {
-        "select": "*,client(*)",
+        "select": "*,client(*),service_franchise_links(*)",
         "franchise_id": "eq.$franchiseId",
         "active": "eq.true"
       });
+
+      logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
+      logger.d("response ::: ${response.body}");
       if (response.statusCode == 200) {
         List<Appointment> list = (jsonDecode(response.body) as List)
             .map((json) => Appointment.fromJson(json))

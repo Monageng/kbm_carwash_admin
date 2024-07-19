@@ -14,7 +14,6 @@ class FranchiseApiService {
       var response = await http1.get(url, headers: {"apikey": supabaseKeyv2});
 
       if (response.statusCode == 200) {
-        print("response.body ::: ${response.body}");
         List<Franchise> categoryList = (jsonDecode(response.body) as List)
             .map((json) => Franchise.fromJson(json))
             .toList();

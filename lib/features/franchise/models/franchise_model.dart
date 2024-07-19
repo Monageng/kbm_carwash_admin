@@ -64,7 +64,6 @@ class Franchise {
   }
 
   factory Franchise.fromJson(Map<String, dynamic> json) {
-    print("EWERRRR $json");
     return Franchise(
       id: json['id'],
       name: json['name'] as String,

@@ -19,8 +19,7 @@ class CommonApiService {
       var response = await http1.post(url,
           body: encodedRequest, headers: getHttpHeaders());
       logger.d("url : $url");
-      logger.d("encodedRequest : $encodedRequest");
-      logger.d("response.statusCode : ${response.statusCode}");
+      logger.d("encodedRequest $encodedRequest");
       if (response.statusCode == 201) {
         responseMessage = "Record saved successfully";
       } else {
@@ -30,6 +29,7 @@ class CommonApiService {
             "Error occured ${errorResponse.details},  ${errorResponse.message} ";
       }
     } catch (e) {
+      logger.e(e);
       responseMessage = e.toString();
     }
     return Future.value(responseMessage);
@@ -73,7 +73,6 @@ class CommonApiService {
           {"select": "id", "order": "id.desc", "limit": "1"});
       logger.d("url $url");
       var response = await http1.get(url, headers: {"apikey": supabaseKeyv2});
-      logger.d("getLatestID response.body ${response.body} ");
       if (response.statusCode == 200) {
         List<PrimaryKeyResponse> primaryKeyList =
             (jsonDecode(response.body) as List)
@@ -96,8 +95,6 @@ class CommonApiService {
 
     print("URL $url");
     var response = await http1.get(url, headers: getHttpHeaders());
-    print("response ${response.statusCode}");
-    print("fetchProvince response ${response.body}");
     if (response.statusCode == 200) {
       List<Province> data = (jsonDecode(response.body) as List)
           .map((json) => Province.fromJson(json))
@@ -114,7 +111,6 @@ class CommonApiService {
         Uri.https(supabaseUrlv2, "/rest/v1/cities", {"order": "name.asc"});
     var response = await http1.get(url, headers: getHttpHeaders());
     print("URL $url");
-    print("fetchCity response ${response.body}");
     if (response.statusCode == 200) {
       List<City> data = (jsonDecode(response.body) as List)
           .map((json) => City.fromJson(json))
@@ -135,9 +131,8 @@ class CommonApiService {
     var response = await http1.get(url, headers: getHttpHeaders());
 
     //https://jazesnfbevoyuzaizgko.supabase.co/rest/v1/cities?province.name=eq.Gauteng&select=*,province:province_uuid(*)&isActive=eq.true
-    print("fetchCityByProvince url  ${url} ");
+    print(" url  ${url} ");
     if (response.statusCode == 200) {
-      print("fetchCityByProvince ${jsonDecode(response.body)} ");
       List<City> data = (jsonDecode(response.body) as List)
           .map((json) => City.fromJson(json))
           .toList();
@@ -153,7 +148,6 @@ class CommonApiService {
         }
       }
 
-      print("filteredList ${filteredList} ");
       return filteredList;
     } else {
       throw Exception('Failed to load cities');

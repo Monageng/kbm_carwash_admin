@@ -33,10 +33,8 @@ class CarWashService {
             json['to_date'] != null ? DateTime.parse(json['to_date']) : null,
         active: json['active'] as bool?,
       );
-      print("CarWashService.fromJson Data $data");
       return data;
     } catch (e) {
-      print("CarWashService.fromJson Error  $e");
       return CarWashService(id: -10);
     }
   }
