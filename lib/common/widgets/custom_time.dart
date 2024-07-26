@@ -2,21 +2,24 @@
 
 import 'package:flutter/material.dart';
 
+import '../functions/common_functions.dart';
+
 class CustomTime extends StatelessWidget {
   final TextEditingController? controller;
   double? width;
   double? height;
   TimeOfDay? selectedTime = TimeOfDay.now();
   String? label;
+  bool? isMandatory;
 
-  CustomTime({
-    super.key,
-    this.width,
-    this.height,
-    this.controller,
-    this.selectedTime,
-    this.label,
-  });
+  CustomTime(
+      {super.key,
+      this.width,
+      this.height,
+      this.controller,
+      this.selectedTime,
+      this.label,
+      this.isMandatory});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +33,11 @@ class CustomTime extends StatelessWidget {
       //padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
       child: TextFormField(
+        validator: (value) {
+          if (isMandatory! == true) {
+            return getFieldValidationMessage(label!, value!);
+          }
+        },
         style: const TextStyle(color: Colors.black),
         enabled: true,
         controller: controller,

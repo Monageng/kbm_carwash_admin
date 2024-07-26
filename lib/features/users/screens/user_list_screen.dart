@@ -9,7 +9,6 @@ import '../../rewards/screens/reward_allocation_list_screen.dart';
 import '../models/user_model.dart';
 import '../services/car_wash_api_service.dart';
 import 'user_form.dart';
-import '../../../common/widgets/navigation_bar.dart';
 
 class UserListScreen extends StatefulWidget {
   Franchise franchise;
@@ -56,7 +55,8 @@ class _UserListScreenState extends State<UserListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: getTopNavigation(context),
+      //appBar: getTopNavigation(context),
+
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
@@ -76,6 +76,9 @@ class _UserListScreenState extends State<UserListScreen> {
                           );
                         },
                       );
+                      setState(() {
+                        getData();
+                      });
                     },
                   ),
                   const SizedBox(height: 16.0),
@@ -121,7 +124,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                         widget.franchise,
                                       ),
                                       rowsPerPage:
-                                          list.length < 10 ? list.length : 5,
+                                          list.length <= 5 ? list.length : 5,
                                       availableRowsPerPage:
                                           availableRowsPerPage2,
                                       onRowsPerPageChanged: (int? value) {},

@@ -4,6 +4,7 @@ import '../../../common/functions/common_functions.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/navigation_bar.dart';
+import '../../../session/app_session.dart';
 import '../models/franchise_model.dart';
 import '../services/franchise_service.dart';
 import 'franchise_accodion_home.dart';
@@ -171,11 +172,11 @@ class MyDataTableSource extends DataTableSource {
       return const Color.fromARGB(255, 231, 225, 225); // Default color
     });
     return DataRow(color: MaterialStateProperty.all<Color>(rowColor), cells: [
-      getDataCell(item.id.toString(), MediaQuery.of(context).size.width * 0.04),
+      getDataCell(item.id.toString(), MediaQuery.of(context).size.width * 0.01),
       getDataCell(item.name, MediaQuery.of(context).size.width * 0.10),
       getDataCell(item.contactPerson, MediaQuery.of(context).size.width * 0.10),
       getDataCell(item.contactNumber, MediaQuery.of(context).size.width * 0.10),
-      getDataCell(item.email, MediaQuery.of(context).size.width * 0.10),
+      getDataCell(item.email, MediaQuery.of(context).size.width * 0.20),
       DataCell(
         Row(
           children: [

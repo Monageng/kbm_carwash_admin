@@ -789,7 +789,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    //appointmentStats,
                     Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 2),
@@ -799,7 +798,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       child: Column(
                         children: [
                           const Text(
-                            'Total Bookings Per Service',
+                            'Total Bookings Per Month',
                             style: TextStyle(
                               color: Colors.blue,
                               fontSize: 16,
@@ -830,28 +829,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ],
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 2),
-                      decoration: boxDecoration,
-                      width: chartWidth * 0.5,
-                      height: 380,
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Total Bookings Per Service',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Expanded(
-                            child: LineChart(sampleData1),
-                          ),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   margin: const EdgeInsets.symmetric(
+                    //       horizontal: 10, vertical: 2),
+                    //   decoration: boxDecoration,
+                    //   width: chartWidth * 0.5,
+                    //   height: 380,
+                    //   child: Column(
+                    //     children: [
+                    //       const Text(
+                    //         'Total Bookings Per Service',
+                    //         style: TextStyle(
+                    //           color: Colors.blue,
+                    //           fontSize: 16,
+                    //           fontWeight: FontWeight.bold,
+                    //         ),
+                    //       ),
+                    //       Expanded(
+                    //         child: LineChart(sampleData1),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
                 const SizedBox(height: 20),

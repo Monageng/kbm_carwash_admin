@@ -129,7 +129,6 @@ class _FranchiseFormState extends State<FranchiseForm> {
 
   @override
   void initState() {
-    super.initState();
     setDefaults();
 
     loadLookupProvince().then((result) {
@@ -137,14 +136,14 @@ class _FranchiseFormState extends State<FranchiseForm> {
         provinces = ['Select Province', ...result];
       });
     });
+
+    super.initState();
   }
 
   List<String> filteredList = [];
 
   fetchCities(String selectedProvince) async {
-    print("selectedProvince $selectedProvince");
     loadLookupCity(selectedProvince).then((result) {
-      print(" result ---- ${result}");
       setState(() {
         cities = ['Select City', ...result];
         selectedCity = "Select City";
@@ -212,7 +211,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
   Widget build(BuildContext context) {
     setDefaults();
     return AlertDialog(
-      title: const Text('New Franchise details',
+      title: const Text('Franchise details',
           style: TextStyle(color: Colors.black)),
       content: SingleChildScrollView(
         child: Column(
@@ -449,7 +448,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
                     child: CustomElevatedButton(
-                      text: "Save Franchise Details",
+                      text: "Save",
                       onPressed: () {
                         if (_formKey1.currentState!.validate() &&
                             _formKey.currentState!.validate()) {
@@ -480,17 +479,5 @@ class _FranchiseFormState extends State<FranchiseForm> {
   @override
   void dispose() {
     super.dispose();
-    // _nameController.dispose();
-    // _contactPersonController.dispose();
-    // _openingTimeController.dispose();
-    // _closeTimeController.dispose();
-    // _websiteUrlController.dispose();
-    // _imageUrlController.dispose();
-    // _effectiveFromDateController.dispose();
-    // _effectiveToDateController.dispose();
-    // _takeAwayController.dispose();
-    // _dineInController.dispose();
-    // _ratingController.dispose();
-    // _activeController.dispose();
   }
 }

@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/widgets/widget_style.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_calendar.dart';
 import '../../../common/widgets/custom_dropdown.dart';
-import '../../../common/widgets/custom_future_dropbox.dart';
 import '../../../common/widgets/custom_time.dart';
 import '../../../common/widgets/error_dialog.dart';
 import '../../services/models/car_models_model.dart';
 import '../../services/models/car_wash_service_model.dart';
 import '../../services/models/service_franchise_link_model.dart';
 import '../../services/service/car_wash_api_service.dart';
-import '../../users/models/user_model.dart';
-import '../../users/services/car_wash_api_service.dart';
 import '../models/appointment_model.dart';
 
 class AppointmentScreen extends StatefulWidget {
@@ -41,11 +39,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   final DateTime _selectedDate = DateTime.now();
   final TimeOfDay _selectedTime = TimeOfDay.now();
   String selectedValue = "Select a car wash service";
-  String selectedCarModelValue = "";
-  String selectedCarServiceValue = "";
+  String selectedCarModelValue = "Select Model";
+  String selectedCarServiceValue = "Select Service";
 
-  List<UserModel> userList = [];
-  List<String?> searchUserList = [];
+  List<String> carModelOptions = ["Select Model"];
+  List<String> carServiceOptions = ["Select Service"];
 
   late List<CarModel?> carModelList;
   late List<CarWashService?> carServiceList;
@@ -59,23 +57,21 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     "Confirmed",
     "Completed",
     "Cancelled",
-    "Recieved",
+    "Recieved"
   ];
 
   @override
   void initState() {
     super.initState();
-    getUsers();
     serviceFranchiseList = getData();
-    update(widget.appointment);
-  }
-
-  void getUsers() async {
-    List<UserModel> fetchedUsers = await UserApiService().getAllUsers();
-    setState(() {
-      userList = fetchedUsers;
-      searchUserList = userList.map((e) => e.firstName).toList();
+    serviceFranchiseList.then((value) {
+      setState(() {
+        loadCarModelOptions();
+        loadCarServiceOptions();
+      });
     });
+
+    update(widget.appointment);
   }
 
   void update(Appointment appointment) {
@@ -88,8 +84,31 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         selectedStatus = appointment.status!;
       }
       _statusController.text = selectedStatus;
-
       _timeController.text = appointment.time!;
+      fetchCarModel().whenComplete(() {
+        if (carModelList != null && carModelList.isNotEmpty) {
+          CarModel? carModel = carModelList.firstWhere(
+              (element) => element!.id == appointment.carModelId,
+              orElse: () => null);
+          if (carModel != null) {
+            setState(() {
+              selectedCarModelValue = carModel.carType!;
+            });
+          }
+        }
+      });
+      fetchCarService().whenComplete(() {
+        if (carServiceList != null && carServiceList.isNotEmpty) {
+          CarWashService? washService = carServiceList.firstWhere(
+              (element) => element!.name == appointment.serviceName,
+              orElse: () => null);
+          if (washService != null) {
+            setState(() {
+              selectedCarServiceValue = washService.name!;
+            });
+          }
+        }
+      });
     }
   }
 
@@ -101,78 +120,134 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     _statusController.clear();
   }
 
+  String validateForm() {
+    var errorMessage = "";
+    if (selectedCarModelValue.contains("Select Model")) {
+      errorMessage = "$errorMessage select car model ";
+    }
+
+    if (selectedCarServiceValue.contains("Select Service")) {
+      errorMessage = "$errorMessage select car service ";
+    }
+
+    if (_statusController.text.toString().isEmpty ||
+        _statusController.text.trim().contains("Select status")) {
+      errorMessage = "$errorMessage select status ,";
+    }
+    return errorMessage;
+  }
+
   void _saveForm() async {
     if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+      String error = validateForm();
 
-      int key = widget.appointment.id;
-
-      widget.appointment.clientId = widget.appointment.clientId!;
-      widget.appointment.createAt = DateTime.now();
-      widget.appointment.date = DateTime.parse(_dateController.text);
-      widget.appointment.serviceName = selectedValue;
-      widget.appointment.status = _statusController.text;
-      widget.appointment.time = _timeController.text;
-      // widget.appointment.service_franchise_link_id =
-
-      int carModelId = carModelList
-          .firstWhere(
-              (element) => element!.carType == _carModelController.text)!
-          .id;
-      widget.appointment.carModelId = carModelId;
-      widget.appointment.serviceName = _carServiceController.text;
-      List<ServiceFranchiseLink> list1 = await serviceFranchiseList;
-
-      print(" serviceLink ${widget.appointment.toJson()}");
-
-      ServiceFranchiseLink serviceLink = list1.firstWhere((element) =>
-          element.service!.name == widget.appointment.serviceName &&
-          element.carModelId == carModelId &&
-          element.franchiseId == widget.appointment.franchiseId);
-      widget.appointment.serviceFranchiseLinkId = serviceLink.id;
-      print(" Response for service link ${serviceLink.toJson()}");
-
-      String responseMessage;
-      if (key < 1) {
-        key = await CommonApiService().getLatestID("appointment");
-        widget.appointment.id = key;
-        widget.appointment.active = true;
-        widget.appointment.status = "Recieved";
-        responseMessage = await CommonApiService()
-            .save(widget.appointment.toJson(), "appointment");
+      if (error.isNotEmpty) {
+        await showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                message: error,
+                title: "Validation error",
+              );
+            });
       } else {
-        widget.appointment.id = key;
-        responseMessage = await CommonApiService()
-            .update(key, "appointment", widget.appointment.toJson());
+        _formKey.currentState!.save();
+        validateForm();
+        int key = widget.appointment.id;
+
+        widget.appointment.clientId = widget.appointment.clientId!;
+        widget.appointment.createAt = DateTime.now();
+        widget.appointment.date = DateTime.parse(_dateController.text);
+        widget.appointment.serviceName = selectedValue;
+        widget.appointment.status = _statusController.text;
+        widget.appointment.time = _timeController.text;
+        // widget.appointment.service_franchise_link_id =
+
+        int carModelId = carModelList
+            .firstWhere((element) => element!.carType == selectedCarModelValue)!
+            .id;
+        widget.appointment.carModelId = carModelId;
+        widget.appointment.serviceName = selectedCarServiceValue;
+        List<ServiceFranchiseLink> list1 = await serviceFranchiseList;
+
+        ServiceFranchiseLink serviceLink = list1.firstWhere((element) =>
+            element.service!.name == widget.appointment.serviceName &&
+            element.carModelId == carModelId &&
+            element.franchiseId == widget.appointment.franchiseId);
+
+        widget.appointment.serviceFranchiseLinkId = serviceLink.id;
+
+        String responseMessage;
+        if (key < 1) {
+          key = await CommonApiService().getLatestID("appointment");
+          widget.appointment.id = key;
+          widget.appointment.active = true;
+          widget.appointment.status = "Recieved";
+          responseMessage = await CommonApiService()
+              .save(widget.appointment.toJson(), "appointment");
+        } else {
+          widget.appointment.id = key;
+          responseMessage = await CommonApiService()
+              .update(key, "appointment", widget.appointment.toJson());
+          if (responseMessage.contains("successfully")) {
+            if (widget.appointment.status!.contains("Completed")) {}
+          }
+        }
+        logger.d("responseMessage $responseMessage");
+
+        await showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                  message: responseMessage, title: "Confirmation");
+            });
+
         if (responseMessage.contains("successfully")) {
-          if (widget.appointment.status!.contains("Completed")) {}
+          //logEvent("liger_review_sumbit_successful");
+          Navigator.of(context).pushReplacementNamed('/home');
+          // Navigator.of(context).pop(widget.appointment);
         }
       }
-      logger.d("responseMessage $responseMessage");
-
-      await showDialog(
-          context: context,
-          builder: (c) {
-            return ErrorDialog(message: responseMessage);
-          });
-
-      if (responseMessage.contains("successfully")) {
-        //logEvent("liger_review_sumbit_successful");
-
-        Navigator.of(context).pop(widget.appointment);
-      }
     }
+  }
+
+  Future<List<String>> loadCarModelOptions() async {
+    List<ServiceFranchiseLink>? carwashServiceList = await serviceFranchiseList;
+    carModelList = carwashServiceList.map((e) => e.carModel).toList();
+
+    carModelOptions = carwashServiceList
+        .map((service) => service.carModel!.carType ?? '')
+        .toSet()
+        .toList();
+
+    setState(() {
+      carModelOptions = ['Select Model', ...carModelOptions];
+    });
+    return carModelOptions;
+  }
+
+  Future<List<String>> loadCarServiceOptions() async {
+    List<ServiceFranchiseLink>? carwashServiceList = await serviceFranchiseList;
+
+    carServiceList = carwashServiceList.map((e) => e.service).toList();
+    carServiceOptions = carwashServiceList
+        .map((service) => service.service!.name ?? '')
+        .toList();
+    setState(() {
+      carServiceOptions = ['Select Service', ...carServiceOptions];
+    });
+    return carServiceOptions;
   }
 
   Future<List<String>> fetchCarModel() async {
     List<ServiceFranchiseLink>? carwashServiceList = await serviceFranchiseList;
     carModelList = carwashServiceList.map((e) => e.carModel).toList();
 
-    List<String> lis = carwashServiceList
+    carModelOptions = carwashServiceList
         .map((service) => service.carModel!.carType ?? '')
         .toSet()
         .toList();
-    List<String> resonse = ['Select Model', ...lis];
+    List<String> resonse = ['Select Model', ...carModelOptions];
     return resonse;
   }
 
@@ -184,6 +259,26 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         .map((service) => service.service!.name ?? '')
         .toList();
     List<String> resonse = ['Select service', ...lis];
+    return resonse;
+  }
+
+  Future<List<String>> fetchCarServiceByCarModel(String carModel) async {
+    List<ServiceFranchiseLink>? carwashServiceList = await serviceFranchiseList;
+    carwashServiceList = carwashServiceList
+        .where((element) => element.carModel!.carType == carModel)
+        .toList();
+
+    carServiceList = carwashServiceList.map((e) => e.service).toList();
+    List<String> lis = carwashServiceList
+        .map((service) => service.service!.name ?? '')
+        .toList();
+    List<String> resonse = ['Select Service', ...lis];
+
+    setState(() {
+      carServiceOptions = resonse;
+      print("AFTER SELECTION ${resonse.toString()}");
+    });
+
     return resonse;
   }
 
@@ -204,20 +299,70 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              CustomFutureDropbox(
-                  width: 250,
-                  futureList: fetchCarModel(),
-                  controller: _carModelController,
-                  hintText: "",
-                  selectedValue: selectedCarModelValue),
-              CustomFutureDropbox(
-                  width: 250,
-                  futureList: fetchCarService(),
-                  controller: _carServiceController,
-                  hintText: "",
-                  selectedValue: selectedCarServiceValue),
+              Container(
+                margin: EdgeInsets.all(5),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                width: 250,
+                child: DropdownButton<String>(
+                  iconSize: 24, // Set the size of the dropdown icon
+                  elevation: 16, // Set the elevation of the dropdown
+                  iconEnabledColor: Colors.blue, // S
+                  style: const TextStyle(color: Colors.black),
+                  value: selectedCarModelValue.trim(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCarModelValue = newValue!;
+                      fetchCarServiceByCarModel(selectedCarModelValue);
+                    });
+                  },
+                  items: carModelOptions
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value.trim(),
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                width: 250,
+                child: DropdownButton<String>(
+                  iconSize: 24, // Set the size of the dropdown icon
+                  elevation: 16, // Set the elevation of the dropdown
+                  iconEnabledColor: Colors.blue, // S
+                  style: const TextStyle(color: Colors.black),
+                  value: selectedCarServiceValue.trim(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCarServiceValue = newValue!;
+                      //fetchCarServiceByCarModel(selectedCarModelValue);
+                    });
+                  },
+                  alignment: Alignment.center,
+                  items: carServiceOptions
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value.trim(),
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
               CustomCalender(
                 width: 250,
+                isMandatory: true,
                 label: "Appointment date",
                 controller: _dateController,
                 firstDate: DateTime.now(),
@@ -225,6 +370,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 selectedDate: _selectedDate,
               ),
               CustomTime(
+                isMandatory: true,
                 selectedTime: _selectedTime,
                 width: 250,
                 label: "Appointment time",

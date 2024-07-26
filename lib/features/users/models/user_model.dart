@@ -1,3 +1,5 @@
+import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
+
 class UserModel {
   int id;
   String? userId;
@@ -8,6 +10,9 @@ class UserModel {
   String? email;
   String? dateOfBirth;
   bool? active;
+  String? role;
+  int? franchiseId;
+  Franchise? franchise;
 
   UserModel({
     this.userId,
@@ -19,6 +24,9 @@ class UserModel {
     this.email,
     this.dateOfBirth,
     this.active,
+    this.role,
+    this.franchiseId,
+    this.franchise,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +40,11 @@ class UserModel {
       email: json['email'],
       dateOfBirth: json['date_of_birth'],
       active: json["active"],
+      role: json["role"],
+      franchiseId: json["franchise_id"],
+      franchise: json["franchise"] != null
+          ? Franchise.fromJson(json["franchise"])
+          : null,
     );
   }
 
@@ -46,6 +59,9 @@ class UserModel {
       'email': email,
       'date_of_birth': dateOfBirth,
       "active": active,
+      "role": role,
+      "franchise_id": franchiseId,
+      // "franchise": franchise,
     };
     return data;
   }

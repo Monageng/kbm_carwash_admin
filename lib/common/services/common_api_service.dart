@@ -19,7 +19,7 @@ class CommonApiService {
       var response = await http1.post(url,
           body: encodedRequest, headers: getHttpHeaders());
       logger.d("url : $url");
-      logger.d("encodedRequest $encodedRequest");
+      logger.d("encodedRequest $entity : $encodedRequest");
       if (response.statusCode == 201) {
         responseMessage = "Record saved successfully";
       } else {
@@ -44,7 +44,7 @@ class CommonApiService {
       var url = Uri.https(supabaseUrlv2, "/rest/v1/$entity", {"id": "eq.$id"});
 
       logger.d("Update url : $url");
-      logger.d("Update data : $updatedData");
+      logger.d("Update encodedRequest $entity: $updatedData");
       final response = await http1.patch(
         url,
         headers: getHttpHeaders(),

@@ -1,5 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/functions/common_functions.dart';
 
 // ignore: must_be_immutable
 class CustomCalender extends StatelessWidget {
@@ -10,6 +11,7 @@ class CustomCalender extends StatelessWidget {
   DateTime? firstDate;
   DateTime? lastDate;
   String? label;
+  bool? isMandatory;
 
   CustomCalender({
     super.key,
@@ -20,6 +22,7 @@ class CustomCalender extends StatelessWidget {
     this.label,
     this.lastDate,
     this.firstDate,
+    this.isMandatory,
   });
 
   @override
@@ -37,6 +40,11 @@ class CustomCalender extends StatelessWidget {
         style: const TextStyle(color: Colors.black),
         enabled: true,
         controller: controller,
+        validator: (value) {
+          if (isMandatory! == true) {
+            return getFieldValidationMessage(label!, value!);
+          }
+        },
         decoration: InputDecoration(
           suffixIcon: IconButton(
             icon: const Icon(

@@ -9,7 +9,7 @@ class PaymentTransaction {
   double? amount;
   int? clientId;
   int? franchiseId;
-  int? servcieId;
+  int? serviceId;
   UserModel? client;
   Franchise? franchise;
   CarWashService? service;
@@ -21,7 +21,7 @@ class PaymentTransaction {
     this.createAt,
     required this.id,
     this.client,
-    this.servcieId,
+    this.serviceId,
     this.franchiseId,
     this.franchise,
     this.service,
@@ -36,7 +36,7 @@ class PaymentTransaction {
           ? DateTime.parse(json['created_at'])
           : null,
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
-      servcieId: json['servcie_id'],
+      serviceId: json['service_id'],
       clientId: json['client_id'],
       client:
           json['client'] != null ? UserModel.fromJson(json['client']) : null,
@@ -58,7 +58,7 @@ class PaymentTransaction {
       'date': date?.toIso8601String(), // Serialize DateTime to ISO 8601 format
       'client_id': clientId,
       "franchise_id": franchiseId,
-      "sercive_id": servcieId,
+      "service_id": serviceId,
     };
   }
 }

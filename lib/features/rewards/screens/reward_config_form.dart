@@ -96,6 +96,23 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
 
       selectedDiscountType = rewardConfig.discountType!;
       selectedFrequency = rewardConfig.frequencyType!;
+      String title =
+          titleList.firstWhere((element) => element == rewardConfig.title!);
+      setState(() {
+        selectedTitle = title;
+      });
+
+      String rewardType = rewardTypeList
+          .firstWhere((element) => element == rewardConfig.rewardType!);
+      setState(() {
+        selectedRewardType = rewardType;
+      });
+
+      String frequency = frequencyList
+          .firstWhere((element) => element == rewardConfig.frequencyType!);
+      setState(() {
+        selectedFrequency = frequency;
+      });
     }
   }
 
@@ -172,19 +189,22 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
           child: Column(
             children: <Widget>[
               CustomDropDown(
+                  width: 300,
                   sizeOptions: titleList,
                   selected: selectedTitle,
                   controller: _titleController),
               CustomDropDown(
+                  width: 300,
                   sizeOptions: rewardTypeList,
                   selected: selectedRewardType,
                   controller: _rewardTypeController),
               CustomDropDown(
+                  width: 300,
                   sizeOptions: discountList,
                   selected: selectedDiscountType,
                   controller: _discountTypeController),
               CustomTextField(
-                width: 200,
+                width: 300,
                 controller: _rewardValueController,
                 hintText: "Reward Value ",
                 label: "Reward Value",
@@ -194,11 +214,12 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                 },
               ),
               CustomDropDown(
+                  width: 300,
                   sizeOptions: frequencyList,
                   selected: selectedFrequency,
                   controller: _frequencyTypeController),
               CustomTextField(
-                width: 200,
+                width: 300,
                 controller: _frequencyCountController,
                 hintText: "Frequency count",
                 label: "Frequency count",
@@ -208,7 +229,7 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                 },
               ),
               CustomTextField(
-                width: 200,
+                width: 300,
                 controller: _descriptionController,
                 hintText: "Description",
                 label: "Description",
@@ -218,7 +239,7 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                 },
               ),
               CustomCalender(
-                width: 200,
+                width: 300,
                 label: "From date",
                 controller: _fromDateController,
                 firstDate: DateTime.now(),
@@ -226,7 +247,7 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                 selectedDate: DateTime.now(),
               ),
               CustomCalender(
-                width: 200,
+                width: 300,
                 label: "To date",
                 controller: _toDateController,
                 firstDate: DateTime.now(),
@@ -236,14 +257,15 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Padding(
+                  Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5),
+                    margin: const EdgeInsets.symmetric(horizontal: 5),
                     child: CustomElevatedButton(
                       text: "Save",
                       onPressed: _saveForm,
                     ),
                   ),
-                  Center(
+                  Container(
                     child: CustomElevatedButton(
                       text: "Close",
                       onPressed: () {

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/booking/models/payment_transaction_model.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
+import '../../../common/widgets/error_dialog.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../../users/screens/user_list_screen.dart';
 import '../models/appointment_model.dart';
 import '../services/book_appointment_service.dart';
+import '../models/payment_transaction_model.dart';
 import 'appointment_form.dart';
 
 class AppointmentListScreen extends StatefulWidget {
@@ -74,6 +75,8 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
             child: CustomElevatedButton(
                 text: "Book appointment",
                 onPressed: () async {
+                  // Navigator.of(context).pushReplacementNamed('/userlist');
+
                   await showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -92,7 +95,7 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
               decoration: const InputDecoration(
                 labelText: 'Filter by name',
                 labelStyle: TextStyle(color: Colors.black),
-                prefixIcon: Icon(Icons.search, color: Colors.amber),
+                prefixIcon: Icon(Icons.search, color: Colors.blue),
               ),
             ),
           ),
@@ -107,7 +110,6 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                 return const Center(child: Text('No data available'));
               } else {
                 List<Appointment>? list = snapshot.data;
-                print("DDDD 1 ${list.toString()}");
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     return SingleChildScrollView(
@@ -125,7 +127,7 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                               columnSpacing: 16.0,
                               source: MyDataTableSource(list!, context,
                                   widget.franchise, refreshData),
-                              rowsPerPage: list.length < 10 ? list.length : 5,
+                              rowsPerPage: list.length < 10 ? list.length : 10,
                               availableRowsPerPage: availableRowsPerPage2,
                               onRowsPerPageChanged: (int? value) {},
                               columns: const [
@@ -179,54 +181,48 @@ class MyDataTableSource extends DataTableSource {
   final Franchise franchise;
   final BuildContext context;
   final VoidCallback refreshData;
-
   MyDataTableSource(this.list, this.context, this.franchise, this.refreshData);
-  void createTransaction(Appointment appointment) async {
-    print("createTransaction ######### ${appointment.toJson()}");
+
+  void createTransaction(Appointment appointment, BuildContext context) async {
     try {
-//   int? clientId;
-//   int? franchiseId;
-//   int? servcieId;
-//   UserModel? client;
-//   Franchise? franchise;
-//   CarWashService? service;
-
-      int key = await CommonApiService().getLatestID("appointment");
-
+      int key = await CommonApiService().getLatestID("payment_transaction");
       PaymentTransaction paymentTransaction = PaymentTransaction(
         id: key,
         clientId: appointment.clientId,
         franchiseId: appointment.franchiseId,
         createAt: DateTime.now(),
         date: DateTime.now(),
-        //amount: appointment.serviceFranchiseLink!.price,
-        //servcieId: appointment.service!.id,
+        amount: appointment.serviceFranchiseLink!.price,
+        serviceId: appointment.serviceFranchiseLink!.serviceId,
       );
-      print("paymentTransaction ######### ${paymentTransaction.toJson()}");
-      appointment.active = false;
-      appointment.client = null;
 
       String responseMessage = await CommonApiService()
-          .save(paymentTransaction.toJson(), "paymentTransaction");
-
+          .save(paymentTransaction.toJson(), "payment_transaction");
       if (responseMessage.contains("successfully")) {
+        appointment.active = true;
+        appointment.client = null;
         appointment.status = "Completed";
         responseMessage = await CommonApiService()
             .update(appointment.id, "appointment", appointment.toJson());
+
+        if (responseMessage.contains("successfully")) {
+          Navigator.of(context).pop(appointment);
+          list.remove(appointment);
+          refreshData;
+        }
       }
-    } catch (e) {}
-
-    //list.remove(item);
-    super.notifyListeners();
-    Navigator.of(context).pop(appointment);
-
-    refreshData;
+    } catch (e) {
+      await showDialog(
+          context: context,
+          builder: (c) {
+            return ErrorDialog(message: "Error $e");
+          });
+    }
   }
 
   @override
   DataRow getRow(int index) {
     final item = list[index];
-    print("DDDD item $item");
     final rowColor = MaterialStateColor.resolveWith((states) {
       if (states.contains(MaterialState.selected)) {
         return Colors.blue; // Change to the color you want when selected
@@ -249,101 +245,67 @@ class MyDataTableSource extends DataTableSource {
         DataCell(
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: CustomElevatedButton(
-                  onPressed: () async {
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AppointmentScreen(
-                          appointment: item,
-                        );
-                      },
-                    );
+              if (!item.status!.contains("Completed") &&
+                  !item.status!.contains("Expired") &&
+                  !item.status!.contains("Cancelled"))
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: CustomElevatedButton(
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AppointmentScreen(
+                            appointment: item,
+                          );
+                        },
+                      );
 
-                    refreshData();
-                  },
-                  text: "Edit",
-                  textColor: Colors.white,
+                      refreshData();
+                    },
+                    text: "Edit",
+                    textColor: Colors.white,
+                  ),
                 ),
-              ),
-              CustomElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                            title: const Text(
-                              'Complete appointment',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            content: const Text(
-                                'You sure you want to completed the appointment?',
-                                style: TextStyle(color: Colors.black)),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  createTransaction(item);
-                                },
-                                child: const Text('Yes',
+              if (!item.status!.contains("Completed") &&
+                  !item.status!.contains("Expired") &&
+                  !item.status!.contains("Cancelled"))
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                title: const Text(
+                                  'Complete appointment',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                content: const Text(
+                                    'You sure you want to completed the appointment?',
                                     style: TextStyle(color: Colors.black)),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(item);
-                                },
-                                child: const Text('No',
-                                    style: TextStyle(color: Colors.black)),
-                              ),
-                            ]);
-                      });
-                },
-                text: "Complete",
-                buttonColor: Colors.blue,
-                textColor: Colors.white,
-              ),
-              CustomElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                            title: const Text(
-                              'Delete confirmation',
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            content: const Text(
-                                'Are you sure you want to delete appointment?',
-                                style: TextStyle(color: Colors.black)),
-                            actions: <Widget>[
-                              TextButton(
-                                onPressed: () {
-                                  item.active = false;
-                                  item.client = null;
-                                  CommonApiService().update(
-                                      item.id, "appointment", item.toJson());
-                                  list.remove(item);
-                                  super.notifyListeners();
-                                  Navigator.of(context).pop(item);
-                                },
-                                child: const Text('Yes',
-                                    style: TextStyle(color: Colors.black)),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(item);
-                                },
-                                child: const Text('No',
-                                    style: TextStyle(color: Colors.black)),
-                              ),
-                            ]);
-                      });
-                },
-                text: "Delete",
-                buttonColor: Colors.blue,
-                textColor: Colors.white,
-              ),
+                                actions: <Widget>[
+                                  CustomElevatedButton(
+                                    onPressed: () {
+                                      createTransaction(item, context);
+                                    },
+                                    text: 'Yes',
+                                  ),
+                                  CustomElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(item);
+                                    },
+                                    text: 'No',
+                                  ),
+                                ]);
+                          });
+                    },
+                    text: "Complete",
+                    buttonColor: Colors.blue,
+                    textColor: Colors.white,
+                  ),
+                ),
             ],
           ),
         ),

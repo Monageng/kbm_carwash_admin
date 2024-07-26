@@ -35,11 +35,11 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
             // padding: EdgeInsets.all(padding),
             child: Column(
               children: <Widget>[
-                // buildAccordionItem(
-                //   title: 'Dashboard Details',
-                //   child: DashboardScreen(franchise: widget.franchise!),
-                //   isExpanded: true,
-                // ),
+                buildAccordionItem(
+                  title: 'Dashboard Details',
+                  child: DashboardScreen(franchise: widget.franchise!),
+                  isExpanded: true,
+                ),
                 buildAccordionItem(
                   title: 'Franchise Details',
                   child: FranchiseForm(franchise: widget.franchise!),
