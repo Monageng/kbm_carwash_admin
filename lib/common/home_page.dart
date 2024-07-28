@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/features/booking/screens/appointment_list.dart';
-import 'package:kbm_carwash_admin/features/dashboard/appointment_dash.dart';
 import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
 import 'package:kbm_carwash_admin/features/franchise/screens/franchise_form.dart';
 import 'package:kbm_carwash_admin/features/rewards/screens/reward_config_list_screen.dart';
 import 'package:kbm_carwash_admin/features/services/screens/car_wash_service_list_screen.dart';
 import 'package:kbm_carwash_admin/features/users/screens/user_list_screen.dart';
 import 'package:kbm_carwash_admin/session/app_session.dart';
+
+import '../features/dashboard/appointment_dash.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -113,7 +114,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const VerticalDivider(thickness: 1, width: 10),
           Expanded(
-            child: Container(
+            child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: _pages.elementAt(_selectedIndex)),
           )

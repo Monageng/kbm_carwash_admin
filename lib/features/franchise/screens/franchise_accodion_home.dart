@@ -25,7 +25,6 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
 
   @override
   Widget build(BuildContext context) {
-    print(" FranchiseAccordion ${widget.franchise.id}");
     return Scaffold(
       appBar: getTopNavigation(context),
       body: LayoutBuilder(
@@ -37,27 +36,27 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
               children: <Widget>[
                 buildAccordionItem(
                   title: 'Dashboard Details',
-                  child: DashboardScreen(franchise: widget.franchise!),
+                  child: DashboardScreen(franchise: widget.franchise),
                   isExpanded: true,
                 ),
                 buildAccordionItem(
                   title: 'Franchise Details',
-                  child: FranchiseForm(franchise: widget.franchise!),
+                  child: FranchiseForm(franchise: widget.franchise),
                   isExpanded: false,
                 ),
                 buildAccordionItem(
                   title: 'Appointments',
-                  child: AppointmentListScreen(franchise: widget.franchise!),
+                  child: AppointmentListScreen(franchise: widget.franchise),
                   isExpanded: false,
                 ),
                 buildAccordionItem(
                   title: 'Services',
-                  child: ServiceListScreen(franchise: widget.franchise!),
+                  child: ServiceListScreen(franchise: widget.franchise),
                   isExpanded: false,
                 ),
                 buildAccordionItem(
                   title: 'Reward Configurations',
-                  child: RewardConfigListScreen(franchise: widget.franchise!),
+                  child: RewardConfigListScreen(franchise: widget.franchise),
                   isExpanded: false,
                 ),
               ],

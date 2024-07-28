@@ -93,7 +93,6 @@ class CommonApiService {
     var url =
         Uri.https(supabaseUrlv2, "/rest/v1/provinces", {"order": "name.asc"});
 
-    print("URL $url");
     var response = await http1.get(url, headers: getHttpHeaders());
     if (response.statusCode == 200) {
       List<Province> data = (jsonDecode(response.body) as List)
@@ -110,7 +109,6 @@ class CommonApiService {
     var url =
         Uri.https(supabaseUrlv2, "/rest/v1/cities", {"order": "name.asc"});
     var response = await http1.get(url, headers: getHttpHeaders());
-    print("URL $url");
     if (response.statusCode == 200) {
       List<City> data = (jsonDecode(response.body) as List)
           .map((json) => City.fromJson(json))
@@ -131,7 +129,7 @@ class CommonApiService {
     var response = await http1.get(url, headers: getHttpHeaders());
 
     //https://jazesnfbevoyuzaizgko.supabase.co/rest/v1/cities?province.name=eq.Gauteng&select=*,province:province_uuid(*)&isActive=eq.true
-    print(" url  ${url} ");
+    logger.d(" url  ${url} ");
     if (response.statusCode == 200) {
       List<City> data = (jsonDecode(response.body) as List)
           .map((json) => City.fromJson(json))
@@ -142,10 +140,7 @@ class CommonApiService {
 
       for (var element in filteredList) {
         if (element.province != null) {
-          print("PROVICE is not null for ${element.name} ");
-        } else {
-          print("Nulll  ${element.name} ");
-        }
+        } else {}
       }
 
       return filteredList;

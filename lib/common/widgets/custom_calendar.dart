@@ -44,6 +44,7 @@ class CustomCalender extends StatelessWidget {
           if (isMandatory! == true) {
             return getFieldValidationMessage(label!, value!);
           }
+          return null;
         },
         decoration: InputDecoration(
           suffixIcon: IconButton(

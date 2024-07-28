@@ -5,7 +5,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'common/enviroment/env_variable.dart';
 import 'common/home_page.dart';
-import 'common/services/common_api_service.dart';
 import 'features/franchise/models/franchise_model.dart';
 import 'features/franchise/screens/franchise_list_screen.dart';
 import 'session/app_session.dart';

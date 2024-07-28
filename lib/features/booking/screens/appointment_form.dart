@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/widgets/widget_style.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
@@ -33,8 +32,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
-  final TextEditingController _carModelController = TextEditingController();
-  final TextEditingController _carServiceController = TextEditingController();
 
   final DateTime _selectedDate = DateTime.now();
   final TimeOfDay _selectedTime = TimeOfDay.now();
@@ -86,7 +83,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       _statusController.text = selectedStatus;
       _timeController.text = appointment.time!;
       fetchCarModel().whenComplete(() {
-        if (carModelList != null && carModelList.isNotEmpty) {
+        if (carModelList.isNotEmpty) {
           CarModel? carModel = carModelList.firstWhere(
               (element) => element!.id == appointment.carModelId,
               orElse: () => null);
@@ -98,7 +95,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
         }
       });
       fetchCarService().whenComplete(() {
-        if (carServiceList != null && carServiceList.isNotEmpty) {
+        if (carServiceList.isNotEmpty) {
           CarWashService? washService = carServiceList.firstWhere(
               (element) => element!.name == appointment.serviceName,
               orElse: () => null);
@@ -276,7 +273,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
     setState(() {
       carServiceOptions = resonse;
-      print("AFTER SELECTION ${resonse.toString()}");
     });
 
     return resonse;
@@ -300,7 +296,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.all(5),
+                margin: const EdgeInsets.all(5),
                 decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.all(
@@ -330,7 +326,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.all(8),
+                margin: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.all(

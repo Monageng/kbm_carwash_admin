@@ -37,6 +37,7 @@ class CustomTime extends StatelessWidget {
           if (isMandatory! == true) {
             return getFieldValidationMessage(label!, value!);
           }
+          return null;
         },
         style: const TextStyle(color: Colors.black),
         enabled: true,

@@ -80,7 +80,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
   String selectedToTime = "23:00 PM";
 
   Future<void> _save(BuildContext context) async {
-    int _key = widget.franchise.id;
+    int key = widget.franchise.id;
     String city = selectedCity != "Select City" ? selectedCity : "";
     String province =
         selectedProvince != "Select Province" ? selectedProvince : "";
@@ -108,15 +108,15 @@ class _FranchiseFormState extends State<FranchiseForm> {
     try {
       String responseMessage = "";
 
-      if (_key < 1) {
-        _key = await CommonApiService().getLatestID("franchise");
-        franchise.id = _key;
+      if (key < 1) {
+        key = await CommonApiService().getLatestID("franchise");
+        franchise.id = key;
         responseMessage =
             await CommonApiService().save(franchise.toJson(), "franchise");
       } else {
-        franchise.id = _key;
+        franchise.id = key;
         responseMessage = await CommonApiService()
-            .update(_key, "franchise", franchise.toJson());
+            .update(key, "franchise", franchise.toJson());
       }
 
       showDialog(
@@ -176,7 +176,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
       _contatcNumberController.text = widget.franchise.contactNumber!;
       _contactPersonController.text = widget.franchise.contactPerson!;
       _emilaController.text = widget.franchise.email!;
-      _descriptionController.text = widget.franchise!.description!;
+      _descriptionController.text = widget.franchise.description!;
       _streetAddressController.text = widget.franchise.streetAddress!;
       _countryController.text = widget.franchise.country!;
       _postalCodeController.text = "${widget.franchise.postalCode}";
@@ -331,7 +331,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
                           width: 300,
                           margin: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 5),
-                          padding: EdgeInsets.symmetric(horizontal: 50),
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
                           decoration: const BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.all(
@@ -360,14 +360,14 @@ class _FranchiseFormState extends State<FranchiseForm> {
                             }).toList(),
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Container(
                           width: 300,
                           margin: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 5),
-                          padding: EdgeInsets.symmetric(horizontal: 50),
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
                           decoration: const BoxDecoration(
                             color: Colors.blue,
                             borderRadius: BorderRadius.all(
@@ -405,6 +405,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter a postal code';
                               }
+                              return null;
 
                               // Use a regular expression to validate if the entered value is numeric
                               // if (!RegExp(r'^\d{4}$').hasMatch(value)) {

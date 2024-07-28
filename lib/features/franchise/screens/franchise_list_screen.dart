@@ -4,7 +4,6 @@ import '../../../common/functions/common_functions.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/navigation_bar.dart';
-import '../../../session/app_session.dart';
 import '../models/franchise_model.dart';
 import '../services/franchise_service.dart';
 import 'franchise_accodion_home.dart';
