@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/widgets/custom_action_button.dart';
 
 class ErrorDialog extends StatelessWidget {
   final String? message;
@@ -20,14 +21,12 @@ class ErrorDialog extends StatelessWidget {
       ),
       actions: [
         Center(
-          child: ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Ok",
-                style: TextStyle(color: Colors.white),
-              )),
+          child: CustomElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            text: "Ok",
+          ),
         ),
       ],
     );

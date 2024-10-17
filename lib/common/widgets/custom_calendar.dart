@@ -11,7 +11,7 @@ class CustomCalender extends StatelessWidget {
   DateTime? firstDate;
   DateTime? lastDate;
   String? label;
-  bool? isMandatory;
+  bool? isMandatory = false;
 
   CustomCalender({
     super.key,
@@ -22,7 +22,7 @@ class CustomCalender extends StatelessWidget {
     this.label,
     this.lastDate,
     this.firstDate,
-    this.isMandatory,
+    this.isMandatory = false,
   });
 
   @override

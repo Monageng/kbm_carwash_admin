@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../common/functions/common_functions.dart';
+import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/contact_number_text_field.dart';
@@ -63,44 +64,70 @@ class _UserScreenState extends State<UserScreen> {
     _userIdController.clear();
   }
 
+  String? validateInput() {
+    String date = _dateOfBirthController.text;
+    DateTime dateOfBirth = DateTime.parse(date);
+
+    int age = calculateAge(dateOfBirth);
+
+    if (age < 14) {
+      return "Only client older than 14 are eligible ";
+    } else {
+      return null;
+    }
+  }
+
   void _saveForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      int key = widget.user.id;
-
-      widget.user.firstName = _firstNameController.text;
-      widget.user.lastName = _lastNameController.text;
-      widget.user.title = _titleController.text;
-      widget.user.email = _emailController.text;
-      widget.user.mobileNumber = _mobileNumberController.text;
-      widget.user.dateOfBirth = _dateOfBirthController.text;
-
-      String responseMessage;
-      if (key < 1) {
-        key = await CommonApiService().getLatestID("client");
-        widget.user.id = key;
-        widget.user.active = true;
-        widget.user.userId = generateRandomString(36);
-        responseMessage =
-            await CommonApiService().save(widget.user.toJson(), "client");
+      String? validationResponse = validateInput();
+      if (validationResponse != null) {
+        await showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                  title: "Validation Error", message: validationResponse);
+            });
       } else {
-        widget.user.id = key;
-        responseMessage = await CommonApiService()
-            .update(key, "client", widget.user.toJson());
-      }
-      logger.d("responseMessage $responseMessage");
+        int key = widget.user.id;
 
-      await showDialog(
-          context: context,
-          builder: (c) {
-            return ErrorDialog(message: responseMessage);
-          });
+        widget.user.firstName = _firstNameController.text;
+        widget.user.lastName = _lastNameController.text;
+        widget.user.title = _titleController.text;
+        widget.user.email = _emailController.text;
+        widget.user.mobileNumber = _mobileNumberController.text;
+        widget.user.dateOfBirth = _dateOfBirthController.text;
+        widget.user.role = "Client";
 
-      if (responseMessage.contains("successfully")) {
-        //logEvent("liger_review_sumbit_successful");
+        String responseMessage;
+        if (key < 1) {
+          key = await CommonApiService().getLatestID("client");
+          widget.user.id = key;
+          widget.user.active = true;
+          widget.user.userId = generateRandomString(36);
+          responseMessage =
+              await CommonApiService().save(widget.user.toJson(), "client");
+        } else {
+          widget.user.id = key;
+          responseMessage = await CommonApiService()
+              .update(key, "client", widget.user.toJson());
+        }
+        logger.d("responseMessage $responseMessage");
 
-        Navigator.of(context).pop(widget.user);
+        await showDialog(
+            context: context,
+            builder: (c) {
+              return ErrorDialog(
+                message: responseMessage,
+                title: "Save details",
+              );
+            });
+
+        if (responseMessage.contains("successfully")) {
+          //logEvent("liger_review_sumbit_successful");
+
+          Navigator.of(context).pop(widget.user);
+        }
       }
     }
   }
@@ -108,8 +135,7 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Reward config details',
-          style: TextStyle(color: Colors.black)),
+      title: const Text('User details', style: TextStyle(color: Colors.black)),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -147,9 +173,10 @@ class _UserScreenState extends State<UserScreen> {
                 controller: _dateOfBirthController,
                 firstDate: DateTime.now().add(const Duration(days: -29200)),
                 selectedDate: DateTime.now(),
+                isMandatory: true,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 5),

@@ -209,7 +209,6 @@ class _FranchiseFormState extends State<FranchiseForm> {
 
   @override
   Widget build(BuildContext context) {
-    setDefaults();
     return AlertDialog(
       title: const Text('Franchise details',
           style: TextStyle(color: Colors.black)),
@@ -285,6 +284,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
                         lastDate:
                             DateTime.now().add(const Duration(days: 365898)),
                         selectedDate: _selectedFromDate,
+                        isMandatory: true,
                       ),
                       CustomCalender(
                         width: 300,
@@ -294,6 +294,7 @@ class _FranchiseFormState extends State<FranchiseForm> {
                         lastDate:
                             DateTime.now().add(const Duration(days: 365898)),
                         selectedDate: _selectedToDate,
+                        isMandatory: true,
                       ),
                     ]),
                   ),

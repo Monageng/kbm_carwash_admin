@@ -105,7 +105,7 @@ DataCell getDataCellWithWidth(String? dateValue, double width) {
     SizedBox(
       width: width,
       child: Text(
-        style: const TextStyle(color: Colors.grey),
+        style: const TextStyle(color: Colors.black),
         dateValue ?? "",
         softWrap: true,
       ),

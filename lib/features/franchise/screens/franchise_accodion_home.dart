@@ -34,31 +34,31 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
             // padding: EdgeInsets.all(padding),
             child: Column(
               children: <Widget>[
-                buildAccordionItem(
-                  title: 'Dashboard Details',
-                  child: DashboardScreen(franchise: widget.franchise),
-                  isExpanded: true,
-                ),
-                buildAccordionItem(
-                  title: 'Franchise Details',
-                  child: FranchiseForm(franchise: widget.franchise),
-                  isExpanded: false,
-                ),
-                buildAccordionItem(
-                  title: 'Appointments',
-                  child: AppointmentListScreen(franchise: widget.franchise),
-                  isExpanded: false,
-                ),
-                buildAccordionItem(
-                  title: 'Services',
-                  child: ServiceListScreen(franchise: widget.franchise),
-                  isExpanded: false,
-                ),
-                buildAccordionItem(
-                  title: 'Reward Configurations',
-                  child: RewardConfigListScreen(franchise: widget.franchise),
-                  isExpanded: false,
-                ),
+                // [buildAccordionItem(
+                //   title: 'Dashboard Details',
+                //   child: DashboardScreen(franchise: widget.franchise),
+                //   isExpanded: true,
+                // ),
+                // buildAccordionItem(
+                //   title: 'Franchise Details',
+                //   child: FranchiseForm(franchise: widget.franchise),
+                //   isExpanded: false,
+                // ),
+                // buildAccordionItem(
+                //   title: 'Appointments',
+                //   child: AppointmentListScreen(franchise: widget.franchise),
+                //   isExpanded: false,
+                // ),
+                // buildAccordionItem(
+                //   title: 'Services',
+                //   child: ServiceListScreen(franchise: widget.franchise),
+                //   isExpanded: false,
+                // ),
+                // buildAccordionItem(
+                //   title: 'Reward Configurations',
+                //   child: RewardConfigListScreen(franchise: widget.franchise),
+                //   isExpanded: false,
+                // ),]
               ],
             ),
           );

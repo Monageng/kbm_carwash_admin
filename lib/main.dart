@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'KBM Carwash platform',
-      theme: customTheme,
+      theme: lightTheme,
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => const LoginForm(),

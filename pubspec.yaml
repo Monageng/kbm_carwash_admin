@@ -16,7 +16,7 @@ dependencies:
   geolocator: ^10.1.0
   carousel_slider: ^4.2.1
   supabase_flutter: ^2.3.4
-  firebase_analytics: ^10.8.9
+  #firebase_analytics: ^10.8.9
   google_maps_flutter: ^2.5.3
   firebase_messaging: ^14.7.19
   permission_handler: ^11.3.0
@@ -30,19 +30,20 @@ dependencies:
   build_runner: ^2.4.7
   adaptive_navbar: ^0.0.2
   responsive_table: ^0.2.0+2
-  multiselect: ^0.1.0
+  multiselect: ^0.0.4
   flutter_typeahead: ^5.0.1
   amplify_flutter: ^1.6.1
   file_picker: ^6.1.1
   screenshot: ^2.1.0
   path_provider: ^2.1.2
   flutter_form_builder: ^9.1.1
-  amazon_cognito_identity_dart_2: ^3.6.0
-  amplify_auth_cognito: ^1.4.2
-  amplify_authenticator: ^1.4.2
+  #amazon_cognito_identity_dart_2: ^3.6.0
+  #amplify_auth_cognito: ^1.4.2
+  #amplify_authenticator: ^1.4.2
   flutter_spinner_time_picker: ^0.2.1
   multi_charts: ^0.3.0
   fl_chart: ^0.68.0
+  package_info_plus: ^8.0.3
 
 dev_dependencies:
   flutter_test:
