@@ -308,8 +308,8 @@ class MyDataTableSource extends DataTableSource {
                               TextButton(
                                 onPressed: () {
                                   item.active = false;
-                                  CommonApiService()
-                                      .update(item.id, "client", item.toJson());
+                                  CommonApiService().update(
+                                      item.id!, "client", item.toJson());
                                   list.remove(item);
                                   super.notifyListeners();
                                   Navigator.of(context).pop(item);

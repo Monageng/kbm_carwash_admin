@@ -1,7 +1,7 @@
 import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
 
 class UserModel {
-  int id;
+  int? id;
   String? userId;
   String? firstName;
   String? lastName;
@@ -16,7 +16,7 @@ class UserModel {
 
   UserModel({
     this.userId,
-    required this.id,
+    this.id,
     this.firstName,
     this.lastName,
     this.title,

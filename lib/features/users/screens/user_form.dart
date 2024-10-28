@@ -43,7 +43,7 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   void update(UserModel userModel) {
-    if (userModel.id > 0) {
+    if (userModel.id! > 0) {
       _firstNameController.text = userModel.firstName!;
       _lastNameController.text = userModel.lastName!;
       _titleController.text = userModel.title!;
@@ -89,7 +89,7 @@ class _UserScreenState extends State<UserScreen> {
                   title: "Validation Error", message: validationResponse);
             });
       } else {
-        int key = widget.user.id;
+        int key = widget.user.id!;
 
         widget.user.firstName = _firstNameController.text;
         widget.user.lastName = _lastNameController.text;
