@@ -88,7 +88,7 @@ class _UserListScreenState extends State<UserListScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Filter by name',
                       labelStyle: TextStyle(color: Colors.black),
-                      prefixIcon: Icon(Icons.search, color: Colors.amber),
+                      prefixIcon: Icon(Icons.search, color: Colors.blue),
                     ),
                   ),
                   const SizedBox(height: 16.0),

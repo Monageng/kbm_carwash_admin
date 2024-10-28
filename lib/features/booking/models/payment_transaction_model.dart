@@ -43,8 +43,8 @@ class PaymentTransaction {
       franchise: json['franchise'] != null
           ? Franchise.fromJson(json['franchise'])
           : null,
-      service: json['service'] != null
-          ? CarWashService.fromJson(json['service'])
+      service: json['services'] != null
+          ? CarWashService.fromJson(json['services'])
           : null,
     );
   }
