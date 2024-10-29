@@ -85,4 +85,27 @@ class BookAppointmentApiService {
     } catch (e) {}
     return Future.value([]);
   }
+
+  Future<List<Appointment>> getAllAppointmentForRankinsByFranchiseId(
+      int franchiseId) async {
+    try {
+      var url = Uri.https(supabaseUrlv2, "rest/v1/appointment", {
+        "select": "*,client(*),franchise(*)",
+        "active": "eq.true",
+        "status": "eq.Completed",
+        "franchise_id": "eq.$franchiseId"
+      });
+
+      logger.d("Url ::: $url");
+      var response = await http1.get(url, headers: getHttpHeaders());
+      logger.d("response ::: ${response.body}");
+      if (response.statusCode == 200) {
+        List<Appointment> list = (jsonDecode(response.body) as List)
+            .map((json) => Appointment.fromJson(json))
+            .toList();
+        return Future.value(list);
+      }
+    } catch (e) {}
+    return Future.value([]);
+  }
 }

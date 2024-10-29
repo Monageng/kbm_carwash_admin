@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../features/booking/screens/appointment_list.dart';
 import '../features/booking/screens/payment_transaction_list.dart';
+import '../features/booking/screens/ranking_list.dart';
 import '../features/dashboard/appointment_dash.dart';
 import '../features/franchise/models/franchise_model.dart';
 import '../features/franchise/screens/franchise_form.dart';
@@ -30,6 +31,10 @@ class _HomePageState extends State<HomePage> {
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
     PaymentTransactionListScreen(
+        franchise: AppSessionModel().loggedOnUser != null
+            ? AppSessionModel().loggedOnUser!.franchise!
+            : Franchise(id: 1, name: "name")),
+    RankOverviewScreen(
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
@@ -101,6 +106,17 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.blue,
                 ),
                 label: Text('Transactions'),
+              ),
+              NavigationRailDestination(
+                icon: Icon(
+                  Icons.book_online,
+                  color: Colors.white,
+                ),
+                selectedIcon: Icon(
+                  Icons.book_online_outlined,
+                  color: Colors.blue,
+                ),
+                label: Text('Leaderboard'),
               ),
               NavigationRailDestination(
                 icon: Icon(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kbm_carwash_admin/features/booking/services/book_appointment_service.dart';
 
+import '../../dashboard/payment_dash.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../models/payment_transaction_model.dart';
 
@@ -64,6 +65,10 @@ class _PaymentTransactionTableState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(
+                  height: 300,
+                  child: PaymentTransactionChart(
+                      transactionsFuture: futureTransactions)),
               TextField(
                 controller: _filterController,
                 style: const TextStyle(color: Colors.black),
