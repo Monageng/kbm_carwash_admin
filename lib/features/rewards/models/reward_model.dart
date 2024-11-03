@@ -31,15 +31,9 @@ class Reward {
       date: json['transaction_date'] != null
           ? DateTime.parse(json['transaction_date'])
           : null,
-      transactionAmount: json['transaction_amount'] != null
-          ? json['transaction_amount'].toDouble()
-          : null,
-      rewardAmount: json['reward_amount'] != null
-          ? json['reward_amount'].toDouble()
-          : null,
-      discountedAmount: json['discounted_amount'] != null
-          ? json['discounted_amount'].toDouble()
-          : null,
+      transactionAmount: json['transaction_amount']?.toDouble(),
+      rewardAmount: json['reward_amount']?.toDouble(),
+      discountedAmount: json['discounted_amount']?.toDouble(),
     );
   }
 

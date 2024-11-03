@@ -24,7 +24,6 @@ class _DashboardScreenState extends State<PaymentDashboardScreen> {
   List<String> bottomTitles = [];
   late Map<String, Color> restaurantColors;
   late List<Appointment>? appointments = [];
-  int _touchedIndex = -1;
 
   @override
   void initState() {
@@ -307,50 +306,6 @@ class _DashboardScreenState extends State<PaymentDashboardScreen> {
       ];
   @override
   Widget build(BuildContext context) {
-    var localPieChart = PieChart(
-      PieChartData(
-        sections: pieChartData.asMap().entries.map((entry) {
-          final index = entry.key;
-          final data = entry.value;
-          final isTouched = index == _touchedIndex;
-          final double fontSize = isTouched ? 14 : 10;
-          final double radius = isTouched ? 120 : 100;
-
-          return PieChartSectionData(
-            color: data.color,
-            value: data.value,
-            title: "${data.title} - ${data.value}",
-            radius: radius,
-            titleStyle: TextStyle(
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          );
-        }).toList(),
-        sectionsSpace: 5,
-        centerSpaceRadius: 20,
-        centerSpaceColor: Colors.white,
-        borderData: FlBorderData(
-          show: false,
-        ),
-        pieTouchData: PieTouchData(
-          touchCallback: (FlTouchEvent event, pieTouchResponse) {
-            setState(() {
-              if (!event.isInterestedForInteractions ||
-                  pieTouchResponse == null ||
-                  pieTouchResponse.touchedSection == null) {
-                _touchedIndex = -1;
-                return;
-              }
-              _touchedIndex =
-                  pieTouchResponse.touchedSection!.touchedSectionIndex;
-            });
-          },
-        ),
-      ),
-    );
-
     var appointmentStats = Expanded(
       child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -379,11 +334,8 @@ class _DashboardScreenState extends State<PaymentDashboardScreen> {
                           if (!event.isInterestedForInteractions ||
                               barTouchResponse == null ||
                               barTouchResponse.spot == null) {
-                            _touchedIndex = -1;
                             return;
                           }
-                          _touchedIndex =
-                              barTouchResponse.spot!.touchedBarGroupIndex;
                         });
                       },
                       touchTooltipData: BarTouchTooltipData(

@@ -265,13 +265,11 @@ class _RewardConfigScreenState extends State<RewardConfigScreen> {
                       onPressed: _saveForm,
                     ),
                   ),
-                  Container(
-                    child: CustomElevatedButton(
-                      text: "Close",
-                      onPressed: () {
-                        Navigator.of(context).pop(widget.rewardConfig);
-                      },
-                    ),
+                  CustomElevatedButton(
+                    text: "Close",
+                    onPressed: () {
+                      Navigator.of(context).pop(widget.rewardConfig);
+                    },
                   ),
                 ],
               ),

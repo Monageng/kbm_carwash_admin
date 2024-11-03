@@ -44,8 +44,7 @@ class RewardConfig {
       fromDate:
           json['from_date'] != null ? DateTime.parse(json['from_date']) : null,
       toDate: json['to_date'] != null ? DateTime.parse(json['to_date']) : null,
-      rewardValue:
-          json['reward_value'] != null ? json['reward_value'].toDouble() : null,
+      rewardValue: json['reward_value']?.toDouble(),
       active: json['active'] as bool?,
       discountType: json['discount_type'] as String?,
       rewardCode: json['reward_code'] as String?,

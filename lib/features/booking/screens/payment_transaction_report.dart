@@ -10,8 +10,7 @@ class MonthlyFinancialDashboard extends StatefulWidget {
   MonthlyFinancialDashboard({super.key, required this.franchise});
 
   @override
-  _MonthlyFinancialDashboardState createState() =>
-      _MonthlyFinancialDashboardState();
+  createState() => _MonthlyFinancialDashboardState();
 }
 
 class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
@@ -82,12 +81,12 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildSummaryCard('Total Revenue',
-                        '\R${totalRevenue.toStringAsFixed(2)}', Colors.blue),
+                        'R${totalRevenue.toStringAsFixed(2)}', Colors.blue),
                     _buildSummaryCard('Transactions',
                         transactions.length.toString(), Colors.green),
                     _buildSummaryCard(
                         'Avg. Amount',
-                        '\R${averageTransaction.toStringAsFixed(2)}',
+                        'R${averageTransaction.toStringAsFixed(2)}',
                         Colors.orange),
                   ],
                 ),
@@ -113,7 +112,7 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
                       return ListTile(
                         title: Text(
                             '${client["first_name"]} ${client["last_name"]}'),
-                        subtitle: Text('Amount: \R${transaction["amount"]}'),
+                        subtitle: Text('Amount: R${transaction["amount"]}'),
                         trailing: Text(transaction['created_at']
                             .substring(0, 10)), // Display date only
                       );
@@ -153,7 +152,7 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
               value,
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),
           ],

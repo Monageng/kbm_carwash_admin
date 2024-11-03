@@ -21,7 +21,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<BarChartGroupData> barData = [];
   List<PieChartSectionData> pieChartData = [];
   List<String> bottomTitles = [];
-  List<FlSpot> _spots = [];
   late Map<String, Color> restaurantColors;
   late List<Appointment>? appointments = [];
   int _touchedIndex = -1;
@@ -233,57 +232,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     return restaurantColors;
-  }
-
-  Widget _buildLegend(Map<String, Color> restaurantColors) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      child: Wrap(
-        spacing: 10,
-        children: restaurantColors.entries.map((entry) {
-          return Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                color: entry.value,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                entry.key,
-                style: const TextStyle(color: Colors.red),
-              ),
-            ],
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  Future<void> _fetchChartData() async {
-    try {
-      List<Appointment>? appointments = await BookAppointmentApiService()
-          .getAllActiveAppointmentsByFranchiseId(widget.franchise.id);
-
-      // if (appointments != null) {
-      //   List<FlSpot> spots = appointments
-      //       .map((appointment) => FlSpot(appointment.time, appointment.count))
-      //       .toList();
-      // }
-
-      // return data
-      //     .map((item) => FlSpot(item['x'].toDouble(), item['y'].toDouble()))
-      //     .toList();
-
-      // List<FlSpot> spots = await ApiService().fetchChartData();
-      // setState(() {
-      //   _spots = spots;
-      //   _isLoading = false;
-      // });
-    } catch (e) {
-      print('Failed to fetch chart data: $e');
-    }
   }
 
   LineChartData get sampleData1 => LineChartData(
@@ -538,150 +486,146 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
 
-    var appointmentStats = Container(
-      //width: MediaQuery.of(context).size.width * 0.5,
-      child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                // decoration: BoxDecoration(
-                //   color: Colors.white,
-                //   borderRadius: BorderRadius.circular(8),
-                //   boxShadow: [
-                //     BoxShadow(
-                //       color: Colors.blue.withOpacity(0.2),
-                //       spreadRadius: 3,
-                //       blurRadius: 5,
-                //       offset: const Offset(0, 3), // changes position of shadow
-                //     ),
-                //   ],
-                // ),
-                padding: const EdgeInsets.all(16),
-                height: 350,
-                child: BarChart(
-                  BarChartData(
-                    extraLinesData: ExtraLinesData(
-                      extraLinesOnTop: true,
-                      horizontalLines: [
-                        HorizontalLine(
-                          y: 10,
-                          color: Colors.grey,
-                          strokeWidth: 2,
-                        ),
-                      ],
-                    ),
-                    barTouchData: BarTouchData(
-                      enabled: true,
-                      touchCallback: (FlTouchEvent event, barTouchResponse) {
-                        setState(() {
-                          if (!event.isInterestedForInteractions ||
-                              barTouchResponse == null ||
-                              barTouchResponse.spot == null) {
-                            _touchedIndex = -1;
-                            return;
-                          }
-                          _touchedIndex =
-                              barTouchResponse.spot!.touchedBarGroupIndex;
-                        });
+    var appointmentStats = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+              // decoration: BoxDecoration(
+              //   color: Colors.white,
+              //   borderRadius: BorderRadius.circular(8),
+              //   boxShadow: [
+              //     BoxShadow(
+              //       color: Colors.blue.withOpacity(0.2),
+              //       spreadRadius: 3,
+              //       blurRadius: 5,
+              //       offset: const Offset(0, 3), // changes position of shadow
+              //     ),
+              //   ],
+              // ),
+              padding: const EdgeInsets.all(16),
+              height: 350,
+              child: BarChart(
+                BarChartData(
+                  extraLinesData: ExtraLinesData(
+                    extraLinesOnTop: true,
+                    horizontalLines: [
+                      HorizontalLine(
+                        y: 10,
+                        color: Colors.grey,
+                        strokeWidth: 2,
+                      ),
+                    ],
+                  ),
+                  barTouchData: BarTouchData(
+                    enabled: true,
+                    touchCallback: (FlTouchEvent event, barTouchResponse) {
+                      setState(() {
+                        if (!event.isInterestedForInteractions ||
+                            barTouchResponse == null ||
+                            barTouchResponse.spot == null) {
+                          _touchedIndex = -1;
+                          return;
+                        }
+                        _touchedIndex =
+                            barTouchResponse.spot!.touchedBarGroupIndex;
+                      });
+                    },
+                    touchTooltipData: BarTouchTooltipData(
+                      getTooltipColor: (group) {
+                        return Colors.blue;
                       },
-                      touchTooltipData: BarTouchTooltipData(
-                        getTooltipColor: (group) {
-                          return Colors.blue;
-                        },
-                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          return BarTooltipItem(
-                            '${rod.toY}',
-                            const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+                      getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                        return BarTooltipItem(
+                          '${rod.toY}',
+                          const TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        );
+                      },
+                    ),
+                  ),
+                  backgroundColor: const Color.fromARGB(120, 30, 151, 238),
+                  alignment: BarChartAlignment.spaceEvenly,
+                  maxY: barData
+                          .map((group) => group.barRods[0].toY)
+                          .reduce((a, b) => a > b ? a : b) +
+                      1,
+                  barGroups: barData,
+                  titlesData: FlTitlesData(
+                    show: true,
+                    leftTitles: AxisTitles(
+                      axisNameSize: 14,
+                      drawBelowEverything: true,
+                      axisNameWidget: const Text(
+                        'Number of appointments',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 20,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              value.toInt().toString(),
+                              style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14),
+                            ),
                           );
                         },
+                        //  margin: 8,
                       ),
                     ),
-                    backgroundColor: const Color.fromARGB(120, 30, 151, 238),
-                    alignment: BarChartAlignment.spaceEvenly,
-                    maxY: barData
-                            .map((group) => group.barRods[0].toY)
-                            .reduce((a, b) => a > b ? a : b) +
-                        1,
-                    barGroups: barData,
-                    titlesData: FlTitlesData(
-                      show: true,
-                      leftTitles: AxisTitles(
-                        axisNameSize: 14,
-                        drawBelowEverything: true,
-                        axisNameWidget: const Text(
-                          'Number of appointments',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 20,
-                          interval: 1,
-                          getTitlesWidget: (value, meta) {
-                            return Padding(
+                    bottomTitles: AxisTitles(
+                      // axisNameSize: 14,
+                      drawBelowEverything: true,
+
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 60,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() < 0 ||
+                              value.toInt() >= bottomTitles.length) {
+                            return Container();
+                          }
+                          return Transform.rotate(
+                            angle: -pi / 4,
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                value.toInt().toString(),
+                                bottomTitles[value.toInt()],
                                 style: const TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14),
                               ),
-                            );
-                          },
-                          //  margin: 8,
-                        ),
+                            ),
+                          );
+                        },
+                        //margin: 8,
                       ),
-                      bottomTitles: AxisTitles(
-                        // axisNameSize: 14,
-                        drawBelowEverything: true,
-
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 60,
-                          getTitlesWidget: (value, meta) {
-                            if (value.toInt() < 0 ||
-                                value.toInt() >= bottomTitles.length) {
-                              return Container();
-                            }
-                            return Transform.rotate(
-                              angle: -pi / 4,
-                              alignment: Alignment.bottomCenter,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  bottomTitles[value.toInt()],
-                                  style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14),
-                                ),
-                              ),
-                            );
-                          },
-                          //margin: 8,
-                        ),
-                      ),
-                    ),
-                    gridData: const FlGridData(
-                      show: true,
-                      drawHorizontalLine: true,
-                      drawVerticalLine: true,
-                    ),
-                    borderData: FlBorderData(
-                      show: true,
-                      border: Border.all(color: Colors.blue, width: 2),
                     ),
                   ),
-                )),
-          ]),
-    );
+                  gridData: const FlGridData(
+                    show: true,
+                    drawHorizontalLine: true,
+                    drawVerticalLine: true,
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: Border.all(color: Colors.blue, width: 2),
+                  ),
+                ),
+              )),
+        ]);
 
     // return Scaffold(
     //   appBar: CustomAppBar(),

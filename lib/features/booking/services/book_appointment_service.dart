@@ -20,7 +20,9 @@ class BookAppointmentApiService {
             .toList();
         return Future.value(list);
       }
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
     return Future.value([]);
   }
 
@@ -35,7 +37,9 @@ class BookAppointmentApiService {
             .toList();
         return Future.value(list);
       }
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
     return Future.value([]);
   }
 
@@ -58,7 +62,9 @@ class BookAppointmentApiService {
             .toList();
         return Future.value(list);
       }
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
     return Future.value([]);
   }
 
@@ -82,7 +88,9 @@ class BookAppointmentApiService {
             .toList();
         return Future.value(list);
       }
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
     return Future.value([]);
   }
 
@@ -105,7 +113,9 @@ class BookAppointmentApiService {
             .toList();
         return Future.value(list);
       }
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
     return Future.value([]);
   }
 }

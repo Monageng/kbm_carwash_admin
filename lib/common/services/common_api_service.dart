@@ -129,7 +129,7 @@ class CommonApiService {
     var response = await http1.get(url, headers: getHttpHeaders());
 
     //https://jazesnfbevoyuzaizgko.supabase.co/rest/v1/cities?province.name=eq.Gauteng&select=*,province:province_uuid(*)&isActive=eq.true
-    logger.d(" url  ${url} ");
+    logger.d(" url  $url ");
     if (response.statusCode == 200) {
       List<City> data = (jsonDecode(response.body) as List)
           .map((json) => City.fromJson(json))

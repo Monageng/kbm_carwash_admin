@@ -25,7 +25,7 @@ class _FranchiseAccordionState extends State<FranchiseAccordion> {
       body: LayoutBuilder(
         builder: (context, constraints) {
           //double padding = constraints.maxWidth * 0.05;
-          return SingleChildScrollView(
+          return const SingleChildScrollView(
             // padding: EdgeInsets.all(padding),
             child: Column(
               children: <Widget>[

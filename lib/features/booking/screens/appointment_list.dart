@@ -223,15 +223,15 @@ class MyDataTableSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final item = list[index];
-    final rowColor = MaterialStateColor.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    final rowColor = WidgetStateColor.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return Colors.blue; // Change to the color you want when selected
       }
       return Colors.white; // Default color
     });
 
     return DataRow.byIndex(
-      color: MaterialStateProperty.all<Color>(rowColor),
+      color: WidgetStateProperty.all<Color>(rowColor),
       index: index,
       cells: [
         getDataCellWithWidth(item.id.toString(), 20),

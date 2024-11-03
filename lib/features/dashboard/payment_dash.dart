@@ -48,10 +48,10 @@ class PaymentTransactionChart extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: _bottomTitles(),
                     ),
-                    rightTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles:
-                        AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false)),
                   ),
                   borderData: FlBorderData(show: false),
                   barTouchData: BarTouchData(
@@ -61,8 +61,8 @@ class PaymentTransactionChart extends StatelessWidget {
                         String month = DateFormat.MMM().format(
                             DateTime(0, group.x.toInt())); // Use x for month
                         return BarTooltipItem(
-                          '$month\n\R${rod.toY.toStringAsFixed(2)}',
-                          TextStyle(
+                          '$month\nR${rod.toY.toStringAsFixed(2)}',
+                          const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         );
                       },

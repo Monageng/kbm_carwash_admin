@@ -214,7 +214,7 @@ class MyDataTableSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final item = list[index];
-    final rowColor = WidgetStateColor.resolveWith((states) {
+    WidgetStateColor.resolveWith((states) {
       if (states.contains(WidgetState.selected)) {
         return Colors.blue; // Change to the color you want when selected
       }

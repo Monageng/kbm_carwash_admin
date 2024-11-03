@@ -164,13 +164,13 @@ class MyDataTableSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final item = _list[index];
-    final rowColor = MaterialStateColor.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    final rowColor = WidgetStateColor.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return Colors.blue; // Change to the color you want when selected
       }
       return const Color.fromARGB(255, 231, 225, 225); // Default color
     });
-    return DataRow(color: MaterialStateProperty.all<Color>(rowColor), cells: [
+    return DataRow(color: WidgetStateProperty.all<Color>(rowColor), cells: [
       getDataCell(item.id.toString(), MediaQuery.of(context).size.width * 0.01),
       getDataCell(item.name, MediaQuery.of(context).size.width * 0.10),
       getDataCell(item.contactPerson, MediaQuery.of(context).size.width * 0.10),

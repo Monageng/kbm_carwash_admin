@@ -215,14 +215,14 @@ class MyDataTableSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final service = services[index];
-    final rowColor = MaterialStateColor.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    final rowColor = WidgetStateColor.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return Colors.blue; // Change to the color you want when selected
       }
       return Colors.white; // Default color
     });
     return DataRow.byIndex(
-      color: MaterialStateProperty.all<Color>(rowColor),
+      color: WidgetStateProperty.all<Color>(rowColor),
       index: index,
       cells: [
         DataCell(Text(
@@ -272,8 +272,8 @@ class RunningTotalDataTableSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     final service = services[index];
-    final rowColor = MaterialStateColor.resolveWith((states) {
-      if (states.contains(MaterialState.selected)) {
+    final rowColor = WidgetStateColor.resolveWith((states) {
+      if (states.contains(WidgetState.selected)) {
         return Colors.blue; // Change to the color you want when selected
       }
       return Colors.white; // Default color
@@ -291,7 +291,7 @@ class RunningTotalDataTableSource extends DataTableSource {
 //   final String? description;
 
     return DataRow.byIndex(
-      color: MaterialStateProperty.all<Color>(rowColor),
+      color: WidgetStateProperty.all<Color>(rowColor),
       index: index,
       cells: [
         DataCell(Text(

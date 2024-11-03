@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http1;
+import 'package:kbm_carwash_admin/common/functions/logger_utils.dart';
 
 import '../../../common/enviroment/env_variable.dart';
 import '../models/franchise_model.dart';
@@ -10,7 +11,6 @@ class FranchiseApiService {
     try {
       var url = Uri.https(supabaseUrlv2, "/rest/v1/franchise",
           {"active": "eq.true", "order": "name.asc"});
-      print("Url ###::: $url");
       var response = await http1.get(url, headers: {"apikey": supabaseKeyv2});
 
       if (response.statusCode == 200) {
@@ -21,7 +21,7 @@ class FranchiseApiService {
         return Future.value(categoryList);
       }
     } catch (e) {
-      print(e);
+      logger.e(e);
     }
     return Future.value([]);
   }

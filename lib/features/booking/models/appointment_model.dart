@@ -60,7 +60,6 @@ class Appointment {
           : null,
     );
 
-    print("DDDD serviceFranchiseLink ${appointment.toJson()}");
     return appointment;
   }
 

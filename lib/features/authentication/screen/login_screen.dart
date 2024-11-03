@@ -64,7 +64,9 @@ class _LoginFormState extends State<LoginForm> {
 
       printTime(
           "******************************************After Auth sign out ");
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
 
     try {
       printTime("******************************************Before Auth login ");
@@ -239,19 +241,16 @@ class _LoginFormState extends State<LoginForm> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Container(
-                          //width: MediaQuery.of(context).size.width * 0.6,
-                          child: CustomElevatedButton(
-                            text: "Login",
-                            onPressed: () async {
-                              if (_formKeys.currentState!.validate()) {
-                                setState(() {
-                                  _loading = true;
-                                });
-                                signIn();
-                              }
-                            },
-                          ),
+                        CustomElevatedButton(
+                          text: "Login",
+                          onPressed: () async {
+                            if (_formKeys.currentState!.validate()) {
+                              setState(() {
+                                _loading = true;
+                              });
+                              signIn();
+                            }
+                          },
                         ),
                       ],
                     ),

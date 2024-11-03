@@ -95,7 +95,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
       ResendResponse authResponse = await Supabase.instance.client.auth
           .resend(email: username, type: OtpType.signup);
 
-      logger.i("ResendSignUpCodeResult Value ${authResponse} ");
+      logger.i("ResendSignUpCodeResult Value $authResponse ");
 
       // ignore: use_build_context_synchronously
       showDialog(
