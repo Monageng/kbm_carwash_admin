@@ -1,13 +1,12 @@
+// ignore_for_file: unused_field
+
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/home_page.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
-//import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../common/functions/logger_utils.dart';
-import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/custom_password_field.dart';
 import '../../../common/widgets/email_text_field.dart';
@@ -87,8 +86,6 @@ class _LoginFormState extends State<LoginForm> {
         //     parameters: {"test": "my test at ${DateTime.now()}"});
         printTime(
             "******************************************Before fetchUserAttributes ");
-        List<AuthUserAttribute> authUser1 =
-            await Amplify.Auth.fetchUserAttributes();
 
         AuthUser authUser = await Amplify.Auth.getCurrentUser();
         printTime(

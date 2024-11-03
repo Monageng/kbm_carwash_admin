@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/features/booking/screens/payment_transaction_report.dart';
 
 import '../features/booking/screens/appointment_list.dart';
-import '../features/booking/screens/payment_transaction_list.dart';
 import '../features/booking/screens/ranking_list.dart';
 import '../features/dashboard/appointment_dash.dart';
 import '../features/franchise/models/franchise_model.dart';
 import '../features/franchise/screens/franchise_form.dart';
+import '../features/reviews/screens/review_list.dart';
 import '../features/rewards/screens/reward_config_list_screen.dart';
 import '../features/services/screens/car_wash_service_list_screen.dart';
 import '../features/users/screens/user_list_screen.dart';
@@ -30,7 +31,11 @@ class _HomePageState extends State<HomePage> {
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
-    PaymentTransactionListScreen(
+    // PaymentTransactionListScreen(
+    //     franchise: AppSessionModel().loggedOnUser != null
+    //         ? AppSessionModel().loggedOnUser!.franchise!
+    //         : Franchise(id: 1, name: "name")),
+    MonthlyFinancialDashboard(
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
@@ -50,6 +55,10 @@ class _HomePageState extends State<HomePage> {
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
+    ReviewListScreen(
+        franchise: AppSessionModel().loggedOnUser != null
+            ? AppSessionModel().loggedOnUser!.franchise!
+            : Franchise(id: 1, name: "name")),
     FranchiseForm(
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
@@ -62,8 +71,33 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  NavigationRailDestination getMenuTitle(String title) {
+    return NavigationRailDestination(
+      icon: const Icon(
+        Icons.dashboard,
+        color: Colors.white,
+      ),
+      selectedIcon: const Icon(
+        Icons.dashboard_outlined,
+        color: Colors.blue,
+      ),
+      label: Text(title),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var destinations = [
+      getMenuTitle("Dashboard"),
+      getMenuTitle("Bookings"),
+      getMenuTitle("Transactions"),
+      getMenuTitle("Leaderboard"),
+      getMenuTitle("Customers"),
+      getMenuTitle("Services"),
+      getMenuTitle("Rewards Configuration"),
+      getMenuTitle("Review"),
+      getMenuTitle("Franchise Settings"),
+    ];
     return Scaffold(
       body: Row(
         children: <Widget>[
@@ -71,98 +105,9 @@ class _HomePageState extends State<HomePage> {
             selectedIndex: _selectedIndex,
             onDestinationSelected: _onItemTapped,
             labelType: NavigationRailLabelType.all,
-            unselectedLabelTextStyle: TextStyle(color: Colors.white),
-            backgroundColor: Color.fromARGB(255, 61, 118, 242),
-            destinations: const [
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.dashboard,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.dashboard_outlined,
-                  color: Colors.blue,
-                ),
-                label: Text('Dashboard'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.book_online,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.book_online_outlined,
-                  color: Colors.blue,
-                ),
-                label: Text('Bookings'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.book_online,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.book_online_outlined,
-                  color: Colors.blue,
-                ),
-                label: Text('Transactions'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.book_online,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.book_online_outlined,
-                  color: Colors.blue,
-                ),
-                label: Text('Leaderboard'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.people,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.people_outline,
-                  color: Colors.blue,
-                ),
-                label: Text('Customers'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.car_repair,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.car_repair_outlined,
-                  color: Colors.blue,
-                ),
-                label: Text('Services'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.star_border,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.star_border,
-                  color: Colors.blue,
-                ),
-                label: Text('Rewards Configuration'),
-              ),
-              NavigationRailDestination(
-                icon: Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                ),
-                selectedIcon: Icon(
-                  Icons.settings_outlined,
-                  color: Colors.blue,
-                ),
-                label: Text('Franchise Settings'),
-              ),
-            ],
+            unselectedLabelTextStyle: const TextStyle(color: Colors.white),
+            backgroundColor: const Color.fromARGB(255, 61, 118, 242),
+            destinations: destinations,
           ),
           const VerticalDivider(thickness: 1, width: 10),
           Expanded(

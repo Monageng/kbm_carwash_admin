@@ -359,7 +359,7 @@ class _DashboardScreenState extends State<PaymentDashboardScreen> {
             Container(
                 padding: const EdgeInsets.all(16),
                 height: 350,
-                color: Colors.red,
+                //color: Colors.red,
                 child: BarChart(
                   BarChartData(
                     extraLinesData: ExtraLinesData(
@@ -499,7 +499,7 @@ class _DashboardScreenState extends State<PaymentDashboardScreen> {
                           horizontal: 10, vertical: 2),
                       decoration: boxDecoration,
                       width: chartWidth * 0.9,
-                      height: 350,
+                      height: 400,
                       child: Column(
                         children: [
                           const Text(

@@ -38,7 +38,7 @@ class _RankOverviewScreenState extends State<RankOverviewScreen> {
   Future<List<RankModel>> fetchRankingData() async {
     List<Appointment> appointmentList = await BookAppointmentApiService()
         .getAllAppointmentForRankinsByFranchiseId(
-            AppSessionModel().loggedOnUser!.franchise!.id!);
+            AppSessionModel().loggedOnUser!.franchise!.id);
     List<RankModel> rankingList = [];
 
     if (appointmentList.isNotEmpty) {
@@ -68,7 +68,7 @@ class _RankOverviewScreenState extends State<RankOverviewScreen> {
         rankingList[i].rank = i + 1;
       }
 
-      RankModel? existingRank = rankingList.firstWhere(
+      rankingList.firstWhere(
         (rank) =>
             rank.firstName == AppSessionModel().loggedOnUser!.firstName &&
             rank.lastName == AppSessionModel().loggedOnUser!.lastName,

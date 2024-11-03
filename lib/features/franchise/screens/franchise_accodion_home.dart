@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/dashboard/appointment_dash.dart';
 
 import '../../../common/widgets/navigation_bar.dart';
-import '../../booking/screens/appointment_list.dart';
-import '../../rewards/screens/reward_config_list_screen.dart';
-import '../../services/screens/car_wash_service_list_screen.dart';
 import '../models/franchise_model.dart';
-import 'franchise_form.dart';
 
 class FranchiseAccordion extends StatefulWidget {
   final Franchise franchise;
