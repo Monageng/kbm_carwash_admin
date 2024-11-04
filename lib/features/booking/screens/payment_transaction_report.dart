@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../models/payment_transaction_model.dart';
 import '../services/book_appointment_service.dart';
+import 'transaction_data_table.dart';
 
 class MonthlyFinancialDashboard extends StatefulWidget {
   Franchise franchise;
@@ -80,14 +81,21 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildSummaryCard('Total Revenue',
-                        'R${totalRevenue.toStringAsFixed(2)}', Colors.blue),
-                    _buildSummaryCard('Transactions',
-                        transactions.length.toString(), Colors.green),
                     _buildSummaryCard(
-                        'Avg. Amount',
-                        'R${averageTransaction.toStringAsFixed(2)}',
-                        Colors.orange),
+                      'Total Revenue',
+                      'R${totalRevenue.toStringAsFixed(2)}',
+                      Colors.blue,
+                    ),
+                    _buildSummaryCard(
+                      'Transactions',
+                      transactions.length.toString(),
+                      Colors.green,
+                    ),
+                    _buildSummaryCard(
+                      'Avg. Amount',
+                      'R${averageTransaction.toStringAsFixed(2)}',
+                      Colors.orange,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -102,26 +110,74 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
                 ),
                 const SizedBox(height: 10),
 
-                // Recent Transactions List
+                // Paginated DataTable for Recent Transactions
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      final transaction = transactions[index];
-                      final client = transaction['client'];
-                      return ListTile(
-                        title: Text(
-                            '${client["first_name"]} ${client["last_name"]}'),
-                        subtitle: Text('Amount: R${transaction["amount"]}'),
-                        trailing: Text(transaction['created_at']
-                            .substring(0, 10)), // Display date only
-                      );
-                    },
+                  child: PaginatedDataTable(
+                    header: Text('Transactions'),
+                    columns: [
+                      DataColumn(label: Text('Client Name')),
+                      DataColumn(label: Text('Amount')),
+                      DataColumn(label: Text('Date')),
+                    ],
+                    source: TransactionDataSource(transactions),
+                    rowsPerPage:
+                        5, // Adjust the number of rows per page as needed
+                    showCheckboxColumn: false,
                   ),
                 ),
               ],
             ),
           );
+          // return Padding(
+          //   padding: const EdgeInsets.all(16.0),
+          //   child: Column(
+          //     children: [
+          //       // Summary Cards
+          //       Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           _buildSummaryCard('Total Revenue',
+          //               'R${totalRevenue.toStringAsFixed(2)}', Colors.blue),
+          //           _buildSummaryCard('Transactions',
+          //               transactions.length.toString(), Colors.green),
+          //           _buildSummaryCard(
+          //               'Avg. Amount',
+          //               'R${averageTransaction.toStringAsFixed(2)}',
+          //               Colors.orange),
+          //         ],
+          //       ),
+          //       const SizedBox(height: 20),
+
+          //       // Recent Transactions Header
+          //       Align(
+          //         alignment: Alignment.centerLeft,
+          //         child: Text(
+          //           'Recent Transactions',
+          //           style: Theme.of(context).textTheme.headlineMedium,
+          //         ),
+          //       ),
+          //       const SizedBox(height: 10),
+          //       return TransactionDataSource(transactions),
+          //       // Recent Transactions List
+          //       // Expanded(
+          //       //   child: ListView.builder(
+          //       //     itemCount: transactions.length,
+          //       //     itemBuilder: (context, index) {
+          //       //       final transaction = transactions[index];
+          //       //       final client = transaction['client'];
+          //       //       return ListTile(
+          //       //         title: Text(
+          //       //             '${client["first_name"]} ${client["last_name"]}'),
+          //       //         subtitle: Text('Amount: R${transaction["amount"]}'),
+          //       //         trailing: Text(transaction['created_at']
+          //       //             .substring(0, 10)), // Display date only
+          //       //       );
+          //       //     },
+          //       //   ),
+          //       // ),
+          //     ],
+          //   ),
+          // );
         },
       ),
     );

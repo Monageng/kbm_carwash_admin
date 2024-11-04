@@ -30,7 +30,8 @@ class ReviewModel {
       rating: json['rating'],
       reviewDate: DateTime.parse(json['review_date']),
       franchiseId: json['franchise_id'],
-      client: UserModel.fromJson(json['client']),
+      client:
+          json['client'] != null ? UserModel.fromJson(json['client']) : null,
     );
   }
 

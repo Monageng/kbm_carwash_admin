@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/functions/logger_utils.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/model/city_model.dart';
@@ -124,7 +125,9 @@ class _FranchiseFormState extends State<FranchiseForm> {
           builder: (c) {
             return ErrorDialog(message: responseMessage);
           });
-    } catch (e) {}
+    } catch (e) {
+      logger.e(e);
+    }
   }
 
   @override
