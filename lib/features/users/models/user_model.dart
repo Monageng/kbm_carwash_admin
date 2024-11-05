@@ -9,6 +9,7 @@ class UserModel {
   String? mobileNumber;
   String? email;
   String? dateOfBirth;
+  DateTime? createdAt;
   bool? active;
   String? role;
   int? franchiseId;
@@ -25,11 +26,23 @@ class UserModel {
     this.dateOfBirth,
     this.active,
     this.role,
+    this.createdAt,
     this.franchiseId,
     this.franchise,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    print("json ### $json");
+    String date = json["created_at"];
+    print("date ### $date");
+    DateTime formatedDate = DateTime.now();
+    if (date != null) {
+      date = date.substring(0, 10);
+      print("date ### $date");
+      formatedDate = DateTime.parse(date);
+      print("formatedDate ### $formatedDate");
+    }
+
     return UserModel(
       id: json['id'],
       userId: json['user_id'],
@@ -39,6 +52,7 @@ class UserModel {
       mobileNumber: json['mobile_number'],
       email: json['email'],
       dateOfBirth: json['date_of_birth'],
+      createdAt: formatedDate,
       active: json["active"],
       role: json["role"],
       franchiseId: json["franchise_id"],
@@ -58,6 +72,7 @@ class UserModel {
       'mobile_number': mobileNumber,
       'email': email,
       'date_of_birth': dateOfBirth,
+      'created_at': createdAt,
       "active": active,
       "role": role,
       "franchise_id": franchiseId,

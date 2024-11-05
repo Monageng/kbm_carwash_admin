@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/reviews/models/review_model.dart';
-import 'package:kbm_carwash_admin/features/reviews/services/review_service.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../franchise/models/franchise_model.dart';
+import '../models/review_model.dart';
+import '../services/review_service.dart';
 
 class ReviewListScreen extends StatefulWidget {
   Franchise franchise;
@@ -25,7 +25,6 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
 
   @override
   void initState() {
-    print("Insi _ReviewListScreenState");
     super.initState();
     getData();
     _filterController.addListener(() {
@@ -158,6 +157,7 @@ class MyDataTableSource extends DataTableSource {
           getDataCellWithWidth(formatDateTime(item.reviewDate), 80),
           getDataCellWithWidth('${item.rating}', 80),
           getDataCellWithWidth('${item.review}', 180),
+          getDataCellWithWidth('Action', 180),
         ]);
   }
 

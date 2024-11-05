@@ -1,189 +1,154 @@
 import 'package:flutter/material.dart';
-
 import '../../franchise/models/franchise_model.dart';
 import '../models/payment_transaction_model.dart';
 import '../services/book_appointment_service.dart';
-import 'transaction_data_table.dart';
 
 class MonthlyFinancialDashboard extends StatefulWidget {
-  Franchise franchise;
+  final Franchise franchise;
 
-  MonthlyFinancialDashboard({super.key, required this.franchise});
+  const MonthlyFinancialDashboard({super.key, required this.franchise});
 
   @override
   createState() => _MonthlyFinancialDashboardState();
 }
 
 class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
-  // Simulated async function to fetch transactions data
+  late Future<List<Map<String, dynamic>>> futureTransactions;
+
+  @override
+  void initState() {
+    super.initState();
+    futureTransactions = fetchTransactions();
+  }
+
   Future<List<Map<String, dynamic>>> fetchTransactions() async {
-    // Fetch transactions from API
     List<PaymentTransaction> paymentList = await BookAppointmentApiService()
         .getAllPaymentTranactionsByFranchiseId(widget.franchise.id);
 
-    // Map each PaymentTransaction to a Map<String, dynamic>
     return paymentList
         .map((transaction) => {
               'id': transaction.id,
-              'created_at': transaction.createAt.toString(),
+              'created_at': transaction.date.toString(),
               'amount': transaction.amount,
               'client': {
-                'first_name': transaction.client!.firstName,
-                'last_name': transaction.client!.lastName,
+                'first_name': transaction.client?.firstName,
+                'last_name': transaction.client?.lastName,
               },
             })
         .toList();
   }
 
-  // Helper function to calculate total revenue
   double calculateTotalRevenue(List<Map<String, dynamic>> transactions) {
     return transactions.fold(
         0, (sum, transaction) => sum + transaction['amount']);
   }
 
-  // Helper function to get average transaction amount
   double calculateAverageTransaction(List<Map<String, dynamic>> transactions) {
     return transactions.isEmpty
         ? 0
         : calculateTotalRevenue(transactions) / transactions.length;
   }
 
+  Map<String, List<Map<String, dynamic>>> groupTransactionsByMonth(
+      List<Map<String, dynamic>> transactions) {
+    Map<String, List<Map<String, dynamic>>> groupedTransactions = {};
+    for (var transaction in transactions) {
+      final date = DateTime.parse(transaction['created_at']);
+      final month = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+      groupedTransactions.putIfAbsent(month, () => []).add(transaction);
+    }
+    return groupedTransactions;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Monthly Dashboard'),
-      // ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: fetchTransactions(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // Loading indicator while waiting for data
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            // Error handling if fetching data fails
-            return const Center(child: Text('Error loading transactions'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Handle case when no data is available
-            return const Center(child: Text('No transactions found'));
-          }
+      appBar: AppBar(
+        title: const Text('Monthly Financial Dashboard'),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: futureTransactions,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text("No transactions found."));
+            }
 
-          // Data successfully fetched
-          final transactions = snapshot.data!;
-          final totalRevenue = calculateTotalRevenue(transactions);
-          final averageTransaction = calculateAverageTransaction(transactions);
+            final transactions = snapshot.data!;
+            final totalRevenue = calculateTotalRevenue(transactions);
+            final averageTransaction =
+                calculateAverageTransaction(transactions);
+            final groupedTransactions = groupTransactionsByMonth(transactions);
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Summary Cards
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildSummaryCard(
-                      'Total Revenue',
-                      'R${totalRevenue.toStringAsFixed(2)}',
-                      Colors.blue,
-                    ),
-                    _buildSummaryCard(
-                      'Transactions',
-                      transactions.length.toString(),
-                      Colors.green,
-                    ),
-                    _buildSummaryCard(
-                      'Avg. Amount',
-                      'R${averageTransaction.toStringAsFixed(2)}',
-                      Colors.orange,
-                    ),
-                  ],
-                ),
+                _buildSummaryRow(
+                    totalRevenue, transactions.length, averageTransaction),
                 const SizedBox(height: 20),
-
-                // Recent Transactions Header
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Recent Transactions',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                // Paginated DataTable for Recent Transactions
                 Expanded(
-                  child: PaginatedDataTable(
-                    header: Text('Transactions'),
-                    columns: [
-                      DataColumn(label: Text('Client Name')),
-                      DataColumn(label: Text('Amount')),
-                      DataColumn(label: Text('Date')),
-                    ],
-                    source: TransactionDataSource(transactions),
-                    rowsPerPage:
-                        5, // Adjust the number of rows per page as needed
-                    showCheckboxColumn: false,
+                  child: ListView.builder(
+                    itemCount: groupedTransactions.keys.length,
+                    itemBuilder: (context, index) {
+                      final month = groupedTransactions.keys.elementAt(index);
+                      final monthlyTransactions = groupedTransactions[month]!;
+                      final monthlyTotal = monthlyTransactions.fold(
+                          0.0, (sum, tx) => sum + tx['amount']);
+
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        elevation: 3,
+                        child: ExpansionTile(
+                          title: Text("Month: $month",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text(
+                              "Total: R${monthlyTotal.toStringAsFixed(2)}"),
+                          children: monthlyTransactions.map((transaction) {
+                            return ListTile(
+                              title: Text(
+                                  "${transaction['client']['first_name']} ${transaction['client']['last_name']}"),
+                              subtitle:
+                                  Text("Amount: R${transaction['amount']}"),
+                              trailing: Text(
+                                  "Date: ${transaction['created_at'].substring(0, 10)}",
+                                  style: const TextStyle(fontSize: 12)),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
-            ),
-          );
-          // return Padding(
-          //   padding: const EdgeInsets.all(16.0),
-          //   child: Column(
-          //     children: [
-          //       // Summary Cards
-          //       Row(
-          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //         children: [
-          //           _buildSummaryCard('Total Revenue',
-          //               'R${totalRevenue.toStringAsFixed(2)}', Colors.blue),
-          //           _buildSummaryCard('Transactions',
-          //               transactions.length.toString(), Colors.green),
-          //           _buildSummaryCard(
-          //               'Avg. Amount',
-          //               'R${averageTransaction.toStringAsFixed(2)}',
-          //               Colors.orange),
-          //         ],
-          //       ),
-          //       const SizedBox(height: 20),
-
-          //       // Recent Transactions Header
-          //       Align(
-          //         alignment: Alignment.centerLeft,
-          //         child: Text(
-          //           'Recent Transactions',
-          //           style: Theme.of(context).textTheme.headlineMedium,
-          //         ),
-          //       ),
-          //       const SizedBox(height: 10),
-          //       return TransactionDataSource(transactions),
-          //       // Recent Transactions List
-          //       // Expanded(
-          //       //   child: ListView.builder(
-          //       //     itemCount: transactions.length,
-          //       //     itemBuilder: (context, index) {
-          //       //       final transaction = transactions[index];
-          //       //       final client = transaction['client'];
-          //       //       return ListTile(
-          //       //         title: Text(
-          //       //             '${client["first_name"]} ${client["last_name"]}'),
-          //       //         subtitle: Text('Amount: R${transaction["amount"]}'),
-          //       //         trailing: Text(transaction['created_at']
-          //       //             .substring(0, 10)), // Display date only
-          //       //       );
-          //       //     },
-          //       //   ),
-          //       // ),
-          //     ],
-          //   ),
-          // );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
-  // Method to build summary cards
+  Widget _buildSummaryRow(
+      double totalRevenue, int totalTransactions, double averageTransaction) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildSummaryCard("Total Revenue",
+            "R${totalRevenue.toStringAsFixed(2)}", Colors.blue),
+        _buildSummaryCard(
+            "Transactions", totalTransactions.toString(), Colors.green),
+        _buildSummaryCard("Avg. Amount",
+            "R${averageTransaction.toStringAsFixed(2)}", Colors.orange),
+      ],
+    );
+  }
+
   Widget _buildSummaryCard(String title, String value, Color color) {
     return Expanded(
       child: Container(

@@ -20,13 +20,13 @@ class ReferralListScreen extends StatelessWidget {
       referrerName: 'John Doe',
       referredName: 'Jane Smith',
       referralCode: 'ABC123',
-      referralDate: DateTime.now().subtract(Duration(days: 2)),
+      referralDate: DateTime.now().subtract(const Duration(days: 2)),
     ),
     Referral(
       referrerName: 'Alex Johnson',
       referredName: 'Chris Lee',
       referralCode: 'XYZ789',
-      referralDate: DateTime.now().subtract(Duration(days: 5)),
+      referralDate: DateTime.now().subtract(const Duration(days: 5)),
     ),
     // Add more Referral objects here as needed
   ];
@@ -50,7 +50,7 @@ class ReferralListScreen extends StatelessWidget {
               elevation: 3,
               margin: const EdgeInsets.symmetric(vertical: 8.0),
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.person,
                   color: Colors.blueAccent,
                   size: 40,
@@ -72,7 +72,7 @@ class ReferralListScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.arrow_forward_ios,
                   color: Colors.blue,
                   size: 16,

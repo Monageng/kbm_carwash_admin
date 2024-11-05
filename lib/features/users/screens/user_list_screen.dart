@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../common/functions/common_functions.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
@@ -6,6 +7,7 @@ import '../../booking/models/appointment_model.dart';
 import '../../booking/screens/appointment_form.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../../rewards/screens/reward_allocation_list_screen.dart';
+import '../models/user_data.dart';
 import '../models/user_model.dart';
 import '../services/car_wash_api_service.dart';
 import 'user_form.dart';
@@ -50,6 +52,83 @@ class _UserListScreenState extends State<UserListScreen> {
   void getData() {
     _futureList = UserApiService().getAllUsers();
     _originalfutureList = _futureList;
+  }
+
+  List<NewUsersData> getMonthlyNewUsersData(List<UserModel> users) {
+    Map<String, int> monthlyCount = {};
+    for (var user in users) {
+      final date = user.createdAt!;
+      final monthKey =
+          "${date.year}-${date.month.toString().padLeft(2, '0')}"; // e.g., "2024-07"
+
+      if (!monthlyCount.containsKey(monthKey)) {
+        monthlyCount[monthKey] = 0;
+      }
+      monthlyCount[monthKey] = monthlyCount[monthKey]! + 1;
+    }
+
+    // Convert to list of NewUsersData
+    return monthlyCount.entries
+        .map((entry) => NewUsersData(entry.key, entry.value))
+        .toList();
+  }
+
+  Widget _buildNewUsersChart(List<UserModel> users) {
+    final data = getMonthlyNewUsersData(users);
+    return SfCartesianChart(
+      title: const ChartTitle(
+        text: 'Monthly New Users',
+        textStyle: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+      primaryXAxis: const CategoryAxis(
+        title: AxisTitle(
+          text: 'Month',
+          textStyle: TextStyle(fontSize: 14, color: Colors.black54),
+        ),
+        labelRotation: 45, // Rotates labels for better readability
+        majorGridLines: MajorGridLines(width: 0), // Hides vertical grid lines
+      ),
+      primaryYAxis: const NumericAxis(
+        title: AxisTitle(
+          text: 'Number of New Users',
+          textStyle: TextStyle(fontSize: 14, color: Colors.black54),
+        ),
+        labelFormat: '{value}', // Customize label format if needed
+        majorTickLines: MajorTickLines(size: 8),
+        axisLine: AxisLine(width: 0), // Removes main axis line
+      ),
+      series: <CartesianSeries>[
+        ColumnSeries<NewUsersData, String>(
+          dataSource: data,
+          xValueMapper: (NewUsersData user, _) => user.month,
+          yValueMapper: (NewUsersData user, _) => user.count,
+          color: Colors.blueAccent,
+          borderRadius:
+              const BorderRadius.all(Radius.circular(4)), // Rounded bars
+          dataLabelSettings: const DataLabelSettings(
+            isVisible: true,
+            labelAlignment: ChartDataLabelAlignment.top,
+            textStyle: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ],
+      legend: const Legend(
+        isVisible: false,
+      ),
+      tooltipBehavior: TooltipBehavior(
+        enable: true,
+        format: 'point.x : point.y',
+        color: Colors.blueGrey,
+      ),
+      plotAreaBorderWidth: 0, // Removes border around plot area
+    );
   }
 
   @override
@@ -131,6 +210,7 @@ class _UserListScreenState extends State<UserListScreen> {
                                       columns: _buildColumns(constraints),
                                     ),
                                   ),
+                                  _buildNewUsersChart(list),
                                 ],
                               ),
                             );
