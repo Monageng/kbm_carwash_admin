@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http1;
+import 'package:kbm_carwash_admin/features/rewards/models/referal_model.dart';
 import 'dart:async';
 import 'dart:convert';
 
@@ -39,6 +40,27 @@ class RewardsApiService {
       if (response.statusCode == 200) {
         List<RewardConfig> list = (jsonDecode(response.body) as List)
             .map((json) => RewardConfig.fromJson(json))
+            .toList();
+        return Future.value(list);
+      }
+    } catch (e) {
+      logger.e("object ${e.toString()}");
+    }
+    return Future.value([]);
+  }
+
+  Future<List<Referral>> getAllReferals() async {
+    try {
+      var url = Uri.https(supabaseUrlv2, "rest/v1/referal", {
+        "select": "*,recipient_client(*),sender_client(*)",
+        "order": "valid_from.asc"
+      });
+      logger.d("Url ::: $url");
+      var response = await http1.get(url, headers: getHttpHeaders());
+      logger.d("response ::: ${response.body}");
+      if (response.statusCode == 200) {
+        List<Referral> list = (jsonDecode(response.body) as List)
+            .map((json) => Referral.fromJson(json))
             .toList();
         return Future.value(list);
       }
