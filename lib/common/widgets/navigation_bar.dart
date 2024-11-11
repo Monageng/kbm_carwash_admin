@@ -25,6 +25,7 @@ AppBar getTopNavigation(BuildContext context) {
       LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth > 800) {
+            // Large screen: show all buttons
             return Row(
               children: [
                 _buildTextButton(
@@ -43,7 +44,7 @@ AppBar getTopNavigation(BuildContext context) {
                     )),
               ],
             );
-          } else {
+          } else if (constraints.maxWidth > 600) {
             // Medium screen: show fewer buttons
             return Row(
               children: [
@@ -53,6 +54,54 @@ AppBar getTopNavigation(BuildContext context) {
                     UserListScreen(
                       franchise: Franchise(id: -1, name: ""),
                     )),
+              ],
+            );
+          } else {
+            // Small screen: use PopupMenuButton or Drawer for all options
+            return PopupMenuButton<String>(
+              icon: const Icon(Icons.menu, color: Colors.white),
+              onSelected: (value) {
+                switch (value) {
+                  case 'Franchise List':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => const FranchiseListScreen()),
+                    );
+                    break;
+                  case 'Dashboard':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => DashboardScreen(
+                                franchise: Franchise(id: -1, name: "name"),
+                              )),
+                    );
+                    break;
+                  case 'Clients':
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => UserListScreen(
+                                franchise: Franchise(id: -1, name: ""),
+                              )),
+                    );
+                    break;
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'Franchise List',
+                  child: Text('Franchise List'),
+                ),
+                const PopupMenuItem(
+                  value: 'Dashboard',
+                  child: Text('Dashboard'),
+                ),
+                const PopupMenuItem(
+                  value: 'Clients',
+                  child: Text('Clients'),
+                ),
               ],
             );
           }

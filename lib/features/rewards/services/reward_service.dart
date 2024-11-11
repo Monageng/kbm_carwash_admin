@@ -100,7 +100,7 @@ class RewardsApiService {
           {"select": "*,reward_config(*)", "client_id": "eq.$clientId"});
       logger.d("Url ::: $url");
       var response = await http1.get(url, headers: getHttpHeaders());
-
+      logger.d("response ::: ${response.body}");
       if (response.statusCode == 200) {
         List<RewardRunningTotal> list = (jsonDecode(response.body) as List)
             .map((json) => RewardRunningTotal.fromJson(json))
