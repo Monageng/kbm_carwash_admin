@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/booking/screens/payment_transaction_report.dart';
-import 'package:kbm_carwash_admin/features/rewards/screens/referal_list_screen.dart';
 
 import '../features/booking/screens/appointment_list.dart';
+import '../features/booking/screens/payment_transaction_report.dart';
 import '../features/booking/screens/ranking_list.dart';
 import '../features/dashboard/appointment_dash.dart';
 import '../features/franchise/models/franchise_model.dart';
 import '../features/franchise/screens/franchise_form.dart';
 import '../features/reviews/screens/review_list.dart';
+import '../features/rewards/screens/referal_list_screen.dart';
 import '../features/rewards/screens/reward_config_list_screen.dart';
 import '../features/services/screens/car_wash_service_list_screen.dart';
 import '../features/users/screens/user_list_screen.dart';
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
-    ReferralListScreen(),
+    const ReferralListScreen(),
     FranchiseForm(
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!

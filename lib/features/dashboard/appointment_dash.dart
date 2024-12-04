@@ -185,7 +185,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return restaurantColors;
   }
 
-  Widget _buildBarChart(double width) {
+  Widget _buildBarChartNew(double width) {
+    double maxYValue = barData.isNotEmpty
+        ? barData
+                .map((group) => group.barRods[0].toY)
+                .reduce((a, b) => a > b ? a : b) *
+            1.1
+        : 1; // Adding a 10% buffer
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: boxDecoration,
@@ -201,129 +208,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           Expanded(
-            child: BarChart(BarChartData(
-              extraLinesData: ExtraLinesData(
-                extraLinesOnTop: false,
-                horizontalLines: [
-                  HorizontalLine(
-                    y: 10,
-                    color: Colors.blue,
-                    strokeWidth: 2,
-                  ),
-                ],
-              ),
-              barTouchData: BarTouchData(
-                enabled: true,
-                touchCallback: (FlTouchEvent event, barTouchResponse) {
-                  setState(() {
-                    if (!event.isInterestedForInteractions ||
-                        barTouchResponse == null ||
-                        barTouchResponse.spot == null) {
-                      return;
-                    }
-                  });
-                },
-                touchTooltipData: BarTouchTooltipData(
-                  getTooltipColor: (group) {
-                    return Colors.blue;
-                  },
-                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                    return BarTooltipItem(
-                      '${rod.toY}',
-                      const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    );
-                  },
+            child: BarChart(
+              BarChartData(
+                extraLinesData: const ExtraLinesData(
+                  extraLinesOnTop: false,
                 ),
-              ),
-              backgroundColor: const Color.fromARGB(120, 30, 151, 238),
-              alignment: BarChartAlignment.spaceEvenly,
-              maxY: barData.isNotEmpty
-                  ? barData
-                          .map((group) => group.barRods[0].toY)
-                          .reduce((a, b) => a > b ? a : b) +
-                      1
-                  : 1,
-              barGroups: barData,
-              titlesData: FlTitlesData(
-                show: true,
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false), // Hide top title
-                ),
-                leftTitles: AxisTitles(
-                  axisNameSize: 14,
-                  drawBelowEverything: true,
-                  axisNameWidget: const Text(
-                    'Number of appointments',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
+                backgroundColor: const Color.fromARGB(120, 30, 151, 238),
+                alignment: BarChartAlignment.spaceEvenly,
+                maxY: maxYValue, // Dynamic maxY
+                barGroups: barData,
+                titlesData: FlTitlesData(
+                    show: true,
+                    leftTitles: const AxisTitles(
+                      axisNameSize: 14,
+                      drawBelowEverything: true,
+                      axisNameWidget: Text(
+                        'Number of appointments',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 20,
-                    interval: 1,
-                    getTitlesWidget: (value, meta) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          value.toInt().toString(),
-                          style: const TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                        ),
-                      );
-                    },
-                    //  margin: 8,
-                  ),
+                    bottomTitles: AxisTitles(
+                      drawBelowEverything: true,
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 60,
+                        getTitlesWidget: (value, meta) {
+                          if (value.toInt() < 0 ||
+                              value.toInt() >= bottomTitles.length) {
+                            return Container();
+                          }
+                          return Transform.rotate(
+                            angle: -pi / 4,
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                bottomTitles[value.toInt()],
+                                style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    topTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false))),
+                gridData: const FlGridData(
+                  show: true,
+                  //drawHorizontalLine: true,
+                  drawVerticalLine: true,
                 ),
-                bottomTitles: AxisTitles(
-                  // axisNameSize: 14,
-                  drawBelowEverything: true,
-
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 60,
-                    getTitlesWidget: (value, meta) {
-                      if (value.toInt() < 0 ||
-                          value.toInt() >= bottomTitles.length) {
-                        return Container();
-                      }
-                      return Transform.rotate(
-                        angle: -pi / 4,
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            bottomTitles[value.toInt()],
-                            style: const TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14),
-                          ),
-                        ),
-                      );
-                    },
-                    //margin: 8,
-                  ),
-                ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false), // Hide top title
+                borderData: FlBorderData(
+                  show: true,
+                  border: Border.all(color: Colors.blue, width: 2),
                 ),
               ),
-              gridData: const FlGridData(
-                show: true,
-                drawHorizontalLine: true,
-                drawVerticalLine: true,
-              ),
-              borderData: FlBorderData(
-                show: true,
-                border: Border.all(color: Colors.blue, width: 2),
-              ),
-            )),
+            ),
           ),
         ],
       ),
@@ -411,7 +358,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: _buildBarChart(chartWidth),
+                    child: _buildBarChartNew(chartWidth),
                   ),
                   SizedBox(width: isSmallScreen ? 0 : 16),
                   if (!isSmallScreen)
@@ -430,243 +377,5 @@ class _DashboardScreenState extends State<DashboardScreen> {
         );
       },
     );
-
-    // var localPieChart = PieChart(
-    //   PieChartData(
-    //     sections: pieChartData.asMap().entries.map((entry) {
-    //       final index = entry.key;
-    //       final data = entry.value;
-    //       final isTouched = index == _touchedIndex;
-    //       final double fontSize = isTouched ? 14 : 10;
-    //       final double radius = isTouched ? 120 : 100;
-
-    //       return PieChartSectionData(
-    //         color: data.color,
-    //         value: data.value,
-    //         title: "${data.title} - ${data.value}",
-    //         radius: radius,
-    //         titleStyle: TextStyle(
-    //           fontSize: fontSize,
-    //           fontWeight: FontWeight.bold,
-    //           color: Colors.black,
-    //         ),
-    //       );
-    //     }).toList(),
-    //     sectionsSpace: 5,
-    //     centerSpaceRadius: 20,
-    //     centerSpaceColor: Colors.white,
-    //     borderData: FlBorderData(
-    //       show: false,
-    //     ),
-    //     pieTouchData: PieTouchData(
-    //       touchCallback: (FlTouchEvent event, pieTouchResponse) {
-    //         setState(() {
-    //           if (!event.isInterestedForInteractions ||
-    //               pieTouchResponse == null ||
-    //               pieTouchResponse.touchedSection == null) {
-    //             _touchedIndex = -1;
-    //             return;
-    //           }
-    //           _touchedIndex =
-    //               pieTouchResponse.touchedSection!.touchedSectionIndex;
-    //         });
-    //       },
-    //     ),
-    //   ),
-    // );
-
-    // var appointmentStats = Column(
-    //     mainAxisSize: MainAxisSize.min,
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Container(
-    //           padding: const EdgeInsets.all(16),
-    //           height: 350,
-    //           child: BarChart(
-    //             BarChartData(
-    //               extraLinesData: ExtraLinesData(
-    //                 extraLinesOnTop: true,
-    //                 horizontalLines: [
-    //                   HorizontalLine(
-    //                     y: 10,
-    //                     color: Colors.grey,
-    //                     strokeWidth: 2,
-    //                   ),
-    //                 ],
-    //               ),
-    //               barTouchData: BarTouchData(
-    //                 enabled: true,
-    //                 touchCallback: (FlTouchEvent event, barTouchResponse) {
-    //                   setState(() {
-    //                     if (!event.isInterestedForInteractions ||
-    //                         barTouchResponse == null ||
-    //                         barTouchResponse.spot == null) {
-    //                       _touchedIndex = -1;
-    //                       return;
-    //                     }
-    //                     _touchedIndex =
-    //                         barTouchResponse.spot!.touchedBarGroupIndex;
-    //                   });
-    //                 },
-    //                 touchTooltipData: BarTouchTooltipData(
-    //                   getTooltipColor: (group) {
-    //                     return Colors.blue;
-    //                   },
-    //                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
-    //                     return BarTooltipItem(
-    //                       '${rod.toY}',
-    //                       const TextStyle(
-    //                           color: Colors.white, fontWeight: FontWeight.bold),
-    //                     );
-    //                   },
-    //                 ),
-    //               ),
-    //               backgroundColor: const Color.fromARGB(120, 30, 151, 238),
-    //               alignment: BarChartAlignment.spaceEvenly,
-    //               maxY: barData
-    //                       .map((group) => group.barRods[0].toY)
-    //                       .reduce((a, b) => a > b ? a : b) +
-    //                   1,
-    //               barGroups: barData,
-    //               titlesData: FlTitlesData(
-    //                 show: true,
-    //                 leftTitles: AxisTitles(
-    //                   axisNameSize: 14,
-    //                   drawBelowEverything: true,
-    //                   axisNameWidget: const Text(
-    //                     'Number of appointments',
-    //                     style: TextStyle(
-    //                       fontSize: 14,
-    //                       color: Colors.blue,
-    //                       fontWeight: FontWeight.bold,
-    //                     ),
-    //                   ),
-    //                   sideTitles: SideTitles(
-    //                     showTitles: true,
-    //                     reservedSize: 20,
-    //                     interval: 1,
-    //                     getTitlesWidget: (value, meta) {
-    //                       return Padding(
-    //                         padding: const EdgeInsets.all(8.0),
-    //                         child: Text(
-    //                           value.toInt().toString(),
-    //                           style: const TextStyle(
-    //                               color: Colors.blue,
-    //                               fontWeight: FontWeight.bold,
-    //                               fontSize: 14),
-    //                         ),
-    //                       );
-    //                     },
-    //                     //  margin: 8,
-    //                   ),
-    //                 ),
-    //                 bottomTitles: AxisTitles(
-    //                   // axisNameSize: 14,
-    //                   drawBelowEverything: true,
-
-    //                   sideTitles: SideTitles(
-    //                     showTitles: true,
-    //                     reservedSize: 60,
-    //                     getTitlesWidget: (value, meta) {
-    //                       if (value.toInt() < 0 ||
-    //                           value.toInt() >= bottomTitles.length) {
-    //                         return Container();
-    //                       }
-    //                       return Transform.rotate(
-    //                         angle: -pi / 4,
-    //                         alignment: Alignment.bottomCenter,
-    //                         child: Padding(
-    //                           padding: const EdgeInsets.all(8.0),
-    //                           child: Text(
-    //                             bottomTitles[value.toInt()],
-    //                             style: const TextStyle(
-    //                                 color: Colors.blue,
-    //                                 fontWeight: FontWeight.bold,
-    //                                 fontSize: 14),
-    //                           ),
-    //                         ),
-    //                       );
-    //                     },
-    //                     //margin: 8,
-    //                   ),
-    //                 ),
-    //               ),
-    //               gridData: const FlGridData(
-    //                 show: true,
-    //                 drawHorizontalLine: true,
-    //                 drawVerticalLine: true,
-    //               ),
-    //               borderData: FlBorderData(
-    //                 show: true,
-    //                 border: Border.all(color: Colors.blue, width: 2),
-    //               ),
-    //             ),
-    //           )),
-    //     ]);
-
-    // return SingleChildScrollView(
-    //   child: Padding(
-    //     // color: Colors.red,
-    //     padding: const EdgeInsets.all(16.0),
-    //     child: LayoutBuilder(
-    //       builder: (context, constraints) {
-    //         double chartWidth = constraints.maxWidth * 0.5;
-    //         return Column(
-    //           mainAxisAlignment: MainAxisAlignment.start,
-    //           crossAxisAlignment: CrossAxisAlignment.start,
-    //           children: [
-    //             Row(
-    //               mainAxisAlignment: MainAxisAlignment.start,
-    //               crossAxisAlignment: CrossAxisAlignment.start,
-    //               children: [
-    //                 Container(
-    //                   margin: const EdgeInsets.symmetric(
-    //                       horizontal: 10, vertical: 2),
-    //                   decoration: boxDecoration,
-    //                   width: chartWidth * 0.9,
-    //                   height: 380,
-    //                   child: Column(
-    //                     children: [
-    //                       const Text(
-    //                         'Total Bookings Per Month',
-    //                         style: TextStyle(
-    //                           color: Colors.blue,
-    //                           fontSize: 16,
-    //                           fontWeight: FontWeight.bold,
-    //                         ),
-    //                       ),
-    //                       Expanded(child: appointmentStats),
-    //                     ],
-    //                   ),
-    //                 ),
-    //                 Container(
-    //                   margin: const EdgeInsets.symmetric(
-    //                       horizontal: 10, vertical: 2),
-    //                   decoration: boxDecoration,
-    //                   width: chartWidth * 0.4,
-    //                   height: 380,
-    //                   child: Column(
-    //                     children: [
-    //                       const Text(
-    //                         'Total Bookings Per Service',
-    //                         style: TextStyle(
-    //                           color: Colors.blue,
-    //                           fontSize: 16,
-    //                           fontWeight: FontWeight.bold,
-    //                         ),
-    //                       ),
-    //                       Expanded(child: localPieChart),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //             const SizedBox(height: 20),
-    //           ],
-    //         );
-    //       },
-    //     ),
-    //   ),
-    // );
   }
 }

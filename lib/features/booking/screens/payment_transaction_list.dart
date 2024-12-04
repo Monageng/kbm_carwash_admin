@@ -13,8 +13,7 @@ class PaymentTransactionListScreen extends StatefulWidget {
   PaymentTransactionListScreen({super.key, required this.franchise});
 
   @override
-  _PaymentTransactionTableState createState() =>
-      _PaymentTransactionTableState();
+  createState() => _PaymentTransactionTableState();
 }
 
 class _PaymentTransactionTableState

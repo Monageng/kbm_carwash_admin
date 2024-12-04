@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/widgets/widget_style.dart';
-import 'package:kbm_carwash_admin/features/rewards/models/referal_model.dart';
-import 'package:kbm_carwash_admin/features/rewards/services/reward_service.dart';
+
+import '../models/referal_model.dart';
+import '../services/reward_service.dart';
 
 class ReferralListScreen extends StatefulWidget {
-  ReferralListScreen({super.key});
+  const ReferralListScreen({super.key});
 
   @override
   State<ReferralListScreen> createState() => _ReferralListScreenState();

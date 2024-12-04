@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
@@ -145,17 +146,17 @@ class _DashboardScreenState extends State<PaymentDashboardScreen> {
 
     DateTime now = DateTime.now();
     DateTime date = DateTime(now.year, DateTime.january, 1);
+    Map<String, int> sortedData = LinkedHashMap(); // To maintain order
 
     for (int i = 0; i < 12; i++) {
       String month = DateFormat('yyyy-MM').format(date);
-
-      if (groupedData.containsKey(month)) {
-        groupedData[month] = groupedData[month]!;
-      } else {
-        groupedData[month] = 0;
-      }
+      sortedData[month] = groupedData[month] ?? 0;
       date = _addMonths(date, 1);
     }
+
+    // Clear original map and replace with sorted data
+    groupedData.clear();
+    groupedData.addAll(sortedData);
   }
 
   LinearGradient get _barsGradient => const LinearGradient(

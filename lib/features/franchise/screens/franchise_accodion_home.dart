@@ -9,7 +9,7 @@ class FranchiseAccordion extends StatefulWidget {
   const FranchiseAccordion({super.key, required this.franchise});
 
   @override
-  _FranchiseAccordionState createState() => _FranchiseAccordionState();
+  createState() => _FranchiseAccordionState();
 }
 
 class _FranchiseAccordionState extends State<FranchiseAccordion> {

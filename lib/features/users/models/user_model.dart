@@ -1,4 +1,4 @@
-import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
+import '../../franchise/models/franchise_model.dart';
 
 class UserModel {
   int? id;
@@ -32,16 +32,10 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    print("json ### $json");
     String date = json["created_at"];
-    print("date ### $date");
     DateTime formatedDate = DateTime.now();
-    if (date != null) {
-      date = date.substring(0, 10);
-      print("date ### $date");
-      formatedDate = DateTime.parse(date);
-      print("formatedDate ### $formatedDate");
-    }
+    date = date.substring(0, 10);
+    formatedDate = DateTime.parse(date);
 
     return UserModel(
       id: json['id'],

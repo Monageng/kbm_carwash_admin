@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/session/app_session.dart';
 
-import '../../../common/functions/common_functions.dart';
+import '../../../session/app_session.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../models/appointment_model.dart';
 import '../models/rank_model.dart';
@@ -13,15 +12,11 @@ class RankOverviewScreen extends StatefulWidget {
   Franchise franchise;
 
   @override
-  _RankOverviewScreenState createState() => _RankOverviewScreenState();
+  createState() => _RankOverviewScreenState();
 }
 
 class _RankOverviewScreenState extends State<RankOverviewScreen> {
   late Future<List<RankModel>>? rankingListFuture;
-  late RankingDataSource _rankingDataSource;
-
-  final bool _sortAscending = true;
-  final int _sortColumnIndex = 0;
 
   @override
   void initState() {
@@ -29,9 +24,7 @@ class _RankOverviewScreenState extends State<RankOverviewScreen> {
     rankingListFuture = fetchRankingData();
 
     rankingListFuture!.then((data) {
-      setState(() {
-        _rankingDataSource = RankingDataSource(data);
-      });
+      setState(() {});
     });
   }
 
@@ -101,55 +94,164 @@ class _RankOverviewScreenState extends State<RankOverviewScreen> {
                 child: Text('No rankings available.'),
               );
             } else {
-              return PaginatedDataTable(
-                showFirstLastButtons: true,
-                arrowHeadColor: Colors.black,
-                sortAscending: _sortAscending,
-                sortColumnIndex: _sortColumnIndex,
-                onPageChanged: (value) {},
-                header: const Text(
-                  "Leaderboard",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-                columns: const [
-                  DataColumn(
-                    label: Text('Rank'),
-                  ),
-                  DataColumn(
-                    label: Text('First Name'),
-                  ),
-                  DataColumn(
-                    label: Text('Last Name'),
-                  ),
-                  DataColumn(
-                    label: Text('Washes'),
-                  ),
-                ],
-                source: _rankingDataSource,
-                columnSpacing: 20,
-                availableRowsPerPage: availableRowsPerPage2,
-                onRowsPerPageChanged: (int? value) {},
-                rowsPerPage:
-                    snapshot.data!.length < 10 ? snapshot.data!.length : 10,
-                headingRowColor:
-                    WidgetStateColor.resolveWith((states) => Colors.blueAccent),
-                // headingTextStyle: const TextStyle(
-                //   color: Colors.white,
-                //   fontWeight: FontWeight.bold,
-                // ),
-                // dataRowColor: WidgetStateProperty.resolveWith(
-                //   (Set<MaterialState> states) {
-                //     if (states.contains(MaterialState.selected)) {
-                //       return Colors.blue.withOpacity(0.1);
-                //     }
-                //     return Colors.transparent;
-                //   },
-                // ),
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  var ranking = snapshot.data![index];
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 12.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 10.0),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.blueAccent.withOpacity(0.2),
+                          child: const Icon(
+                            Icons.star,
+                            color: Colors.blueAccent,
+                            size: 30,
+                          ),
+                        ),
+                        title: Text(
+                          "${ranking.rank}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${ranking.firstName}  ${ranking.lastName}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'Washed : ${ranking.count ?? 'Unavailable'}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                'Washed : ${ranking.count ?? 'Unavailable'}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              const SizedBox(height: 2),
+                              Text(
+                                'From: ${ranking.fromDate?.toLocal().toString().split(' ')[0] ?? 'N/A'}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                'To Date: ${ranking.toDate?.toLocal().toString().split(' ')[0] ?? 'N/A'}',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              // const SizedBox(height: 2),
+                              // Text(
+                              //   'Status: ${referral.status ?? 'Unknown'}',
+                              //   style: TextStyle(
+                              //     fontSize: 14,
+                              //     color: referral.status == 'Active'
+                              //         ? Colors.green
+                              //         : Colors.redAccent,
+                              //   ),
+                              // ),
+                              // const SizedBox(height: 2),
+                              // Text(
+                              //   'Description: ${referral.desciption ?? 'No description provided.'}',
+                              //   style: const TextStyle(
+                              //     fontSize: 14,
+                              //     color: Colors.black54,
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.blueAccent,
+                          size: 18,
+                        ),
+                        onTap: () {
+                          // Navigate to referral details if needed
+                        },
+                      ),
+                    ),
+                  );
+                },
               );
+              // return PaginatedDataTable(
+              //   showFirstLastButtons: true,
+              //   arrowHeadColor: Colors.black,
+              //   sortAscending: _sortAscending,
+              //   sortColumnIndex: _sortColumnIndex,
+              //   onPageChanged: (value) {},
+              //   header: const Text(
+              //     "Leaderboard",
+              //     style: TextStyle(
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 18,
+              //       color: Colors.black,
+              //     ),
+              //   ),
+              //   columns: const [
+              //     DataColumn(
+              //       label: Text('Rank'),
+              //     ),
+              //     DataColumn(
+              //       label: Text('First Name'),
+              //     ),
+              //     DataColumn(
+              //       label: Text('Last Name'),
+              //     ),
+              //     DataColumn(
+              //       label: Text('Washes'),
+              //     ),
+              //   ],
+              //   source: _rankingDataSource,
+              //   columnSpacing: 20,
+              //   availableRowsPerPage: availableRowsPerPage2,
+              //   onRowsPerPageChanged: (int? value) {},
+              //   rowsPerPage:
+              //       snapshot.data!.length < 10 ? snapshot.data!.length : 10,
+              //   headingRowColor:
+              //       WidgetStateColor.resolveWith((states) => Colors.blueAccent),
+              //   // headingTextStyle: const TextStyle(
+              //   //   color: Colors.white,
+              //   //   fontWeight: FontWeight.bold,
+              //   // ),
+              //   // dataRowColor: WidgetStateProperty.resolveWith(
+              //   //   (Set<MaterialState> states) {
+              //   //     if (states.contains(MaterialState.selected)) {
+              //   //       return Colors.blue.withOpacity(0.1);
+              //   //     }
+              //   //     return Colors.transparent;
+              //   //   },
+              //   // ),
+              // );
             }
           },
         ),

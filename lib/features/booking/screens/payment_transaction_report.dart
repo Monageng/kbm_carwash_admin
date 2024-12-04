@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../models/payment_transaction_model.dart';
@@ -49,15 +51,41 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
         : calculateTotalRevenue(transactions) / transactions.length;
   }
 
+  // Map<String, List<Map<String, dynamic>>> groupTransactionsByMonth(
+  //     List<Map<String, dynamic>> transactions) {
+  //   Map<String, List<Map<String, dynamic>>> groupedTransactions = {};
+  //   for (var transaction in transactions) {
+  //     final date = DateTime.parse(transaction['created_at']);
+  //     final month = "${date.year}-${date.month.toString().padLeft(2, '0')}";
+  //     groupedTransactions.putIfAbsent(month, () => []).add(transaction);
+  //   }
+  //   return groupedTransactions;
+  // }
+
   Map<String, List<Map<String, dynamic>>> groupTransactionsByMonth(
       List<Map<String, dynamic>> transactions) {
+    // Step 1: Group transactions by month
     Map<String, List<Map<String, dynamic>>> groupedTransactions = {};
     for (var transaction in transactions) {
       final date = DateTime.parse(transaction['created_at']);
       final month = "${date.year}-${date.month.toString().padLeft(2, '0')}";
       groupedTransactions.putIfAbsent(month, () => []).add(transaction);
     }
-    return groupedTransactions;
+
+    // Step 2: Sort the keys (months) incrementally
+    final sortedKeys = groupedTransactions.keys.toList()
+      ..sort(
+          (a, b) => a.compareTo(b)); // Sorts in ascending order (incremental)
+
+    // Step 3: Create a LinkedHashMap to maintain sorted order
+    Map<String, List<Map<String, dynamic>>> sortedGroupedTransactions =
+        LinkedHashMap.fromIterable(
+      sortedKeys,
+      key: (key) => key,
+      value: (key) => groupedTransactions[key]!,
+    );
+
+    return sortedGroupedTransactions;
   }
 
   @override

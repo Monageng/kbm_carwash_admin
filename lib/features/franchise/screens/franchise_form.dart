@@ -166,10 +166,10 @@ class _FranchiseFormState extends State<FranchiseForm> {
   }
 
   Future<List<String>> loadLookupProvince() async {
-    List<Province> list = await AppSessionModel().provinceList;
+    List<Province> list = await CommonApiService().fetchProvince();
     List<String> dropdownList =
         list.map((e) => e.name!.trim()).cast<String>().toList();
-
+    print("Dropdown $dropdownList");
     return dropdownList;
   }
 

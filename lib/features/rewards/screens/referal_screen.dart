@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // For clipboard copy
+import 'package:flutter/services.dart';
 
 class ReferralScreen extends StatelessWidget {
-  final String referralCode = "CARWASH123"; // Sample referral code
+  final String referralCode = "CARWASH123";
+
+  const ReferralScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Refer & Earn'),
+        title: const Text('Refer & Earn'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -16,7 +18,7 @@ class ReferralScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Earn Rewards!',
               style: TextStyle(
                 fontSize: 24,
@@ -24,7 +26,7 @@ class ReferralScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
+            const Text(
               'Share your unique referral code and earn discounts on your next wash when friends sign up!',
               style: TextStyle(fontSize: 16),
             ),
@@ -47,7 +49,7 @@ class ReferralScreen extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       referralCode,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
                         color: Colors.blueAccent,
@@ -64,28 +66,30 @@ class ReferralScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  icon: Icon(Icons.copy),
-                  label: Text("Copy Code"),
+                  icon: const Icon(Icons.copy),
+                  label: const Text("Copy Code"),
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: referralCode));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Referral code copied!')),
+                      const SnackBar(content: Text('Referral code copied!')),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 16),
                   ),
                 ),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.share),
-                  label: Text("Share Code"),
+                  icon: const Icon(Icons.share),
+                  label: const Text("Share Code"),
                   onPressed: () {
                     // Share.share(
                     //   'Use my referral code $referralCode to get a discount on your first wash at our car wash!',
                     // );
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 12, horizontal: 16),
                   ),
                 ),
               ],
@@ -93,7 +97,7 @@ class ReferralScreen extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Terms & Conditions
-            Text(
+            const Text(
               'Terms & Conditions',
               style: TextStyle(
                 fontSize: 16,
