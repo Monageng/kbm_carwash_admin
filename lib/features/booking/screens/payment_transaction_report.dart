@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
+import 'package:kbm_carwash_admin/common/widgets/widget_style.dart';
 import '../../franchise/models/franchise_model.dart';
 import '../models/payment_transaction_model.dart';
 import '../services/book_appointment_service.dart';
@@ -75,7 +77,7 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
     // Step 2: Sort the keys (months) incrementally
     final sortedKeys = groupedTransactions.keys.toList()
       ..sort(
-          (a, b) => a.compareTo(b)); // Sorts in ascending order (incremental)
+          (a, b) => b.compareTo(a)); // Sorts in descending order (incremental)
 
     // Step 3: Create a LinkedHashMap to maintain sorted order
     Map<String, List<Map<String, dynamic>>> sortedGroupedTransactions =
@@ -129,26 +131,37 @@ class _MonthlyFinancialDashboardState extends State<MonthlyFinancialDashboard> {
                       final monthlyTotal = monthlyTransactions.fold(
                           0.0, (sum, tx) => sum + tx['amount']);
 
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        elevation: 3,
-                        child: ExpansionTile(
-                          title: Text("Month: $month",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text(
-                              "Total: R${monthlyTotal.toStringAsFixed(2)}"),
-                          children: monthlyTransactions.map((transaction) {
-                            return ListTile(
-                              title: Text(
-                                  "${transaction['client']['first_name']} ${transaction['client']['last_name']}"),
-                              subtitle:
-                                  Text("Amount: R${transaction['amount']}"),
-                              trailing: Text(
-                                  "Date: ${transaction['created_at'].substring(0, 10)}",
-                                  style: const TextStyle(fontSize: 12)),
-                            );
-                          }).toList(),
+                      return Container(
+                        decoration: boxDecoration,
+                        child: Card(
+                          color: Colors.white,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(8), // Match border radius
+                          ),
+                          child: ExpansionTile(
+                            backgroundColor:
+                                Colors.blue.shade200, // Color when expanded
+                            collapsedBackgroundColor: Colors.white,
+                            title: Text(formatToMonthYear(month),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            subtitle: Text(
+                                "Total: R${monthlyTotal.toStringAsFixed(2)}"),
+                            children: monthlyTransactions.map((transaction) {
+                              return ListTile(
+                                title: Text(
+                                    "${transaction['client']['first_name']} ${transaction['client']['last_name']}"),
+                                subtitle:
+                                    Text("Amount: R${transaction['amount']}"),
+                                trailing: Text(
+                                    "Date: ${transaction['created_at'].substring(0, 10)}",
+                                    style: const TextStyle(fontSize: 12)),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       );
                     },

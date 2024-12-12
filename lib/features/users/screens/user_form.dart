@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
@@ -14,11 +15,9 @@ import '../models/user_model.dart';
 
 class UserScreen extends StatefulWidget {
   late UserModel user;
+  late VoidCallback? refreshData;
 
-  UserScreen({
-    super.key,
-    required this.user,
-  });
+  UserScreen({super.key, required this.user, this.refreshData});
 
   @override
   State<UserScreen> createState() => _UserScreenState();
@@ -90,13 +89,13 @@ class _UserScreenState extends State<UserScreen> {
             });
       } else {
         int key = widget.user.id!;
-
         widget.user.firstName = _firstNameController.text;
         widget.user.lastName = _lastNameController.text;
         widget.user.title = _titleController.text;
         widget.user.email = _emailController.text;
         widget.user.mobileNumber = _mobileNumberController.text;
         widget.user.dateOfBirth = _dateOfBirthController.text;
+        //DateTime.now().add(Duration(days: -7200)).toIso8601String();
         widget.user.role = "Client";
 
         String responseMessage;
@@ -127,6 +126,7 @@ class _UserScreenState extends State<UserScreen> {
           //logEvent("liger_review_sumbit_successful");
 
           Navigator.of(context).pop(widget.user);
+          widget.refreshData!();
         }
       }
     }

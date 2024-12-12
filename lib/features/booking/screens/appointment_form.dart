@@ -15,10 +15,12 @@ import '../models/appointment_model.dart';
 
 class AppointmentScreen extends StatefulWidget {
   late Appointment appointment;
+  late VoidCallback? refreshData;
 
   AppointmentScreen({
     super.key,
     required this.appointment,
+    this.refreshData,
   });
 
   @override
@@ -201,8 +203,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
 
         if (responseMessage.contains("successfully")) {
           //logEvent("liger_review_sumbit_successful");
-          Navigator.of(context).pushReplacementNamed('/home');
-          // Navigator.of(context).pop(widget.appointment);
+          //Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.of(context).pop(widget.appointment);
+          widget.refreshData!();
         }
       }
     }
@@ -229,6 +232,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     carServiceList = carwashServiceList.map((e) => e.service).toList();
     carServiceOptions = carwashServiceList
         .map((service) => service.service!.name ?? '')
+        .toSet()
         .toList();
     setState(() {
       carServiceOptions = ['Select Service', ...carServiceOptions];
@@ -254,6 +258,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     carServiceList = carwashServiceList.map((e) => e.service).toList();
     List<String> lis = carwashServiceList
         .map((service) => service.service!.name ?? '')
+        .toSet()
         .toList();
     List<String> resonse = ['Select service', ...lis];
     return resonse;
@@ -268,6 +273,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
     carServiceList = carwashServiceList.map((e) => e.service).toList();
     List<String> lis = carwashServiceList
         .map((service) => service.service!.name ?? '')
+        .toSet()
         .toList();
     List<String> resonse = ['Select Service', ...lis];
 

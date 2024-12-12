@@ -57,8 +57,10 @@ class _ServiceCaptureScreenState extends State<ServiceCaptureScreen> {
     List<CarModel>? carwashServiceList =
         await CarWashApiService().getAllCarModels();
     carModelList = carwashServiceList;
-    List<String> lis =
-        carwashServiceList.map((service) => service.carType ?? '').toList();
+    List<String> lis = carwashServiceList
+        .map((service) => service.carType ?? '')
+        .toSet()
+        .toList();
     return lis;
   }
 

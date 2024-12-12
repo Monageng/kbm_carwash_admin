@@ -257,11 +257,10 @@ class MyDataTableSource extends DataTableSource {
                         builder: (BuildContext context) {
                           return AppointmentScreen(
                             appointment: item,
+                            refreshData: refreshData,
                           );
                         },
                       );
-
-                      refreshData();
                     },
                     text: "Edit",
                     textColor: Colors.white,
@@ -273,8 +272,8 @@ class MyDataTableSource extends DataTableSource {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CustomElevatedButton(
-                    onPressed: () {
-                      showDialog(
+                    onPressed: () async {
+                      await showDialog(
                           context: context,
                           builder: (context) {
                             return AlertDialog(
@@ -300,6 +299,7 @@ class MyDataTableSource extends DataTableSource {
                                   ),
                                 ]);
                           });
+                      refreshData();
                     },
                     text: "Complete",
                     buttonColor: Colors.blue,

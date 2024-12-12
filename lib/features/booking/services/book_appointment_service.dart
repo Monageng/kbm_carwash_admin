@@ -50,7 +50,8 @@ class BookAppointmentApiService {
       var url = Uri.https(supabaseUrlv2, "rest/v1/appointment", {
         "select": "*,client(*),service_franchise_links(*)",
         "franchise_id": "eq.$franchiseId",
-        "active": "eq.true"
+        "active": "eq.true",
+        "order": "date.desc"
       });
 
       logger.d("Url ::: $url");

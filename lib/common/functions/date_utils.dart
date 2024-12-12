@@ -16,6 +16,16 @@ String formatToDateTime(String? dateString) {
   return '';
 }
 
+String formatToMonthYear(String date) {
+  // Parse the input date
+  final DateTime parsedDate =
+      DateTime.parse("$date-01"); // Adding day for parsing
+
+  // Format the date into "MMMM yyyy"
+  final DateFormat formatter = DateFormat('MMMM yyyy');
+  return formatter.format(parsedDate);
+}
+
 String formatDateTime(DateTime? dateTime) {
   return DateFormat('yyyy-MM-dd').format(dateTime!); // Format date
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../common/functions/common_functions.dart';
+import '../../../common/functions/date_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../booking/models/appointment_model.dart';
@@ -37,6 +38,12 @@ class _UserListScreenState extends State<UserListScreen> {
     });
   }
 
+  void refreshData() {
+    setState(() {
+      getData();
+    });
+  }
+
   void _filterData(String filter) {
     _originalfutureList.then((result) {
       List<UserModel> filteredList = result.where((element) {
@@ -70,7 +77,8 @@ class _UserListScreenState extends State<UserListScreen> {
     // Convert to list of NewUsersData
     return monthlyCount.entries
         .map((entry) => NewUsersData(entry.key, entry.value))
-        .toList();
+        .toList()
+      ..sort((a, b) => a.month.compareTo(b.month));
   }
 
   Widget _buildNewUsersChart(List<UserModel> users) {
@@ -197,11 +205,8 @@ class _UserListScreenState extends State<UserListScreen> {
                                       sortColumnIndex: _sortColumnIndex,
                                       onPageChanged: (value) {},
                                       columnSpacing: 16.0,
-                                      source: MyDataTableSource(
-                                        list!,
-                                        context,
-                                        widget.franchise,
-                                      ),
+                                      source: MyDataTableSource(list!, context,
+                                          widget.franchise, refreshData),
                                       rowsPerPage:
                                           list.length <= 5 ? list.length : 5,
                                       availableRowsPerPage:
@@ -288,8 +293,9 @@ class MyDataTableSource extends DataTableSource {
   final List<UserModel> list;
   final BuildContext context;
   Franchise franchise;
+  final VoidCallback refreshData;
 
-  MyDataTableSource(this.list, this.context, this.franchise);
+  MyDataTableSource(this.list, this.context, this.franchise, this.refreshData);
 
   @override
   DataRow getRow(int index) {
@@ -331,9 +337,12 @@ class MyDataTableSource extends DataTableSource {
                     builder: (BuildContext context) {
                       return UserScreen(
                         user: item,
+                        refreshData: refreshData,
                       );
                     },
                   );
+
+                  refreshData;
                 },
                 text: "Edit",
                 textColor: Colors.white,
