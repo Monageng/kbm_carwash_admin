@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/rewards/models/reward_model.dart';
-import 'package:kbm_carwash_admin/features/rewards/models/reward_running_total.dart';
-import 'package:kbm_carwash_admin/features/rewards/services/reward_service.dart';
-import 'package:kbm_carwash_admin/session/app_session.dart';
+import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/widgets/navigation_bar.dart';
+import '../models/reward_model.dart';
+import '../models/reward_running_total.dart';
+import '../services/reward_service.dart';
 
 class RewardAllocationListScreen extends StatefulWidget {
-  RewardAllocationListScreen({super.key, required this.userId});
+  RewardAllocationListScreen(
+      {super.key, required this.userId, this.userIdentity});
 
   String userId;
+  int? userIdentity;
 
   @override
   State<RewardAllocationListScreen> createState() =>
@@ -54,8 +56,8 @@ class _RewardAllocationListScreenState
         RewardsApiService().getAllRewardAllocationByClientUserId(widget.userId);
     _originalfutureList = _futureList;
 
-    _futureRewardRunningTotalList = RewardsApiService()
-        .getAllRewardRunningTotal("${AppSessionModel().loggedOnUser!.id}");
+    _futureRewardRunningTotalList =
+        RewardsApiService().getAllRewardRunningTotal("${widget.userIdentity}");
   }
 
   @override
@@ -94,17 +96,6 @@ class _RewardAllocationListScreenState
                         availableRowsPerPage: availableRowsPerPage2,
                         onRowsPerPageChanged: (int? value) {},
                         columns: const [
-//  final int id;
-//   final DateTime? createdAt;
-//   final int? clientId;
-//   final DateTime? fromDate;
-//   final DateTime? toDate;
-//   final int? runningTotal;
-//   final String? rewardType;
-//   final int? rewardConfigId;
-//   final RewardConfig? rewardConfig;
-//   final String? description;
-
                           DataColumn(label: Text("Title")),
                           DataColumn(label: Text("Reward type")),
                           DataColumn(label: Text("Type")),
@@ -112,10 +103,6 @@ class _RewardAllocationListScreenState
                           DataColumn(label: Text("Number of washes ")),
                           DataColumn(label: Text("From date")),
                           DataColumn(label: Text("To date")),
-                          // DataColumn(label: Text("Transaction Amount")),
-                          // DataColumn(label: Text("Reward Amount")),
-                          // DataColumn(label: Text("Discount Amount")),
-                          // DataColumn(label: Text('Action')),
                         ],
                       ),
                     ),
@@ -128,7 +115,7 @@ class _RewardAllocationListScreenState
       },
     );
     return Scaffold(
-      appBar: getTopNavigation(context),
+      // appBar: getTopNavigation(context),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +221,7 @@ class MyDataTableSource extends DataTableSource {
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(Text(
-          service.date?.toLocal().toString() ?? '',
+          formatDateTime(service.date) ?? '',
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(Text(
@@ -279,17 +266,6 @@ class RunningTotalDataTableSource extends DataTableSource {
       return Colors.white; // Default color
     });
 
-//  final int id;
-//   final DateTime? createdAt;
-//   final int? clientId;
-//   final DateTime? fromDate;
-//   final DateTime? toDate;
-//   final int? runningTotal;
-//   final String? rewardType;
-//   final int? rewardConfigId;
-//   final RewardConfig? rewardConfig;
-//   final String? description;
-
     return DataRow.byIndex(
       color: WidgetStateProperty.all<Color>(rowColor),
       index: index,
@@ -315,11 +291,11 @@ class RunningTotalDataTableSource extends DataTableSource {
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(Text(
-          service.fromDate?.toLocal().toString() ?? '',
+          formatDateTime(service.fromDate),
           style: const TextStyle(color: Colors.grey),
         )),
         DataCell(Text(
-          service.toDate?.toLocal().toString() ?? '',
+          formatDateTime(service.toDate),
           style: const TextStyle(color: Colors.grey),
         )),
         // DataCell(Text(

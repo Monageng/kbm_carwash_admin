@@ -27,6 +27,7 @@ String formatToMonthYear(String date) {
 }
 
 String formatDateTime(DateTime? dateTime) {
+  if (dateTime == null) return "";
   return DateFormat('yyyy-MM-dd').format(dateTime!); // Format date
 }
 

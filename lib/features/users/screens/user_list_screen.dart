@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../common/functions/common_functions.dart';
-import '../../../common/functions/date_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../booking/models/appointment_model.dart';
@@ -373,6 +372,7 @@ class MyDataTableSource extends DataTableSource {
                     builder: (BuildContext context) {
                       return RewardAllocationListScreen(
                         userId: item.userId!,
+                        userIdentity: item.id,
                       );
                     },
                   );

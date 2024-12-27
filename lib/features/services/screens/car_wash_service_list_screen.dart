@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/services/models/car_models_model.dart';
-import 'package:kbm_carwash_admin/features/services/models/car_wash_service_model.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../franchise/models/franchise_model.dart';
+import '../models/car_models_model.dart';
+import '../models/car_wash_service_model.dart';
 import '../models/service_franchise_link_model.dart';
 import '../service/car_wash_api_service.dart';
 import 'car_wash_service_form.dart';
@@ -70,7 +70,7 @@ class _ServiceListScreenState extends State<ServiceListScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomElevatedButton(
-                text: "Add car service",
+                text: "Add service",
                 onPressed: () async {
                   await showDialog(
                     context: context,

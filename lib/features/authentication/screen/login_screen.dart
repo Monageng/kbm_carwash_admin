@@ -16,6 +16,7 @@ import '../../../session/app_session.dart';
 import '../../users/models/user_model.dart';
 import '../services/use_service.dart';
 import 'confirmation_screen.dart';
+import 'reset_password.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({Key? key}) : super(key: key);
@@ -99,18 +100,28 @@ class _LoginFormState extends State<LoginForm> {
         UserModel userModel = UserModel();
         List<UserModel> userList =
             await UserApiService().getUserById(authUser.userId);
-        userModel.mobileNumber = "";
         AppSessionModel().setLoggedInUser(userList[0]);
         //AppSessionModel().setLoggedInUserDetails(userModel);
         printTime(
-            "******************************************userModel $userModel ");
+            "******************************************userModel ${userList[0].franchiseId} ");
         printTime(
             "******************************************Before authSession ");
         AuthSession authSession = await Amplify.Auth.fetchAuthSession();
         printTime(
             "******************************************after authSession $authSession");
-        if (authSession.isSignedIn) {}
-        Navigator.of(context).pushReplacementNamed('/home');
+        if (authSession.isSignedIn) {
+          if (userList[0].franchiseId != null) {
+            Navigator.of(context).pushReplacementNamed('/home');
+          } else {
+            await showDialog(
+                context: context,
+                builder: (c) {
+                  return const ErrorDialog(
+                      message: "User unauthorized to access the portal ");
+                });
+            Navigator.of(context).pushReplacementNamed('/');
+          }
+        }
 
         setState(() {});
       } else {
@@ -184,8 +195,8 @@ class _LoginFormState extends State<LoginForm> {
   // }
 
   Future<void> resetPassword() async {
-    // Navigator.push(context,
-    //     MaterialPageRoute(builder: (c) => const ResetPasswordScreen()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (c) => const ResetPasswordScreen()));
   }
 
   @override
@@ -206,7 +217,6 @@ class _LoginFormState extends State<LoginForm> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            //width: MediaQuery.of(context).size.width * 0.99,
             decoration: boxDecoration,
           ),
         ),

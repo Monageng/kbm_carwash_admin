@@ -8,6 +8,7 @@ class Appointment {
   bool? active;
   String? serviceName;
   DateTime? createAt;
+  DateTime? modifiedDate;
   DateTime? date;
   String? status;
   int? clientId;
@@ -26,6 +27,7 @@ class Appointment {
     this.active,
     this.clientId,
     this.createAt,
+    this.modifiedDate,
     required this.id,
     this.client,
     this.franchiseId,
@@ -44,6 +46,9 @@ class Appointment {
       serviceName: json['service_name'],
       createAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
+          : null,
+      modifiedDate: json['modified_date'] != null
+          ? DateTime.parse(json['modified_date'])
           : null,
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
       status: json['status'],
@@ -70,6 +75,7 @@ class Appointment {
       'active': active,
       "time": time,
       'service_name': serviceName,
+      'modified_date': modifiedDate?.toIso8601String(),
       'created_at':
           createAt?.toIso8601String(), // Serialize DateTime to ISO 8601 format
       'date': date?.toIso8601String(), // Serialize DateTime to ISO 8601 format

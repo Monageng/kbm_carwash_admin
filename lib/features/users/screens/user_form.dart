@@ -163,10 +163,13 @@ class _UserScreenState extends State<UserScreen> {
               ),
               ContactNumberTextField(
                 label: "Mobile Number",
+                isMandatory: false,
                 controller: _mobileNumberController,
                 width: 250,
               ),
-              EmailTextField(controller: _emailController),
+              EmailTextField(
+                controller: _emailController,
+              ),
               CustomCalender(
                 width: 250,
                 label: "date of birth",

@@ -187,14 +187,22 @@ String? getFieldValidationMessage(String fieldName, String fieldValue) {
 }
 
 String? getFieldMobileNumberValidationMessage(
-    String fieldName, String fieldValue) {
-  if (fieldValue.isEmpty || fieldValue.trim().isEmpty) {
-    return '$fieldName is mandatory';
-  }
-
-  if (!RegExp(r'^\+27[0-9]{9}$|^0[0-9]{9}$|^27[0-9]{9}$')
-      .hasMatch(fieldValue)) {
-    return 'Invalid contact number format';
+    String fieldName, String fieldValue, bool isMandatory) {
+  if (isMandatory == true) {
+    if (fieldValue.isEmpty || fieldValue.trim().isEmpty) {
+      return '$fieldName is mandatory';
+    }
+    if (!RegExp(r'^\+27[0-9]{9}$|^0[0-9]{9}$|^27[0-9]{9}$')
+        .hasMatch(fieldValue)) {
+      return 'Invalid contact number format';
+    }
+  } else {
+    if (fieldValue.isNotEmpty) {
+      if (!RegExp(r'^\+27[0-9]{9}$|^0[0-9]{9}$|^27[0-9]{9}$')
+          .hasMatch(fieldValue)) {
+        return 'Invalid contact number format';
+      }
+    }
   }
 
   return null;

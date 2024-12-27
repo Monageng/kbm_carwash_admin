@@ -7,15 +7,16 @@ class ContactNumberTextField extends StatelessWidget {
   final TextEditingController? controller;
   double? width;
   double? height;
+  bool? isMandatory = false;
   String label;
 
-  ContactNumberTextField({
-    super.key,
-    this.width,
-    this.height,
-    required this.label,
-    this.controller,
-  });
+  ContactNumberTextField(
+      {super.key,
+      this.width,
+      this.height,
+      required this.label,
+      this.controller,
+      this.isMandatory});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,8 @@ class ContactNumberTextField extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: TextFormField(
         validator: (value) {
-          return getFieldMobileNumberValidationMessage(label, value!);
+          return getFieldMobileNumberValidationMessage(
+              label, value!, isMandatory!);
         },
         style: const TextStyle(color: Colors.black, fontSize: 12),
         controller: controller,

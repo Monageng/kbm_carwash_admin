@@ -202,6 +202,7 @@ class MyDataTableSource extends DataTableSource {
         appointment.active = true;
         appointment.client = null;
         appointment.status = "Completed";
+        appointment.modifiedDate = DateTime.now();
         responseMessage = await CommonApiService()
             .update(appointment.id, "appointment", appointment.toJson());
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/features/authentication/screen/logout.dart';
 
 import '../features/booking/screens/appointment_list.dart';
 import '../features/booking/screens/payment_transaction_report.dart';
@@ -65,6 +66,7 @@ class _HomePageState extends State<HomePage> {
         franchise: AppSessionModel().loggedOnUser != null
             ? AppSessionModel().loggedOnUser!.franchise!
             : Franchise(id: 1, name: "name")),
+    const LoginOutForm(),
   ];
 
   void _onItemTapped(int index) {
@@ -73,12 +75,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  NavigationRailDestination getMenuTitle(String title) {
+  NavigationRailDestination getMenuTitle(String title, Icon icon) {
     return NavigationRailDestination(
-      icon: const Icon(
-        Icons.dashboard,
-        color: Colors.white,
-      ),
+      icon: icon,
       selectedIcon: const Icon(
         Icons.dashboard_outlined,
         color: Colors.blue,
@@ -90,16 +89,26 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var destinations = [
-      getMenuTitle("Dashboard"),
-      getMenuTitle("Bookings"),
-      getMenuTitle("Transactions"),
-      getMenuTitle("Leaderboard"),
-      getMenuTitle("Customers"),
-      getMenuTitle("Services"),
-      getMenuTitle("Rewards Configuration"),
-      getMenuTitle("Review"),
-      getMenuTitle("Referal List"),
-      getMenuTitle("Franchise Settings"),
+      getMenuTitle(
+          "Dashboard", const Icon(Icons.dashboard, color: Colors.white)),
+      getMenuTitle(
+          "Bookings", const Icon(Icons.calendar_month, color: Colors.white)),
+      getMenuTitle("Transactions",
+          const Icon(Icons.monetization_on, color: Colors.white)),
+      getMenuTitle(
+          "Leaderboard", const Icon(Icons.leaderboard, color: Colors.white)),
+      getMenuTitle("Clients", const Icon(Icons.people, color: Colors.white)),
+      getMenuTitle(
+          "Services", const Icon(Icons.car_rental_sharp, color: Colors.white)),
+      getMenuTitle("Rewards Configuration",
+          const Icon(Icons.wallet_membership, color: Colors.white)),
+      getMenuTitle(
+          "Review", const Icon(Icons.reviews_outlined, color: Colors.white)),
+      getMenuTitle("Referal List",
+          const Icon(Icons.social_distance, color: Colors.white)),
+      getMenuTitle("Franchise Settings",
+          const Icon(Icons.home_work_rounded, color: Colors.white)),
+      getMenuTitle("Logout", const Icon(Icons.logout, color: Colors.white)),
     ];
     return Scaffold(
       body: Row(
