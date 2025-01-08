@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/features/authentication/screen/logout.dart';
 
+import '../features/authentication/screen/logout.dart';
 import '../features/booking/screens/appointment_list.dart';
 import '../features/booking/screens/payment_transaction_report.dart';
 import '../features/booking/screens/ranking_list.dart';
@@ -22,52 +22,67 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  double height = 500;
+  double width = 1000;
   int _selectedIndex = 0;
 
-  static final List<Widget> _pages = <Widget>[
-    DashboardScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    AppointmentListScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    // PaymentTransactionListScreen(
-    //     franchise: AppSessionModel().loggedOnUser != null
-    //         ? AppSessionModel().loggedOnUser!.franchise!
-    //         : Franchise(id: 1, name: "name")),
-    MonthlyFinancialDashboard(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    RankOverviewScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    UserListScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    ServiceListScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    RewardConfigListScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    ReviewListScreen(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    const ReferralListScreen(),
-    FranchiseForm(
-        franchise: AppSessionModel().loggedOnUser != null
-            ? AppSessionModel().loggedOnUser!.franchise!
-            : Franchise(id: 1, name: "name")),
-    const LoginOutForm(),
-  ];
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void setPages(BuildContext context) {
+    width = MediaQuery.of(context).size.width;
+    height = MediaQuery.of(context).size.height;
+    _pages = <Widget>[
+      DashboardScreen(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      AppointmentListScreen(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      // PaymentTransactionListScreen(
+      //     franchise: AppSessionModel().loggedOnUser != null
+      //         ? AppSessionModel().loggedOnUser!.franchise!
+      //         : Franchise(id: 1, name: "name")),
+      MonthlyFinancialDashboard(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      RankOverviewScreen(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      UserListScreen(
+          width: width,
+          height: height,
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      ServiceListScreen(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      RewardConfigListScreen(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      ReviewListScreen(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      const ReferralListScreen(),
+      FranchiseForm(
+          franchise: AppSessionModel().loggedOnUser != null
+              ? AppSessionModel().loggedOnUser!.franchise!
+              : Franchise(id: 1, name: "name")),
+      const LoginOutForm(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -88,6 +103,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    setPages(context);
     var destinations = [
       getMenuTitle(
           "Dashboard", const Icon(Icons.dashboard, color: Colors.white)),

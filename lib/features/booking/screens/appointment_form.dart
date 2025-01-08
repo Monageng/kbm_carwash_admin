@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/common/widgets/custom_text_field.dart';
+import 'package:kbm_carwash_admin/features/rewards/models/referal_model.dart';
+import 'package:kbm_carwash_admin/features/rewards/services/reward_service.dart';
+import 'package:kbm_carwash_admin/session/app_session.dart';
 import '../../../common/functions/date_utils.dart';
 import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
@@ -30,6 +34,7 @@ class AppointmentScreen extends StatefulWidget {
 class _AppointmentScreenState extends State<AppointmentScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _serviceNameController = TextEditingController();
+  final TextEditingController _referalCodeController = TextEditingController();
   final TextEditingController _clientIdController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
@@ -152,60 +157,92 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       } else {
         _formKey.currentState!.save();
         validateForm();
-        int key = widget.appointment.id;
 
-        widget.appointment.clientId = widget.appointment.clientId!;
-        widget.appointment.createAt = DateTime.now();
-        widget.appointment.date = DateTime.parse(_dateController.text);
-        widget.appointment.serviceName = selectedValue;
-        widget.appointment.status = _statusController.text;
-        widget.appointment.time = _timeController.text;
-        // widget.appointment.service_franchise_link_id =
+        bool process = true;
+        if (_referalCodeController.text.isNotEmpty) {
+          List<Referral> referalList = await RewardsApiService()
+              .getReferalByCode(_referalCodeController.text.toUpperCase(),
+                  AppSessionModel().loggedOnUser!.franchise!.id);
 
-        int carModelId = carModelList
-            .firstWhere((element) => element!.carType == selectedCarModelValue)!
-            .id;
-        widget.appointment.carModelId = carModelId;
-        widget.appointment.serviceName = selectedCarServiceValue;
-        List<ServiceFranchiseLink> list1 = await serviceFranchiseList;
+          if (referalList.length > 0) {
+            Referral referral = referalList.first;
+            if (referral.id > 0) {
+              referral.recipientClient = widget.appointment.client;
+              referral.status = "CLAIMED";
+              referral.franchise = AppSessionModel().loggedOnUser!.franchise!;
+              widget.appointment.referalId = referral.id;
 
-        ServiceFranchiseLink serviceLink = list1.firstWhere((element) =>
-            element.service!.name == widget.appointment.serviceName &&
-            element.carModelId == carModelId &&
-            element.franchiseId == widget.appointment.franchiseId);
-
-        widget.appointment.serviceFranchiseLinkId = serviceLink.id;
-
-        String responseMessage;
-        if (key < 1) {
-          key = await CommonApiService().getLatestID("appointment");
-          widget.appointment.id = key;
-          widget.appointment.active = true;
-          widget.appointment.status = "Recieved";
-          responseMessage = await CommonApiService()
-              .save(widget.appointment.toJson(), "appointment");
-        } else {
-          widget.appointment.id = key;
-          responseMessage = await CommonApiService()
-              .update(key, "appointment", widget.appointment.toJson());
-          if (responseMessage.contains("successfully")) {
-            if (widget.appointment.status!.contains("Completed")) {}
+              await CommonApiService()
+                  .update(referral.id, "referal", referral.toJson());
+            }
+          } else {
+            process = false;
+            await showDialog(
+                context: context,
+                builder: (c) {
+                  return ErrorDialog(
+                      message: "The referal code is invalid ",
+                      title: "Confirmation");
+                });
           }
         }
-        logger.d("responseMessage $responseMessage");
+        if (process) {
+          int key = widget.appointment.id;
 
-        await showDialog(
-            context: context,
-            builder: (c) {
-              return ErrorDialog(
-                  message: responseMessage, title: "Confirmation");
-            });
+          widget.appointment.clientId = widget.appointment.clientId!;
+          widget.appointment.createAt = DateTime.now();
+          widget.appointment.date = DateTime.parse(_dateController.text);
+          widget.appointment.serviceName = selectedValue;
+          widget.appointment.status = _statusController.text;
+          widget.appointment.time = _timeController.text;
+          // widget.appointment.service_franchise_link_id =
 
-        if (responseMessage.contains("successfully")) {
-          //logEvent("liger_review_sumbit_successful");
-          //Navigator.of(context).pushReplacementNamed('/home');
-          Navigator.of(context).pop(widget.appointment);
-          widget.refreshData!();
+          int carModelId = carModelList
+              .firstWhere(
+                  (element) => element!.carType == selectedCarModelValue)!
+              .id;
+          widget.appointment.carModelId = carModelId;
+          widget.appointment.serviceName = selectedCarServiceValue;
+          List<ServiceFranchiseLink> list1 = await serviceFranchiseList;
+
+          ServiceFranchiseLink serviceLink = list1.firstWhere((element) =>
+              element.service!.name == widget.appointment.serviceName &&
+              element.carModelId == carModelId &&
+              element.franchiseId == widget.appointment.franchiseId);
+
+          widget.appointment.serviceFranchiseLinkId = serviceLink.id;
+
+          String responseMessage;
+          if (key < 1) {
+            key = await CommonApiService().getLatestID("appointment");
+            widget.appointment.id = key;
+            widget.appointment.active = true;
+            widget.appointment.status = "Recieved";
+            responseMessage = await CommonApiService()
+                .save(widget.appointment.toJson(), "appointment");
+          } else {
+            widget.appointment.id = key;
+            responseMessage = await CommonApiService()
+                .update(key, "appointment", widget.appointment.toJson());
+            if (responseMessage.contains("successfully")) {
+              if (widget.appointment.status!.contains("Completed")) {}
+            }
+          }
+          logger.d("responseMessage $responseMessage");
+
+          await showDialog(
+              context: context,
+              builder: (c) {
+                return ErrorDialog(
+                    message: responseMessage, title: "Confirmation");
+              });
+
+          if (responseMessage.contains("successfully")) {
+            //logEvent("liger_review_sumbit_successful");
+            //Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context).pop(widget.appointment);
+            widget.refreshData!();
+          }
         }
       }
     }
@@ -301,6 +338,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
           key: _formKey,
           child: Column(
             children: <Widget>[
+              CustomTextField(
+                controller: _referalCodeController,
+                label: "Referal Code",
+                hintText: "Referal Code",
+                isObscre: false,
+              ),
               Container(
                 margin: const EdgeInsets.all(5),
                 decoration: const BoxDecoration(

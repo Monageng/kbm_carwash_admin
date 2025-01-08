@@ -35,6 +35,31 @@ class CommonApiService {
     return Future.value(responseMessage);
   }
 
+  Future<String> triggerLambdaFunction(String urlHost, String urlPath) async {
+    var responseMessage = "";
+    try {
+      var url = Uri.https(urlHost, urlPath);
+      String encodedRequest = jsonEncode("");
+
+      var urlTest = Uri.parse(
+          'https://k905mydp0i.execute-api.af-south-1.amazonaws.com/prod/KBM_reward_allocation_handler');
+      var response = await http1.post(urlTest,
+          body: encodedRequest, headers: getHttpHeaders());
+      logger.d("url : $url");
+      logger.d("response.statusCode  : ${response.statusCode}");
+      logger.d("response.statusCode  : ${response.body}");
+      if (response.statusCode == 200) {
+        responseMessage = "Record saved successfully";
+      } else {
+        responseMessage = "Error occured triggering Lambda function ";
+      }
+    } catch (e) {
+      logger.e(e);
+      responseMessage = e.toString();
+    }
+    return Future.value(responseMessage);
+  }
+
   Future<String> update(
       int id, String entity, Map<String, dynamic> updatedData) async {
     var responseMessage = "";

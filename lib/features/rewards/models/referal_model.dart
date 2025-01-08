@@ -1,3 +1,5 @@
+import 'package:kbm_carwash_admin/features/franchise/models/franchise_model.dart';
+
 import '../../users/models/user_model.dart';
 
 class Referral {
@@ -9,16 +11,20 @@ class Referral {
   String? referelCode;
   UserModel? senderClient;
   UserModel? recipientClient;
+  Franchise? franchise;
   String? referralCode;
+  DateTime? modifiedDate;
 
   Referral({
     required this.id,
     this.status,
     this.fromDate,
     this.toDate,
+    this.modifiedDate,
     this.desciption,
     this.recipientClient,
     this.senderClient,
+    this.franchise,
     required this.referralCode,
   });
 
@@ -40,6 +46,9 @@ class Referral {
           ? UserModel.fromJson(json['recipient_client'])
           : null,
       referralCode: json['referral_code'],
+      modifiedDate: json['modified_date'] != null
+          ? DateTime.parse(json['modified_date'])
+          : null,
     );
   }
 
@@ -51,9 +60,11 @@ class Referral {
       'valid_from': fromDate?.toIso8601String(),
       'valid_to': toDate?.toIso8601String(),
       'description': desciption,
-      'sender_client': senderClient?.toJson(),
-      'recipient_client': recipientClient?.toJson(),
+      'sender_client': senderClient!.id,
+      'recipient_client': recipientClient?.id,
+      'franchise_id': franchise?.id,
       'referral_code': referralCode,
+      'modified_date': modifiedDate?.toIso8601String(),
     };
   }
 }

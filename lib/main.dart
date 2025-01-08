@@ -8,10 +8,7 @@ import 'common/enviroment/env_variable.dart';
 import 'common/home_page.dart';
 import 'common/widgets/error_dialog.dart';
 import 'features/authentication/screen/login_screen.dart';
-import 'features/franchise/models/franchise_model.dart';
 import 'features/franchise/screens/franchise_list_screen.dart';
-import 'features/users/screens/user_list_screen.dart';
-import 'session/app_session.dart';
 import 'theme/custom_theme.dart';
 
 Future<void> main() async {
@@ -45,11 +42,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const LoginForm(),
         '/home': (context) => const HomePage(),
-        '/userlist': (context) => UserListScreen(
-              franchise: AppSessionModel().loggedOnUser != null
-                  ? AppSessionModel().loggedOnUser!.franchise!
-                  : Franchise(id: 1, name: "name"),
-            ),
       },
     );
   }

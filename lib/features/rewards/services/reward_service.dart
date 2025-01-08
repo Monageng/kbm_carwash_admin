@@ -49,10 +49,11 @@ class RewardsApiService {
     return Future.value([]);
   }
 
-  Future<List<Referral>> getAllReferals() async {
+  Future<List<Referral>> getAllReferals(int franchiseId) async {
     try {
       var url = Uri.https(supabaseUrlv2, "rest/v1/referal", {
         "select": "*,recipient_client(*),sender_client(*)",
+        "franchise_id": "eq.$franchiseId",
         "order": "valid_from.asc"
       });
       logger.d("Url ::: $url");
@@ -68,6 +69,53 @@ class RewardsApiService {
       logger.e("object ${e.toString()}");
     }
     return Future.value([]);
+  }
+
+  Future<List<Referral>> getReferalByCode(
+      String referalCode, int franchiseId) async {
+    try {
+      var url = Uri.https(supabaseUrlv2, "rest/v1/referal", {
+        "select": "*,recipient_client(*),sender_client(*)",
+        "franchise_id": "eq.$franchiseId",
+        "referral_code": "eq.$referalCode",
+        "order": "valid_from.asc"
+      });
+      logger.d("Url ::: $url");
+      var response = await http1.get(url, headers: getHttpHeaders());
+      logger.d("response ::: ${response.body}");
+      if (response.statusCode == 200) {
+        List<Referral> list = (jsonDecode(response.body) as List)
+            .map((json) => Referral.fromJson(json))
+            .toList();
+        return Future.value(list);
+      }
+    } catch (e) {
+      logger.e("object ${e.toString()}");
+    }
+    return Future.value([]);
+  }
+
+  Future<Referral> getReferalById(int referalId) async {
+    try {
+      var url = Uri.https(supabaseUrlv2, "rest/v1/referal", {
+        "select": "*,recipient_client(*),sender_client(*),franchise(*)",
+        "id": "eq.$referalId",
+        "order": "valid_from.asc"
+      });
+      logger.d("Url ::: $url");
+      var response = await http1.get(url, headers: getHttpHeaders());
+      logger.d("response ::: ${response.body}");
+      if (response.statusCode == 200) {
+        List<Referral> list = (jsonDecode(response.body) as List)
+            .map((json) => Referral.fromJson(json))
+            .toList();
+        return Future.value(list[0]);
+      }
+    } catch (e) {
+      logger.e("object ${e.toString()}");
+    }
+    // ignore: null_argument_to_non_null_type
+    return Future.value();
   }
 
   Future<List<RewardConfig>> getAllRewardConfigByFranchiseId(

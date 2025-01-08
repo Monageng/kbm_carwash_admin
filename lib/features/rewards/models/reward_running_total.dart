@@ -1,17 +1,19 @@
 import 'reward_config.dart';
 
 class RewardRunningTotal {
-  final int id;
-  final DateTime? createdAt;
-  final int? clientId;
-  final DateTime? fromDate;
-  final DateTime? toDate;
-  final int? runningTotal;
-  final String? rewardType;
-  final int? rewardConfigId;
-  final RewardConfig? rewardConfig;
-  final String? description;
-
+  int id;
+  DateTime? createdAt;
+  int? clientId;
+  DateTime? fromDate;
+  DateTime? toDate;
+  int? runningTotal;
+  String? rewardType;
+  int? rewardConfigId;
+  RewardConfig? rewardConfig;
+  String? status;
+  bool? qualify;
+  DateTime? modifiedDate;
+  int? franchiseId;
   RewardRunningTotal({
     required this.id,
     this.createdAt,
@@ -22,7 +24,10 @@ class RewardRunningTotal {
     this.rewardType,
     this.rewardConfigId,
     this.rewardConfig,
-    this.description,
+    this.status,
+    this.qualify,
+    this.modifiedDate,
+    this.franchiseId,
   });
 
   factory RewardRunningTotal.fromJson(Map<String, dynamic> json) {
@@ -33,8 +38,12 @@ class RewardRunningTotal {
       fromDate: DateTime.parse(json['from_date'] as String),
       toDate: DateTime.parse(json['to_date'] as String),
       runningTotal: json['running_total'] as int,
+      status: json["status"],
+      modifiedDate: DateTime.parse(json['modified_date'] as String),
+      qualify: json["qualify"],
       rewardType: json['reward_type'] as String,
       rewardConfigId: json['reward_config_id'] as int,
+      franchiseId: json['franchise_id'] as int,
       rewardConfig: json['reward_config'] != null
           ? RewardConfig.fromJson(json['reward_config'])
           : null,
@@ -52,9 +61,11 @@ class RewardRunningTotal {
       'to_date': toDate?.toIso8601String(),
       'running_total': runningTotal,
       'reward_type': rewardType,
+      "status": status,
+      "qualify": qualify,
+      "modified_date": modifiedDate?.toIso8601String(),
       'reward_config_id': rewardConfigId,
-      'reward_config':
-          rewardConfig?.toJson(), // Assuming RewardConfig has toJson method
+      'franchise_id': franchiseId
     };
     return d;
   }

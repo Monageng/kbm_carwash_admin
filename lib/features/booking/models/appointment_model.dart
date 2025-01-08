@@ -13,6 +13,7 @@ class Appointment {
   String? status;
   int? clientId;
   int? carModelId;
+  int? referalId;
   int? serviceFranchiseLinkId;
   String? time;
   UserModel? client;
@@ -32,6 +33,7 @@ class Appointment {
     this.client,
     this.franchiseId,
     this.carModelId,
+    this.referalId,
     this.service,
     this.serviceFranchiseLinkId,
     this.serviceFranchiseLink,
@@ -53,6 +55,7 @@ class Appointment {
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
       status: json['status'],
       clientId: json['client_id'],
+      referalId: json["referal_id"],
       carModelId: json['car_model_id'],
       serviceFranchiseLinkId: json['service_franchise_link_id'],
       client:
@@ -68,7 +71,6 @@ class Appointment {
     return appointment;
   }
 
-  // Method to serialize a CarWashAppointment object into JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -83,6 +85,7 @@ class Appointment {
       'client_id': clientId,
       "franchise_id": franchiseId,
       "car_model_id": carModelId,
+      "referal_id": referalId,
       "service_franchise_link_id": serviceFranchiseLinkId
     };
   }

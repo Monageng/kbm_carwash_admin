@@ -40,6 +40,8 @@ AppBar getTopNavigation(BuildContext context) {
                     context,
                     "Clients",
                     UserListScreen(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
                       franchise: Franchise(id: -1, name: ""),
                     )),
               ],
@@ -52,6 +54,8 @@ AppBar getTopNavigation(BuildContext context) {
                     context,
                     "Users",
                     UserListScreen(
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
                       franchise: Franchise(id: -1, name: ""),
                     )),
               ],
@@ -83,6 +87,8 @@ AppBar getTopNavigation(BuildContext context) {
                       context,
                       MaterialPageRoute(
                           builder: (ctx) => UserListScreen(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
                                 franchise: Franchise(id: -1, name: ""),
                               )),
                     );

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:kbm_carwash_admin/common/functions/date_utils.dart';
 
 import '../../../common/functions/common_functions.dart';
-import '../../../common/widgets/navigation_bar.dart';
+import '../../../common/functions/date_utils.dart';
 import '../models/reward_model.dart';
 import '../models/reward_running_total.dart';
 import '../services/reward_service.dart';
@@ -114,9 +113,16 @@ class _RewardAllocationListScreenState
         }
       },
     );
-    return Scaffold(
+    double height = MediaQuery.of(context).size.height ?? 1000;
+    double width = MediaQuery.of(context).size.width ?? 500;
+    return AlertDialog(
+        //appBar: getTopNavigation(context),
+
+        content: SizedBox(
+      width: width,
+      height: height,
       // appBar: getTopNavigation(context),
-      body: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -189,7 +195,7 @@ class _RewardAllocationListScreenState
           ],
         ),
       ),
-    );
+    ));
   }
 }
 

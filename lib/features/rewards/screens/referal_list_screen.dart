@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kbm_carwash_admin/session/app_session.dart';
 
 import '../models/referal_model.dart';
 import '../services/reward_service.dart';
@@ -26,7 +27,8 @@ class _ReferralListScreenState extends State<ReferralListScreen> {
   }
 
   void getData() async {
-    _futureList = RewardsApiService().getAllReferals();
+    _futureList = RewardsApiService()
+        .getAllReferals(AppSessionModel().loggedOnUser!.franchiseId!);
     _futureList.then((data) {
       setState(() {
         _referralList = data;

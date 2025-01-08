@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 
 import '../../../common/functions/common_functions.dart';
 import '../../../common/functions/date_utils.dart';
+import '../../../common/functions/logger_utils.dart';
 import '../../../common/services/common_api_service.dart';
 import '../../../common/widgets/custom_action_button.dart';
 import '../../../common/widgets/error_dialog.dart';
+import '../../../session/app_session.dart';
 import '../../franchise/models/franchise_model.dart';
+import '../../rewards/models/referal_model.dart';
+import '../../rewards/services/reward_service.dart';
 import '../../users/screens/user_list_screen.dart';
 import '../models/appointment_model.dart';
 import '../services/book_appointment_service.dart';
 import '../models/payment_transaction_model.dart';
 import 'appointment_form.dart';
+import 'reward_redemption.dart';
 
 class AppointmentListScreen extends StatefulWidget {
-  Franchise franchise;
+  final Franchise franchise;
 
-  AppointmentListScreen({super.key, required this.franchise});
+  const AppointmentListScreen({super.key, required this.franchise});
 
   @override
   State<AppointmentListScreen> createState() => _AppointmentListScreenState();
@@ -81,10 +86,14 @@ class _AppointmentListScreenState extends State<AppointmentListScreen> {
                     context: context,
                     builder: (BuildContext context) {
                       return UserListScreen(
+                        width: 1000,
+                        height: 500,
                         franchise: widget.franchise,
                       );
                     },
                   );
+
+                  refreshData();
                 }),
           ),
           Padding(
@@ -183,6 +192,35 @@ class MyDataTableSource extends DataTableSource {
   final VoidCallback refreshData;
   MyDataTableSource(this.list, this.context, this.franchise, this.refreshData);
 
+  void triggerReward() async {
+    try {
+      String hostName = "k905mydp0i.execute-api.af-south-1.amazonaws.com";
+      String hostPath = "/prod/KBM_reward_allocation_handler";
+      String message =
+          await CommonApiService().triggerLambdaFunction(hostName, hostPath);
+      logger.d("message $message");
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
+  void updateReferal(Appointment appointment) async {
+    try {
+      if (appointment.referalId! > 0) {
+        Referral referral =
+            await RewardsApiService().getReferalById(appointment.referalId!);
+        referral.status = "USED";
+        referral.modifiedDate = DateTime.now();
+        referral.franchise = AppSessionModel().loggedOnUser!.franchise;
+        String responseMessage = await CommonApiService()
+            .update(referral.id, "referal", referral.toJson());
+        logger.d(responseMessage);
+      }
+    } catch (e) {
+      logger.e(e.toString());
+    }
+  }
+
   void createTransaction(Appointment appointment, BuildContext context) async {
     try {
       int key = await CommonApiService().getLatestID("payment_transaction");
@@ -205,7 +243,8 @@ class MyDataTableSource extends DataTableSource {
         appointment.modifiedDate = DateTime.now();
         responseMessage = await CommonApiService()
             .update(appointment.id, "appointment", appointment.toJson());
-
+        updateReferal(appointment);
+        triggerReward();
         if (responseMessage.contains("successfully")) {
           Navigator.of(context).pop(appointment);
           list.remove(appointment);
@@ -262,6 +301,7 @@ class MyDataTableSource extends DataTableSource {
                           );
                         },
                       );
+                      refreshData();
                     },
                     text: "Edit",
                     textColor: Colors.white,
@@ -303,6 +343,29 @@ class MyDataTableSource extends DataTableSource {
                       refreshData();
                     },
                     text: "Complete",
+                    buttonColor: Colors.blue,
+                    textColor: Colors.white,
+                  ),
+                ),
+              if (!item.status!.contains("Completed") &&
+                  !item.status!.contains("Expired") &&
+                  !item.status!.contains("Cancelled"))
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomElevatedButton(
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return RewardRedemptionListScreen(
+                            appointment: item,
+                            refreshData: refreshData,
+                          );
+                        },
+                      );
+                      refreshData;
+                    },
+                    text: "Use the reward",
                     buttonColor: Colors.blue,
                     textColor: Colors.white,
                   ),

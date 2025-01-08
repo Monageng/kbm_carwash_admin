@@ -14,7 +14,13 @@ import 'user_form.dart';
 
 class UserListScreen extends StatefulWidget {
   Franchise franchise;
-  UserListScreen({super.key, required this.franchise});
+  double width;
+  double height;
+  UserListScreen(
+      {super.key,
+      required this.franchise,
+      required this.height,
+      required this.width});
 
   @override
   State<UserListScreen> createState() => _UserListScreenState();
@@ -140,102 +146,114 @@ class _UserListScreenState extends State<UserListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    double height = MediaQuery.of(context).size.height ?? 1000;
+    double width = MediaQuery.of(context).size.width ?? 500;
+    return AlertDialog(
       //appBar: getTopNavigation(context),
 
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomElevatedButton(
-                    text: "Add new client",
-                    onPressed: () async {
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return UserScreen(
-                            user: UserModel(id: -1),
-                          );
-                        },
-                      );
-                      setState(() {
-                        getData();
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextField(
-                    controller: _filterController,
-                    style: const TextStyle(color: Colors.black),
-                    decoration: const InputDecoration(
-                      labelText: 'Filter by name',
-                      labelStyle: TextStyle(color: Colors.black),
-                      prefixIcon: Icon(Icons.search, color: Colors.blue),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  FutureBuilder<List<UserModel>>(
-                    future: _futureList,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(child: Text('No data available'));
-                      } else {
-                        List<UserModel>? list = snapshot.data;
-                        return LayoutBuilder(
-                          builder: (context, constraints) {
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.vertical,
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width,
-                                    child: PaginatedDataTable(
-                                      showFirstLastButtons: true,
-                                      arrowHeadColor: Colors.black,
-                                      sortAscending: _sortAscending,
-                                      sortColumnIndex: _sortColumnIndex,
-                                      onPageChanged: (value) {},
-                                      columnSpacing: 16.0,
-                                      source: MyDataTableSource(list!, context,
-                                          widget.franchise, refreshData),
-                                      rowsPerPage:
-                                          list.length <= 5 ? list.length : 5,
-                                      availableRowsPerPage:
-                                          availableRowsPerPage2,
-                                      onRowsPerPageChanged: (int? value) {},
-                                      columns: _buildColumns(constraints),
-                                    ),
-                                  ),
-                                  _buildNewUsersChart(list),
-                                ],
-                              ),
+      content: SizedBox(
+        width: width,
+        height: height,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomElevatedButton(
+                      text: "Add new client",
+                      onPressed: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return UserScreen(
+                              user: UserModel(id: -1),
                             );
                           },
                         );
-                      }
-                    },
-                  ),
-                ],
+                        setState(() {
+                          getData();
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextField(
+                      controller: _filterController,
+                      style: const TextStyle(color: Colors.black),
+                      decoration: const InputDecoration(
+                        labelText: 'Filter by name',
+                        labelStyle: TextStyle(color: Colors.black),
+                        prefixIcon: Icon(Icons.search, color: Colors.blue),
+                      ),
+                    ),
+                    const SizedBox(height: 16.0),
+                    FutureBuilder<List<UserModel>>(
+                      future: _futureList,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData ||
+                            snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No data available'));
+                        } else {
+                          List<UserModel>? list = snapshot.data;
+                          return LayoutBuilder(
+                            builder: (context, constraints) {
+                              return SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: PaginatedDataTable(
+                                        showFirstLastButtons: true,
+                                        arrowHeadColor: Colors.black,
+                                        sortAscending: _sortAscending,
+                                        sortColumnIndex: _sortColumnIndex,
+                                        onPageChanged: (value) {},
+                                        columnSpacing: 16.0,
+                                        source: MyDataTableSource(
+                                            list!,
+                                            context,
+                                            widget.franchise,
+                                            refreshData),
+                                        rowsPerPage:
+                                            list.length <= 5 ? list.length : 5,
+                                        availableRowsPerPage:
+                                            availableRowsPerPage2,
+                                        onRowsPerPageChanged: (int? value) {},
+                                        columns: _buildColumns(constraints),
+                                      ),
+                                    ),
+                                    _buildNewUsersChart(list),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   List<DataColumn> _buildColumns(BoxConstraints constraints) {
     return [
-      const DataColumn(label: Text('User ID')),
-      const DataColumn(label: Text("Title")),
       DataColumn(
         label: const Text('First Name'),
         onSort: (columnIndex, ascending) {
@@ -282,7 +300,7 @@ class _UserListScreenState extends State<UserListScreen> {
       ),
       const DataColumn(label: Text("Mobile Number")),
       const DataColumn(label: Text("Email")),
-      const DataColumn(label: Text("Date Of Birth")),
+      // const DataColumn(label: Text("Date Of Birth")),
       const DataColumn(label: Text('Action')),
     ];
   }
@@ -318,13 +336,11 @@ class MyDataTableSource extends DataTableSource {
       // color: WidgetStateProperty.all<Color>(rowColor),
       index: index,
       cells: [
-        getDataCellWithWidth(item.userId ?? '', 180),
-        getDataCellWithWidth(item.title ?? '', 20),
         getDataCellWithWidth(item.firstName ?? '', 100),
         getDataCellWithWidth(item.lastName ?? '', 100),
         getDataCellWithWidth(item.mobileNumber ?? '', 100),
-        getDataCellWithWidth(item.email ?? '', 250),
-        getDataCellWithWidth(item.dateOfBirth ?? '', 80),
+        getDataCellWithWidth(item.email ?? '', 150),
+        // getDataCellWithWidth(item.dateOfBirth ?? '', 100),
         DataCell(
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
